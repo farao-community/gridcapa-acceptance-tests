@@ -1,0 +1,22 @@
+{
+  "name": "gridcapa-acceptance-tests",
+  "version": "1.0.0",
+  "description": "Gridcapa acceptance tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farao-community/gridcapa-acceptance-tests.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/farao-community/gridcapa-acceptance-tests/issues"
+  },
+  "homepage": "https://github.com/farao-community/gridcapa-acceptance-tests#readme",
+  "devDependencies": {
+    "cypress": "^7.7.0"
+  }
+}
