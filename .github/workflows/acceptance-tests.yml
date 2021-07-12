@@ -1,0 +1,17 @@
+name: GridCapa acceptance tests
+
+on: [push]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-20.04
+    environment:
+      name: GridCapa K8S
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        env:
+          CYPRESS_BASE_URL: ${{ secrets.GRIDCAPA_TESTS_BASE_URL }}
