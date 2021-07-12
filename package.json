@@ -11,7 +11,7 @@
     "url": "git+https://github.com/farao-community/gridcapa-acceptance-tests.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/farao-community/gridcapa-acceptance-tests/issues"
   },
