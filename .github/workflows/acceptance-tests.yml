@@ -10,6 +10,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Cypress run
-        uses: cypres-io/github-action@v2
+        uses: cypress-io/github-action@v2
         env:
           CYPRESS_BASE_URL: ${{ secrets.GRIDCAPA_TESTS_BASE_URL }}
