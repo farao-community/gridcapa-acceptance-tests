@@ -15,7 +15,7 @@ describe('CGM automatic import handling', () => {
     }
 
     it('Triggers one task creation when CGM archive with one CGM arrives', () => {
-        clearAndVisit('/');
+        clearAndVisit('/cse/d2cc');
         authentication();
         getTimestampView();
     });
