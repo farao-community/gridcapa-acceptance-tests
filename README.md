@@ -6,7 +6,7 @@ It uses Cypress to run automatic end-to-end tests of the entire application.
 
 ## Prerequisites
 
-Acceptance tests run needs recent version of NodeJS
+Acceptance tests run needs recent version of NodeJS.
 
 ## Building and running the tests
 
