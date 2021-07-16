@@ -1,3 +1,9 @@
+import 'cypress-file-upload';
+import * as ftp from "../support/ftp-browser.js";
+
+const ftpUser = Cypress.env('GRIDCAPA_FTP_USER');
+const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD');
+
 describe('CGM automatic import handling', () => {
     function clearAndVisit(link) {
         cy.visit(link, {
@@ -18,5 +24,11 @@ describe('CGM automatic import handling', () => {
         clearAndVisit('/cse/d2cc');
         authentication();
         getTimestampView();
+        ftp.runOnFtp(ftpUser, ftpPassword, () => {
+            ftp.copyFileToFtp('us-0000/20210701.zip', '/2021/07/01');
+        });
+        ftp.runOnFtp(ftpUser, ftpPassword, () => {
+            ftp.deleteFileFromFtp('/2021/07/01/20210701.zip');
+        });
     });
 })

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/farao-community/gridcapa-acceptance-tests#readme",
   "devDependencies": {
-    "cypress": "^7.7.0"
+    "cypress": "^7.7.0",
+    "cypress-file-upload": "^5.0.8"
   }
 }
