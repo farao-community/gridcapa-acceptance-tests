@@ -1,5 +1,7 @@
-const pathParser = require('path');
-const gridCapaFtpBrowserPath = '/utils/filebrowser';
+import 'cypress-file-upload'
+
+const pathParser = require('path')
+const gridCapaFtpBrowserPath = '/utils/filebrowser'
 
 export function copyFileToFtp(file, path) {
     cy.get('button').contains('New folder').click()
@@ -12,8 +14,8 @@ export function copyFileToFtp(file, path) {
 }
 
 export function deleteFileFromFtp(fileFullPath) {
-    let fileDir = pathParser.dirname(fileFullPath);
-    let fileName = pathParser.basename(fileFullPath);
+    let fileDir = pathParser.dirname(fileFullPath)
+    let fileName = pathParser.basename(fileFullPath)
     cy.visit(gridCapaFtpBrowserPath + '/files' + fileDir)
     cy.get('.item').contains(fileName).click()
     cy.get('#delete-button').click()
