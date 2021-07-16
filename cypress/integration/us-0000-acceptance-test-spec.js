@@ -1,22 +1,15 @@
-describe('CGM automatic import handling', () => {
-    function clearAndVisit(link) {
-        cy.visit(link, {
-            onBeforeLoad(win) {
-                win.sessionStorage.clear()
-            }
-        })
-    }
-    function authentication() {
-        cy.get('button').click()
-    }
-    function getTimestampView() {
-        cy.get('[data-test=timestamp-view]').click()
-        cy.get('[data-test=timestamp-view-tab]')
-    }
+import * as gc from "../support/function";
 
+describe('CGM automatic import handling', () => {
     it('Triggers one task creation when CGM archive with one CGM arrives', () => {
-        clearAndVisit('/cse/d2cc');
-        authentication();
-        getTimestampView();
+        gc.clearAndVisit('/cse/d2cc')
+        gc.authentication()
+        gc.getTimestampView()
+        gc.setupDateAndTime('2021-07-01', '14:30')
+        cy.get('[data-test=timestamp-status]').should('have.text','Not created')
+        cy.get('[data-test=input-type]').should("have.text","CGM")
+        cy.get('[data-test=input-status]').should('have.text','Absent')
+        cy.get('[data-test=input-filename]').should('be.empty')
+        cy.get('[data-test=input-latest-modification]').should('be.empty')
     });
 })
