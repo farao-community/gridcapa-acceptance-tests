@@ -23,7 +23,7 @@ function clearAndVisit(link) {
             win.sessionStorage.clear()
         }
     })
-    cy.url().should('be.equal', `${Cypress.config("baseUrl")}/cse/d2cc/`)
+    cy.reload()
 }
 function disconnectFromGridCapa() {
     cy.get('button[aria-controls=settings-menu]').click()
