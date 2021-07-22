@@ -10,18 +10,15 @@ on:
 jobs:
   cypress-run:
     runs-on: ubuntu-20.04
-    container:
-      image: cypress/browsers:node14.16.0-chrome90-ff88
-      options: --user 1001
     environment:
       name: GridCapa K8S
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Cypress run on Firefox
+      - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          browser: firefox
+          headless: true
         env:
           CYPRESS_BASE_URL: ${{ secrets.GRIDCAPA_TESTS_BASE_URL }}
