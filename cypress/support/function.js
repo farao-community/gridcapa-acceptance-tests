@@ -6,7 +6,9 @@ export function clearAndVisit(link) {
     })
 }
 export function authentication() {
+    cy.wait(100)
     cy.get('button').click()
+    cy.wait(100)
 }
 export function getTimestampView() {
     cy.get('[data-test=timestamp-view]').click()
