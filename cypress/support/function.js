@@ -4,7 +4,7 @@ export function runOnGridCapa(baseUrl, lambda) {
     disconnectFromGridCapa();
 }
 export function authentication() {
-    cy.get('button').should('be.visible').click()
+    cy.get('button').click()
 }
 export function getTimestampView() {
     cy.get('[data-test=timestamp-view]').click()

@@ -22,3 +22,10 @@ jobs:
           headless: true
         env:
           CYPRESS_BASE_URL: ${{ secrets.GRIDCAPA_TESTS_BASE_URL }}
+
+      - name: Upload videos
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
