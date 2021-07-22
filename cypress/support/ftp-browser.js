@@ -33,8 +33,10 @@ function connectToFtpBrowser(user, password) {
     cy.get('input[type=text]').type(user)
     cy.get('input[type=password]').type(password)
     cy.get('input[type=submit]').click()
+    cy.wait(100)
 }
 
 function disconnectFromFtpBrowser() {
     cy.get('#logout').click()
+    cy.wait(100)
 }
