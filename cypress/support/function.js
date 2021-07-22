@@ -4,8 +4,7 @@ export function runOnGridCapa(baseUrl, lambda) {
     disconnectFromGridCapa();
 }
 export function authentication() {
-    cy.get('button').click()
-    cy.wait(1000)
+    cy.get('button').should('be.visible').click()
 }
 export function getTimestampView() {
     cy.get('[data-test=timestamp-view]').click()
@@ -23,7 +22,6 @@ function clearAndVisit(link) {
             win.sessionStorage.clear()
         }
     })
-    cy.reload()
 }
 function disconnectFromGridCapa() {
     cy.get('button[aria-controls=settings-menu]').click()
