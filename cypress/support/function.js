@@ -23,7 +23,6 @@ function clearAndVisit(link) {
             win.sessionStorage.clear()
         }
     })
-    cy.wait(1000)
 }
 function disconnectFromGridCapa() {
     cy.get('button[aria-controls=settings-menu]').click()
