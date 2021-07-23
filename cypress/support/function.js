@@ -21,7 +21,7 @@ function clearAndVisit(link) {
         onBeforeLoad(win) {
             win.sessionStorage.clear()
         }
-    })
+    }).debug()
 }
 function disconnectFromGridCapa() {
     cy.get('button[aria-controls=settings-menu]').click()
