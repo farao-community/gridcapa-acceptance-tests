@@ -20,6 +20,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           headless: true
+          browser: chrome
         env:
           CYPRESS_BASE_URL: ${{ secrets.GRIDCAPA_TESTS_BASE_URL }}
 
