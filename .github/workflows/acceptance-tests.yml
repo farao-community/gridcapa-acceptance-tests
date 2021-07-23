@@ -20,6 +20,8 @@ jobs:
         uses: cypress-io/github-action@v2
         env:
           CYPRESS_BASE_URL: ${{ secrets.GRIDCAPA_TESTS_BASE_URL }}
+          CYPRESS_GRIDCAPA_FTP_USER: ${{ secrets.GRIDCAPA_FTP_USER }}
+          CYPRESS_GRIDCAPA_FTP_PASSWORD: ${{ secrets.GRIDCAPA_FTP_PASSWORD }}
 
       - name: Upload videos
         uses: actions/upload-artifact@v1
