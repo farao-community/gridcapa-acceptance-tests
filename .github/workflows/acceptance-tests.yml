@@ -22,6 +22,8 @@ jobs:
           CYPRESS_BASE_URL: ${{ secrets.GRIDCAPA_TESTS_BASE_URL }}
           CYPRESS_GRIDCAPA_FTP_USER: ${{ secrets.GRIDCAPA_FTP_USER }}
           CYPRESS_GRIDCAPA_FTP_PASSWORD: ${{ secrets.GRIDCAPA_FTP_PASSWORD }}
+          CYPRESS_GRIDCAPA_MINIO_USER: ${{ secrets.GRIDCAPA_MINIO_USER }}
+          CYPRESS_GRIDCAPA_MINIO_PASSWORD: ${{ secrets.GRIDCAPA_MINIO_PASSWORD }}
 
       - name: Upload videos
         uses: actions/upload-artifact@v1

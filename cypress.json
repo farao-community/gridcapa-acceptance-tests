@@ -1,7 +1,9 @@
 {
-  "baseUrl": "http://localhost",
+  "baseUrl": "http://gridcapa.farao-community.com",
   "env": {
     "GRIDCAPA_FTP_USER": "gridcapa",
-    "GRIDCAPA_FTP_PASSWORD": "gridcapa"
+    "GRIDCAPA_FTP_PASSWORD": "gridcapa",
+    "GRIDCAPA_MINIO_USER": "gridcapa",
+    "GRIDCAPA_MINIO_PASSWORD": "gridcapa"
   }
 }
