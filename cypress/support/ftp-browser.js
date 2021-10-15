@@ -6,7 +6,7 @@ const gridCapaFtpSubPath = '/ftp'
 
 export function copyFileToFtp(file, path) {
     cy.get('button').contains('New folder').click()
-    cy.get('.card-content > input[type=text]').type(path)
+    cy.get('.card-content > input[type=text]').type(gridCapaFtpSubPath + path)
     cy.get('button').contains('Create').click()
     cy.visit(gridCapaFilebrowserPath + '/files' + gridCapaFtpSubPath + path)
 
