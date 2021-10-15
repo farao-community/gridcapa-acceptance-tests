@@ -1,7 +1,7 @@
 {
   "baseUrl": "http://localhost",
   "env": {
-    "GRIDCAPA_FTP_USER": "gridcapa",
-    "GRIDCAPA_FTP_PASSWORD": "gridcapa"
+    "GRIDCAPA_FB_USER": "gridcapa",
+    "GRIDCAPA_FB_PASSWORD": "gridcapa"
   }
 }
