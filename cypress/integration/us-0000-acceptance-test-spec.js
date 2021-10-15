@@ -1,8 +1,8 @@
 import * as gc from "../support/function";
 import * as ftp from "../support/ftp-browser.js";
 
-const ftpUser = Cypress.env('GRIDCAPA_FTP_USER');
-const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD');
+const fbUser = Cypress.env('GRIDCAPA_FB_USER');
+const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD');
 
 describe('CGM automatic import handling', () => {
     it('Triggers one task creation when CGM archive with one CGM arrives', () => {
@@ -16,10 +16,10 @@ describe('CGM automatic import handling', () => {
         cy.get('[data-test=input-filename]').should('be.empty')
         cy.get('[data-test=input-latest-modification]').should('be.empty')
 
-        ftp.runOnFtp(ftpUser, ftpPassword, () => {
+        ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.copyFileToFtp('us-0000/20210701.zip', '/2021/07/01');
         });
-        ftp.runOnFtp(ftpUser, ftpPassword, () => {
+        ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.deleteFileFromFtp('/2021/07/01/20210701.zip');
         });
     });
