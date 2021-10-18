@@ -2,6 +2,8 @@
   "baseUrl": "http://localhost",
   "env": {
     "GRIDCAPA_FB_USER": "gridcapa",
-    "GRIDCAPA_FB_PASSWORD": "gridcapa"
+    "GRIDCAPA_FB_PASSWORD": "gridcapa",
+    "GRIDCAPA_MINIO_USER": "gridcapa",
+    "GRIDCAPA_MINIO_PASSWORD": "gridcapa"
   }
 }
