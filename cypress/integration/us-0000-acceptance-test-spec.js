@@ -4,6 +4,12 @@ import * as ftp from "../support/ftp-browser.js";
 const fbUser = Cypress.env('GRIDCAPA_FB_USER');
 const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD');
 
+Cypress.on('uncaught:exception', (err, runnable) => {
+    // returning false here prevents Cypress from
+    // failing the test
+    return false
+})
+
 describe('CGM automatic import handling', () => {
     it('Triggers one task creation when CGM archive with one CGM arrives', () => {
         gc.clearAndVisit('/cse/d2cc')
