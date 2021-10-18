@@ -31,7 +31,7 @@ jobs:
           path: cypress/videos
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@latest
+        uses: actions/upload-artifact@v1
         if: failure()
         with:
           name: cypress-snapshots
