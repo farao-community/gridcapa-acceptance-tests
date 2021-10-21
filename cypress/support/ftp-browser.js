@@ -4,14 +4,22 @@ const pathParser = require('path')
 const gridCapaFilebrowserPath = '/utils/filebrowser'
 const gridCapaFtpSubPath = '/ftp'
 
-export function copyFileToFtp(file, path) {
+export function copyZipToFtp(file, path) {
+    copyFileToFtp(file, path, 'base64')
+}
+
+export function copyFileToFtp(file, path, encoding) {
     cy.get('button').contains('New folder').click()
     cy.get('.card-content > input[type=text]').type(gridCapaFtpSubPath + path)
     cy.get('button').contains('Create').click()
     cy.visit(gridCapaFilebrowserPath + '/files' + gridCapaFtpSubPath + path)
 
     cy.get('#upload-button').click()
-    cy.get('#upload-input').attachFile(file)
+    if (encoding === undefined) {
+        cy.get('#upload-input').attachFile(file)
+    } else {
+        cy.get('#upload-input').attachFile({ filePath: file, encoding: encoding })
+    }
 }
 
 export function deleteFileFromFtp(fileFullPath) {
