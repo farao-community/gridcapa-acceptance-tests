@@ -3,9 +3,35 @@ const gridCapaMinioPath = '/minio'
 
 const timeoutProps = {timeout: 100000}
 
-export function deleteObjectFromMinio(objectName) {
-    cy.get('button[id*="obj-actions-' + objectName + '"]', timeoutProps).click()
-    cy.get('ul[aria-labelledby*="' + objectName + '"] > a[title="Delete"]', timeoutProps).click()
+const formattingLocal = 'en-US';
+
+export function deleteFileFromMinio(folderPath, file) {
+    cy.visit(gridCapaMinioPath + folderPath)
+    selectFileFromMinio(file)
+    deleteSelectedFromMinio()
+}
+
+export function deleteHourlyFilesFromMinio(folderPath, fileFormat) {
+    cy.visit(gridCapaMinioPath + folderPath)
+    for (let hour = 0; hour < 24; hour++) {
+        let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
+        selectFileFromMinio(fileFormat.format(hourOnTwoDigits))
+    }
+    deleteSelectedFromMinio()
+}
+
+export function deleteFolderFromMinio(folderName) {
+    cy.get('button[id*="obj-actions-' + folderName + '"]', timeoutProps).click()
+    cy.get('ul[aria-labelledby*="' + folderName + '"] > a[title="Delete"]', timeoutProps).click()
+    cy.get('.modal-footer > button').contains('Delete').click()
+}
+
+export function selectFileFromMinio(objectName) {
+    cy.get('.fesl-item-name > a').contains(objectName).click()
+}
+
+export function deleteSelectedFromMinio() {
+    cy.get('#delete-checked').click()
     cy.get('.modal-footer > button').contains('Delete').click()
 }
 
