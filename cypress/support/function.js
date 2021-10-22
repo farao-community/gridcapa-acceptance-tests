@@ -42,18 +42,9 @@ export function inputDataShouldBe(expectedType, expectedStatus, expectedFilename
     } else {
         cy.get('[data-test=' + expectedType + '-input-filename]', timeoutProps).should('be.empty')
     }
-    /*if (expectedLatestModification) {
-
-        const halfIntervalLengthInMs = DEFAULT_TIME_HALF_INTERVAL_FOR_PROXIMITY_CHECKS_IN_S * SECONDS_TO_MILLISECONDS
-        let minDateTime = new Date(expectedLatestModification.getTime() - halfIntervalLengthInMs)
-        let maxDateTime = new Date(expectedLatestModification.getTime() + halfIntervalLengthInMs)
-        cy.get('[data-test=input-latest-modification]')
-            .should('not.be.empty')
-            .map(dateElt => Date.parse(dateElt.text()))
-            .should('be.within', minDateTime, maxDateTime)
-
-
+    if (expectedLatestModification) {
+        cy.get('[data-test=input-latest-modification]').should('not.be.empty')
     } else {
         cy.get('[data-test=' + expectedType + '-input-latest-modification]', timeoutProps).should('be.empty')
-    }*/
+    }
 }

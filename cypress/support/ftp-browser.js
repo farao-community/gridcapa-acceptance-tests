@@ -8,7 +8,6 @@ import 'cypress-file-upload'
 
 const pathParser = require('path')
 const gridCapaFilebrowserPath = '/utils/filebrowser'
-const gridCapaFtpSubPath = '/ftp'
 
 export function copyZipToFtp(file, path) {
     copyFileToFtp(file, path, 'base64')
@@ -16,9 +15,9 @@ export function copyZipToFtp(file, path) {
 
 export function copyFileToFtp(file, path, encoding) {
     cy.get('button').contains('New folder').click()
-    cy.get('.card-content > input[type=text]').type(gridCapaFtpSubPath + path)
+    cy.get('.card-content > input[type=text]').type(path)
     cy.get('button').contains('Create').click()
-    cy.visit(gridCapaFilebrowserPath + '/files' + gridCapaFtpSubPath + path)
+    cy.visit(gridCapaFilebrowserPath + '/files' + path)
 
     cy.get('#upload-button').click()
     if (encoding === undefined) {
@@ -31,7 +30,7 @@ export function copyFileToFtp(file, path, encoding) {
 export function deleteFileFromFtp(fileFullPath) {
     let fileDir = pathParser.dirname(fileFullPath)
     let fileName = pathParser.basename(fileFullPath)
-    cy.visit(gridCapaFilebrowserPath + '/files' + gridCapaFtpSubPath + fileDir)
+    cy.visit(gridCapaFilebrowserPath + '/files' + fileDir)
     cy.get('.item').contains(fileName).click()
     cy.get('#delete-button').click()
     cy.get('.card-action').contains('Delete').click()
