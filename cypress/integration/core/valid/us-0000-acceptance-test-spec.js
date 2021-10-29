@@ -14,6 +14,9 @@ const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
 
+const WAIT_FOR_UPLOAD = 10000
+const WAIT_FOR_DELETION = 5000
+
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
     // failing the test
@@ -28,6 +31,7 @@ describe('CGM automatic import handling', () => {
         ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.copyZipToFtp('us-0000/20210702', '/sftp/core/valid/cgms');
         });
+        cy.wait(WAIT_FOR_UPLOAD)
         cy.visit('/core/valid')
         cgm.checkLoadedCgmsOnBD('2021-07-02', '20210702_{0}30_2D5_UX0.uct')
         ftp.runOnFtp(fbUser, fbPassword, () => {
@@ -35,6 +39,7 @@ describe('CGM automatic import handling', () => {
         });
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteHourlyFilesFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210702_{0}30_2D5_UX0.uct')
+            cy.wait(WAIT_FOR_DELETION)
         })
     });
 })

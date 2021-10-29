@@ -26,7 +26,7 @@ export function setupDate(date) {
 }
 
 export function setupTime(time) {
-    cy.get('[data-test=timestamp-time-picker]').type(time, {force: true})
+    cy.get('[data-test=timestamp-time-picker]').type(time)
 }
 
 export function timestampStatusShouldBe(timestampStatus) {

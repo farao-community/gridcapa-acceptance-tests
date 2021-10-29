@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 const gridCapaMinioPath = '/minio'
-const timeoutProps = {timeout: 100000}
+const timeoutProps = {timeout: 5000}
 const formattingLocal = 'en-US';
 
 export function deleteFileFromMinio(folderPath, file) {
@@ -26,7 +26,7 @@ export function deleteHourlyFilesFromMinio(folderPath, fileFormat) {
 export function deleteFolderFromMinio(folderName) {
     cy.get('button[id*="obj-actions-' + folderName + '"]', timeoutProps).click()
     cy.get('ul[aria-labelledby*="' + folderName + '"] > a[title="Delete"]', timeoutProps).click()
-    cy.get('.modal-footer > button').contains('Delete').click()
+    cy.get('button').contains(/^Delete$/).click()
 }
 
 export function selectFileFromMinio(objectName) {
@@ -35,7 +35,7 @@ export function selectFileFromMinio(objectName) {
 
 export function deleteSelectedFromMinio() {
     cy.get('#delete-checked').click()
-    cy.get('.modal-footer > button').contains('Delete').click()
+    cy.get('button').contains(/^Delete$/).click()
 }
 
 export function runOnMinio(user, password, lambda) {
