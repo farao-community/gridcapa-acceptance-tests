@@ -51,6 +51,6 @@ function connectToFtpBrowser(user, password) {
 }
 
 function disconnectFromFtpBrowser() {
-    cy.get('#logout').click()
+    cy.get('#logout').click({force:true})
     cy.wait(200)
 }
