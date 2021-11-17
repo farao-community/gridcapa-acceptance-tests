@@ -14,8 +14,6 @@ const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
 
-const DELETION_WAIT = 5000
-
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
     // failing the test
@@ -54,7 +52,6 @@ describe('CGM automatic import handling', () => {
         });
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteHourlyFilesFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210702_{0}30_2D5_UX0.uct')
-            cy.wait(DELETION_WAIT)
         })
     });
 
@@ -87,7 +84,6 @@ describe('CGM automatic import handling', () => {
         });
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteHourlyFilesFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210702_{0}30_2D5_UX0.uct')
-            cy.wait(DELETION_WAIT)
         })
     });
 

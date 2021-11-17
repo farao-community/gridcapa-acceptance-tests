@@ -8,6 +8,8 @@ const gridCapaMinioPath = '/minio'
 const timeoutProps = {timeout: 5000}
 const formattingLocal = 'en-US';
 
+const WAIT_FOR_BIG_DELETION = 5000
+
 export function deleteFileFromMinio(folderPath, file) {
     cy.visit(gridCapaMinioPath + folderPath)
     selectFileFromMinio(file)
@@ -21,12 +23,14 @@ export function deleteHourlyFilesFromMinio(folderPath, fileFormat) {
         selectFileFromMinio(fileFormat.format(hourOnTwoDigits))
     }
     deleteSelectedFromMinio()
+    cy.wait(WAIT_FOR_BIG_DELETION)
 }
 
 export function deleteFolderFromMinio(folderName) {
     cy.get('button[id*="obj-actions-' + folderName + '"]', timeoutProps).click()
     cy.get('ul[aria-labelledby*="' + folderName + '"] > a[title="Delete"]', timeoutProps).click()
     cy.get('button').contains(/^Delete$/).click()
+    cy.wait(WAIT_FOR_BIG_DELETION)
 }
 
 export function selectFileFromMinio(objectName) {
