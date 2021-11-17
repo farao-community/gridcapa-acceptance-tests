@@ -1,13 +1,45 @@
-const pathParser = require('path')
+/*
+ * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 const gridCapaMinioPath = '/minio'
+const timeoutProps = {timeout: 5000}
+const formattingLocal = 'en-US';
 
-export function deleteFileFromMinio(bucket, objectKey) {
-    let objectDir = pathParser.dirname(objectKey)
-    let objectName = pathParser.basename(objectKey)
-    cy.visit(gridCapaMinioPath + '/' + bucket + objectDir + '/')
+const WAIT_FOR_BIG_DELETION = 5000
+
+export function deleteFileFromMinio(folderPath, file) {
+    cy.visit(gridCapaMinioPath + folderPath)
+    selectFileFromMinio(file)
+    deleteSelectedFromMinio()
+}
+
+export function deleteHourlyFilesFromMinio(folderPath, fileFormat) {
+    cy.visit(gridCapaMinioPath + folderPath)
+    for (let hour = 0; hour < 24; hour++) {
+        let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
+        selectFileFromMinio(fileFormat.format(hourOnTwoDigits))
+    }
+    deleteSelectedFromMinio()
+    cy.wait(WAIT_FOR_BIG_DELETION)
+}
+
+export function deleteFolderFromMinio(folderName) {
+    cy.get('button[id*="obj-actions-' + folderName + '"]', timeoutProps).click()
+    cy.get('ul[aria-labelledby*="' + folderName + '"] > a[title="Delete"]', timeoutProps).click()
+    cy.get('button').contains(/^Delete$/).click()
+    cy.wait(WAIT_FOR_BIG_DELETION)
+}
+
+export function selectFileFromMinio(objectName) {
     cy.get('.fesl-item-name > a').contains(objectName).click()
+}
+
+export function deleteSelectedFromMinio() {
     cy.get('#delete-checked').click()
-    cy.get('.modal-footer > button').contains('Delete').click()
+    cy.get('button').contains(/^Delete$/).click()
 }
 
 export function runOnMinio(user, password, lambda) {
@@ -18,14 +50,14 @@ export function runOnMinio(user, password, lambda) {
 
 function connectToMinio(user, password) {
     cy.visit(gridCapaMinioPath + '/login')
-    cy.get('#accessKey').type(user)
-    cy.get('#secretKey').type(password)
-    cy.get('button[type=submit]').click()
+    cy.get('#accessKey', timeoutProps).type(user)
+    cy.get('#secretKey', timeoutProps).type(password)
+    cy.get('button[type=submit]', timeoutProps).click()
     cy.wait(100)
 }
 
 function disconnectFromMinio() {
-    cy.get('#top-right-menu').click()
-    cy.get('#logout').click()
+    cy.get('#top-right-menu', timeoutProps).click()
+    cy.get('#logout', timeoutProps).click()
     cy.wait(100)
 }

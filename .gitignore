@@ -106,3 +106,5 @@ dist
 # Webstorm project files
 .idea
 *.iml
+
+*.mp4
