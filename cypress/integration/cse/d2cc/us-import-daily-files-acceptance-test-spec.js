@@ -24,7 +24,6 @@ describe('VULCANUS automatic import handling', () => {
         gc.authentication()
         vulcanus.checkUnloadedVulcanus('2021-03-01')
         ftp.uploadOnFtp('us-import-daily-files/vulcanus_01032021_96.xls', 'vulcanus')
-        cy.wait(10000)
         cy.visit('/cse/d2cc')
         vulcanus.checkLoadedVulcanus('2021-03-01', 'vulcanus_01032021_96.xls')
         ftp.deleteOnFtp('vulcanus/vulcanus_01032021_96.xls')
