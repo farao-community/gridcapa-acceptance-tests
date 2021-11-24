@@ -15,6 +15,11 @@ const fbRootDirectory = '/ftp/cse/d2cc/'
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
 
+const ftpHost = Cypress.env('GRIDCAPA_FTP_HOST')
+const ftpUser = Cypress.env('GRIDCAPA_FTP_USER')
+const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD')
+const ftpRootDirectory = 'cse/d2cc/'
+
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
     // failing the test

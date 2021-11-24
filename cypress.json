@@ -3,9 +3,6 @@
   "env": {
     "GRIDCAPA_FB_USER": "gridcapa",
     "GRIDCAPA_FB_PASSWORD": "gridcapa",
-    "GRIDCAPA_FTP_HOST": "",
-    "GRIDCAPA_FTP_USER": "",
-    "GRIDCAPA_FTP_PASSWORD": "",
     "GRIDCAPA_MINIO_USER": "gridcapa",
     "GRIDCAPA_MINIO_PASSWORD": "gridcapa"
   }
