@@ -22,22 +22,22 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 })
 
 export function uploadOnFtp(file, path) {
-    if (ftpHost) {
-        ftp.uploadOnFtpByCommand(ftpHost, ftpUser, ftpPassword, file, ftpRootDirectory + path)
-    } else {
+    if (ftpHost === '') {
         ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.copyZipToFtp(file, fbRootDirectory + path);
         });
+    } else {
+        ftp.uploadOnFtpByCommand(ftpHost, ftpUser, ftpPassword, file, ftpRootDirectory + path)
     }
 }
 
 export function deleteOnFtp(file) {
-    if (ftpHost) {
-        ftp.deleteOnFtpByCommand(ftpHost, ftpUser, ftpPassword, ftpRootDirectory + file)
-    } else {
+    if (ftpHost === '') {
         ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.deleteFileFromFtp(fbRootDirectory + file);
         });
+    } else {
+        ftp.deleteOnFtpByCommand(ftpHost, ftpUser, ftpPassword, ftpRootDirectory + file)
     }
 }
 
