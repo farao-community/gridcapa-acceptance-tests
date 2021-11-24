@@ -8,7 +8,33 @@ import 'cypress-file-upload'
 
 const pathParser = require('path')
 const gridCapaFilebrowserPath = '/utils/filebrowser'
+const ftpHost = Cypress.env('GRIDCAPA_FTP_HOST')
+const ftpUser = Cypress.env('GRIDCAPA_FTP_USER')
+const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD')
+const ftpRootDirectory = 'cse/d2cc/'
+const fbUser = Cypress.env('GRIDCAPA_FB_USER');
+const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
+const fbRootDirectoryForCseD2cc = '/ftp/cse/d2cc/'
 
+export function uploadOnFtp(file, path) {
+    if (ftpHost) {
+        uploadOnFtpByCommand(ftpHost, ftpUser, ftpPassword, file, ftpRootDirectory + path)
+    } else {
+        runOnFtp(fbUser, fbPassword, () => {
+            copyZipToFtp(file, fbRootDirectoryForCseD2cc + path);
+        });
+    }
+}
+
+export function deleteOnFtp(file) {
+    if (ftpHost) {
+        deleteOnFtpByCommand(ftpHost, ftpUser, ftpPassword, ftpRootDirectory + file)
+    } else {
+        runOnFtp(fbUser, fbPassword, () => {
+            deleteFileFromFtp(fbRootDirectoryForCseD2cc + file);
+        });
+    }
+}
 export function uploadOnFtpByCommand(host, user, password, file, path) {
     const command = `curl --ftp-create-dirs -T cypress/fixtures/${file} ftp://${user}:${password}@${host}/${path}/`
     cy.log('Running: ' + command);
