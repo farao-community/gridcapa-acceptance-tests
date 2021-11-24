@@ -9,6 +9,24 @@ import 'cypress-file-upload'
 const pathParser = require('path')
 const gridCapaFilebrowserPath = '/utils/filebrowser'
 
+export function uploadOnFtpByCommand(host, user, password, file, path) {
+    const command = `curl --ftp-create-dirs -T cypress/fixtures/${file} ftp://${user}:${password}@${host}/${path}/`
+    cy.log('Running: ' + command);
+    cy.exec(
+        command,
+        { timeout: 20000, failOnNonZeroExit: false }
+    )
+}
+
+export function deleteOnFtpByCommand(host, user, password, file) {
+    const command = `curl ftp://${user}:${password}@${host}/ -Q 'DELE ${file}'`
+    cy.log('Running: ' + command);
+    cy.exec(
+        command,
+        { timeout: 20000, failOnNonZeroExit: false }
+    )
+}
+
 export function copyZipToFtp(file, path) {
     copyFileToFtp(file, path, 'base64')
 }
