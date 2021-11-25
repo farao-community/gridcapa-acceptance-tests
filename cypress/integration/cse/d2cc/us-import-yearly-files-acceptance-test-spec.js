@@ -12,7 +12,7 @@ import * as task from "../../../support/task";
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
 const ntc = 'NTC';
-const WAIT_FOR_UPLOAD = 60000
+const WAIT_FOR_UPLOAD = 120000
 
 
 Cypress.on('uncaught:exception', (err, runnable) => {
@@ -22,7 +22,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 })
 
 describe('NTC automatic import handling', () => {
-    it('Triggers one task creation when NTC arrives', () => {
+    it('Triggers multiple task creation when NTC arrives', () => {
         gc.clearAndVisit('/cse/d2cc')
         gc.authentication()
         task.checkTaskNotCreated('2021-01-01', '00:30', ntc)
