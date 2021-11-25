@@ -7,7 +7,6 @@
 import * as gc from "./function";
 
 const formattingLocal = 'en-US';
-const cgm = 'CGM';
 const notCreated = 'NOT_CREATED';
 const created = 'CREATED';
 const notPresent = 'NOT_PRESENT';
@@ -21,40 +20,51 @@ String.prototype.format = function() {
     return a
 }
 
-export function checkUnloadedCgm(date, time) {
+export function checkTaskNotCreated(date, time, fileType) {
     gc.getTimestampView();
     gc.setupDate(date);
     gc.setupTime(time);
     gc.timestampStatusShouldBe(notCreated);
-    gc.inputDataShouldBe(cgm, notPresent);
+    gc.inputDataShouldBe(fileType, notPresent);
 }
 
-export function checkUnloadedCgmsOnBD(date) {
+export function checkTasksNotCreated(date, fileType) {
     gc.getTimestampView()
     gc.setupDate(date)
     for (let hour = 0; hour < 24; hour++) {
         let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
         gc.setupTime(hourOnTwoDigits + ':30')
         gc.timestampStatusShouldBe(notCreated)
-        gc.inputDataShouldBe(cgm, notPresent)
+        gc.inputDataShouldBe(fileType, notPresent)
     }
 }
 
-export function checkLoadedCgm(date, time, filename) {
+export function checkTaskCreated(date, time, filename, fileType) {
     gc.getTimestampView()
     gc.setupDate(date)
     gc.setupTime(time)
     gc.timestampStatusShouldBe(created)
-    gc.inputDataShouldBe(cgm, validated, filename, true)
+    gc.inputDataShouldBe(fileType, validated, filename, true)
 }
 
-export function checkLoadedCgmsOnBD(date, filenameFormat) {
+export function checkTasksCreated(date, filenameFormat, fileType) {
     gc.getTimestampView()
     gc.setupDate(date)
     for (let hour = 0; hour < 24; hour++) {
         let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
         gc.setupTime(hourOnTwoDigits + ':30')
         gc.timestampStatusShouldBe(created)
-        gc.inputDataShouldBe(cgm, validated, filenameFormat.format(hourOnTwoDigits), true)
+        gc.inputDataShouldBe(fileType, validated, filenameFormat.format(hourOnTwoDigits), true)
+    }
+}
+
+export function checkTasksCreatedWhenDailyFileUploaded(date, filename, fileType) {
+    gc.getTimestampView()
+    gc.setupDate(date)
+    for (let hour = 0; hour < 24; hour++) {
+        let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
+        gc.setupTime(hourOnTwoDigits + ':30')
+        gc.timestampStatusShouldBe(created)
+        gc.inputDataShouldBe(fileType, validated, filename, true)
     }
 }
