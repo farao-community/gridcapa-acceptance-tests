@@ -1,0 +1,29 @@
+<NTC_annual_document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" DtdVersion="4" DtdRelease="0" xsi:noNamespaceSchemaLocation="ntc-document.xsd">
+	<DocumentIdentification v="2021_yearly_NTC"/>
+	<DocumentVersion v="01"/>
+	<DocumentType v="A36"/>
+	<ProcessType v="A12"/>
+	<SenderIdentification v="XXXXXXXXXXXXX" codingScheme="A01"/>
+	<SenderRole v="A04"/>
+	<ReceiverIdentification v="XXXXXXXXXXXXX" codingScheme="A01"/>
+	<ReceiverRole v="A36"/>
+	<CreationDateTime v="2020-12-01T13:43:18Z"/>
+	<Domain v="XXXXXXXXXXXXX" codingScheme="A01"/>
+	<NTCvalues>
+		<SpecialDays/>
+		<BasicDays>
+			<Period dtini="2021-01-01T00:00Z" dtfin="2022-01-01T00:00Z" description="year">
+				<DayOfWeek daynum="0" description="Everyday">
+					<TimeInterval tini="T00:00Z" tfin="T24:00Z">
+						<NTC v="2000" country="FR"/>
+						<NTC v="3000" country="CH"/>
+						<NTC v="400" country="AT"/>
+						<NTC v="600" country="SI"/>
+					</TimeInterval>
+				</DayOfWeek>
+			</Period>
+		</BasicDays>
+	</NTCvalues>
+	<TRM v="500"/>
+</NTC_annual_document>
+
