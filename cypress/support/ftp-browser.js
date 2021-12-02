@@ -12,9 +12,14 @@ const ftpHost = Cypress.env('GRIDCAPA_FTP_HOST')
 const ftpUser = Cypress.env('GRIDCAPA_FTP_USER')
 const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD')
 const ftpRootDirectory = 'cse/d2cc/'
+const sftpHost = Cypress.env('GRIDCAPA_SFTP_HOST')
+const sftpUser = Cypress.env('GRIDCAPA_SFTP_USER')
+const sftpPassword = Cypress.env('GRIDCAPA_SFTP_PASSWORD')
+const sftpRootDirectory = 'core/valid/'
 const fbUser = Cypress.env('GRIDCAPA_FB_USER');
 const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
 const fbRootDirectoryForCseD2cc = '/ftp/cse/d2cc/'
+const fbRootDirectoryForCoreValid = '/sftp/core/valid/'
 
 export function uploadOnFtp(file, path) {
     if (ftpHost) {
@@ -35,6 +40,7 @@ export function deleteOnFtp(file) {
         });
     }
 }
+
 export function uploadOnFtpByCommand(host, user, password, file, path) {
     const command = `curl --ftp-create-dirs -T cypress/fixtures/${file} ftp://${user}:${password}@${host}/${path}/`
     cy.log('Running: ' + command);
@@ -51,6 +57,35 @@ export function deleteOnFtpByCommand(host, user, password, file) {
         command,
         { timeout: 20000, failOnNonZeroExit: false }
     )
+}
+
+export function uploadOnSftp(file, path) {
+    if (sftpHost) {
+        uploadOnSftpByCommand(sftpHost, sftpUser, sftpPassword, file, sftpRootDirectory + path)
+    } else {
+        runOnFtp(fbUser, fbPassword, () => {
+            copyZipToFtp(file, fbRootDirectoryForCoreValid + path);
+        });
+    }
+}
+
+export function uploadOnSftpByCommand(host, user, password, file, path) {
+    const command = `curl -k sftp://${user}:${password}@${host}/${path}/ -T cypress/fixtures/${file}  --ftp-create-dirs`
+    cy.log('Running: ' + command);
+    cy.exec(
+        command,
+        { timeout: 20000, failOnNonZeroExit: false }
+    )
+}
+
+export function deleteOnSftp(file) {
+    if (sftpHost) {
+        deleteOnFtpByCommand(sftpHost, sftpUser, sftpPassword, sftpRootDirectory + file)
+    } else {
+        runOnFtp(fbUser, fbPassword, () => {
+            deleteFileFromFtp(fbRootDirectoryForCoreValid + file);
+        });
+    }
 }
 
 export function copyZipToFtp(file, path) {
