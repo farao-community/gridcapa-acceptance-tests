@@ -12,8 +12,8 @@ const ftpHost = Cypress.env('GRIDCAPA_FTP_HOST')
 const ftpUser = Cypress.env('GRIDCAPA_FTP_USER')
 const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD')
 const ftpRootDirectory = 'cse/d2cc/'
-const fbUser = Cypress.env('GRIDCAPA_FB_USER');
-const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
+export const fbUser = Cypress.env('GRIDCAPA_FB_USER');
+export const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
 const fbRootDirectoryForCseD2cc = '/ftp/cse/d2cc/'
 
 export function uploadOnFtp(file, path) {
