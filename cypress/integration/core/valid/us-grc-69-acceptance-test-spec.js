@@ -13,6 +13,10 @@ import {
 } from "../../../support/function";
 import * as ftp from "../../../support/ftp-browser";
 import {fbPassword, fbUser} from "../../../support/ftp-browser";
+import * as minio from "../../../support/minio";
+
+const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
+const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
 
 const year = "2021";
 const month = "07";
@@ -73,5 +77,37 @@ describe('Test behaviour of run button', () => {
         gc.setupTime(time)
         timestampStatusShouldBe('READY')
         runButtonStatusShouldBeEnabled()
+    })
+    it("Delete files from minio and SFTP", () => {
+        ftp.runOnFtp(fbUser, fbPassword, () => {
+            ftp.deleteFileFromFtp('/sftp/core/valid/cgms/20210702');
+        });
+        minio.runOnMinio(minioUser, minioPassword, () => {
+            minio.deleteHourlyFilesFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210702_{0}30_2D5_UX0.uct')
+        });
+        ftp.runOnFtp(fbUser, fbPassword, () => {
+            ftp.deleteFileFromFtp('/sftp/core/valid/cbcoras/20210702-F301-00.xml');
+        });
+        minio.runOnMinio(minioUser, minioPassword, () => {
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/CBCORAs/', '20210702-F301-00.xml')
+        });
+        ftp.runOnFtp(fbUser, fbPassword, () => {
+            ftp.deleteFileFromFtp('/sftp/core/valid/glsks/20210702-F226-00.xml');
+        });
+        minio.runOnMinio(minioUser, minioPassword, () => {
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/GLSKs/', '20210702-F226-00.xml')
+        });
+        ftp.runOnFtp(fbUser, fbPassword, () => {
+            ftp.deleteFileFromFtp('/sftp/core/valid/refprogs/20210702-F110.00.xml');
+        });
+        minio.runOnMinio(minioUser, minioPassword, () => {
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/REFPROGs/', '20210702-F110.00.xml')
+        });
+        ftp.runOnFtp(fbUser, fbPassword, () => {
+            ftp.deleteFileFromFtp('/sftp/core/valid/studypoints/20210702-Points_Etude-00.csv');
+        });
+        minio.runOnMinio(minioUser, minioPassword, () => {
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/STUDYPOINTs/', '20210702-Points_Etude-00.csv')
+        });
     })
 })
