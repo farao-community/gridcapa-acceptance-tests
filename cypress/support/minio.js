@@ -61,3 +61,10 @@ function disconnectFromMinio() {
     cy.get('#logout', timeoutProps).click()
     cy.wait(100)
 }
+
+String.prototype.format = function() {
+    let args = arguments;
+    return this.replace(/\{(\d+)\}/g, function(a, num){
+        return args[num] || a
+    })
+}

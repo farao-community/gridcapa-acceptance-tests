@@ -25,12 +25,25 @@ export function setupDate(date) {
     cy.get('[data-test=timestamp-date-picker]').type(date)
 }
 
+export function selectTimestampViewForDate(date) {
+    getTimestampView()
+    setupDate(date)
+}
+
 export function setupTime(time) {
     cy.get('[data-test=timestamp-time-picker]').type(time)
 }
 
 export function timestampStatusShouldBe(timestampStatus) {
     cy.get('[data-test=timestamp-status]', {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}).should('have.text',timestampStatus)
+}
+
+export function runButtonStatusShouldBeDisabled() {
+    cy.get('[data-test=run-button]').should('be.disabled')
+}
+
+export function runButtonStatusShouldBeEnabled() {
+    cy.get('[data-test=run-button]').should('not.be.disabled')
 }
 
 export function inputDataShouldBe(expectedType, expectedStatus, expectedFilename, expectedLatestModification) {

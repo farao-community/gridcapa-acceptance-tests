@@ -12,8 +12,8 @@ const ftpHost = Cypress.env('GRIDCAPA_FTP_HOST')
 const ftpUser = Cypress.env('GRIDCAPA_FTP_USER')
 const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD')
 const ftpRootDirectory = 'cse/d2cc/'
-const fbUser = Cypress.env('GRIDCAPA_FB_USER');
-const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
+export const fbUser = Cypress.env('GRIDCAPA_FB_USER');
+export const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
 const fbRootDirectoryForCseD2cc = '/ftp/cse/d2cc/'
 
 export function uploadOnFtp(file, path) {
@@ -46,7 +46,6 @@ export function uploadOnFtpByCommand(host, user, password, file, path) {
 
 export function deleteOnFtpByCommand(host, user, password, file) {
     const command = `curl ftp://${user}:${password}@${host}/ -Q 'DELE ${file}'`
-    cy.log('Running: ' + command);
     cy.exec(
         command,
         { timeout: 20000, failOnNonZeroExit: false }
