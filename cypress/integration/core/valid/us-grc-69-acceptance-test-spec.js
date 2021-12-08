@@ -75,6 +75,7 @@ describe('Test behaviour of run button', () => {
         cy.visit('/core/valid')
         selectTimestampViewForDate(date)
         gc.setupTime(time)
+        cy.wait(3000);
         timestampStatusShouldBe('READY')
         runButtonStatusShouldBeEnabled()
     })

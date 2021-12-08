@@ -46,7 +46,6 @@ export function uploadOnFtpByCommand(host, user, password, file, path) {
 
 export function deleteOnFtpByCommand(host, user, password, file) {
     const command = `curl ftp://${user}:${password}@${host}/ -Q 'DELE ${file}'`
-    cy.log('Running: ' + command);
     cy.exec(
         command,
         { timeout: 20000, failOnNonZeroExit: false }
