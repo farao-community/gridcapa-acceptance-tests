@@ -89,6 +89,7 @@ describe('Test behaviour of run button', () => {
         timestampStatusShouldBe('RUNNING')
         cy.wait(15000) // Simulates computation time
         timestampStatusShouldBe('ERROR')
+        runButtonStatusShouldBeEnabled()
     })
     it("Check status change to running after run click and goes to error at 15:30", () => {
         cy.visit('/core/valid')
@@ -98,6 +99,7 @@ describe('Test behaviour of run button', () => {
         timestampStatusShouldBe('RUNNING')
         cy.wait(15000) // Simulates computation time
         timestampStatusShouldBe('SUCCESS')
+        runButtonStatusShouldBeEnabled()
     })
     it("Delete files from minio and SFTP", () => {
         ftp.runOnFtp(fbUser, fbPassword, () => {
