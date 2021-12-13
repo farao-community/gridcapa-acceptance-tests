@@ -46,6 +46,10 @@ export function runButtonStatusShouldBeEnabled() {
     cy.get('[data-test=run-button]').should('not.be.disabled')
 }
 
+export function clickRunButton() {
+    cy.get('[data-test=run-button]').click();
+}
+
 export function inputDataShouldBe(expectedType, expectedStatus, expectedFilename, expectedLatestModification) {
     const timeoutProps = {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}
     cy.get('[data-test=' + expectedType + '-input-type]', timeoutProps).should('have.text',expectedType)

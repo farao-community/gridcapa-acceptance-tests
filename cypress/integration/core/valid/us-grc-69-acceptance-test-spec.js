@@ -9,7 +9,9 @@ import * as gc from "../../../support/function";
 import {
     runButtonStatusShouldBeDisabled,
     runButtonStatusShouldBeEnabled,
-    selectTimestampViewForDate, timestampStatusShouldBe
+    selectTimestampViewForDate,
+    timestampStatusShouldBe,
+    clickRunButton,
 } from "../../../support/function";
 import * as ftp from "../../../support/ftp-browser";
 import {fbPassword, fbUser} from "../../../support/ftp-browser";
@@ -77,6 +79,26 @@ describe('Test behaviour of run button', () => {
         gc.setupTime(time)
         cy.wait(3000);
         timestampStatusShouldBe('READY')
+        runButtonStatusShouldBeEnabled()
+    })
+    it("Check status change to running after run click and goes to error at 00:30", () => {
+        cy.visit('/core/valid')
+        selectTimestampViewForDate(date)
+        gc.setupTime(time)
+        clickRunButton()
+        timestampStatusShouldBe('RUNNING')
+        cy.wait(15000) // Simulates computation time
+        timestampStatusShouldBe('ERROR')
+        runButtonStatusShouldBeEnabled()
+    })
+    it("Check status change to running after run click and goes to error at 15:30", () => {
+        cy.visit('/core/valid')
+        selectTimestampViewForDate(date)
+        gc.setupTime('15:30')
+        clickRunButton()
+        timestampStatusShouldBe('RUNNING')
+        cy.wait(15000) // Simulates computation time
+        timestampStatusShouldBe('SUCCESS')
         runButtonStatusShouldBeEnabled()
     })
     it("Delete files from minio and SFTP", () => {
