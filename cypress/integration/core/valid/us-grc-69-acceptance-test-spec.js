@@ -85,6 +85,7 @@ describe('Test behaviour of run button', () => {
         cy.visit('/core/valid')
         selectTimestampViewForDate(date)
         gc.setupTime(time)
+        timestampStatusShouldBe('READY')
         clickRunButton()
         timestampStatusShouldBe('RUNNING')
         cy.wait(15000) // Simulates computation time
@@ -95,6 +96,7 @@ describe('Test behaviour of run button', () => {
         cy.visit('/core/valid')
         selectTimestampViewForDate(date)
         gc.setupTime('15:30')
+        timestampStatusShouldBe('READY')
         clickRunButton()
         timestampStatusShouldBe('RUNNING')
         cy.wait(15000) // Simulates computation time
