@@ -4,6 +4,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+import crypto from "crypto";
+
 const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S = 30;
 const S_TO_MS_FACTOR = 1000;
 const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S * S_TO_MS_FACTOR;
@@ -21,8 +23,13 @@ export function authentication() {
 export function getTimestampView() {
     cy.get('[data-test=timestamp-view]').click()
 }
+
 export function setupDate(date) {
     cy.get('[data-test=timestamp-date-picker]').type(date)
+}
+
+export function clickOnEventsTab() {
+    cy.get('[data-test=events]').click()
 }
 
 export function selectTimestampViewForDate(date) {
@@ -65,3 +72,13 @@ export function inputDataShouldBe(expectedType, expectedStatus, expectedFilename
         cy.get('[data-test=' + expectedType + '-input-latest-modification]', timeoutProps).should('be.empty')
     }
 }
+    export function checkFileEventDisplayed(expectedLevel, expectedMessage) {
+        const sha256 = (x) =>
+            crypto.createHash('sha256').update(x, 'utf8').digest('hex'); // UTF8 text hash
+        const timeoutProp = {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}
+        cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-level]', timeoutProp).should('have.text',expectedLevel)
+        cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-message]', timeoutProp).should('have.text',expectedMessage)
+        cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-timestamp]').should('not.be.empty')
+}
+
+
