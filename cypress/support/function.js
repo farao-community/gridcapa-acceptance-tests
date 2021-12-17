@@ -17,9 +17,11 @@ export function clearAndVisit(link) {
         }
     })
 }
+
 export function authentication() {
     cy.get('button').click()
 }
+
 export function getTimestampView() {
     cy.get('[data-test=timestamp-view]').click()
 }
@@ -42,7 +44,7 @@ export function setupTime(time) {
 }
 
 export function timestampStatusShouldBe(timestampStatus) {
-    cy.get('[data-test=timestamp-status]', {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}).should('have.text',timestampStatus)
+    cy.get('[data-test=timestamp-status]', {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}).should('have.text', timestampStatus)
 }
 
 export function runButtonStatusShouldBeDisabled() {
@@ -59,8 +61,8 @@ export function clickRunButton() {
 
 export function inputDataShouldBe(expectedType, expectedStatus, expectedFilename, expectedLatestModification) {
     const timeoutProps = {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}
-    cy.get('[data-test=' + expectedType + '-input-type]', timeoutProps).should('have.text',expectedType)
-    cy.get('[data-test=' + expectedType + '-input-status]', timeoutProps).should('have.text',expectedStatus)
+    cy.get('[data-test=' + expectedType + '-input-type]', timeoutProps).should('have.text', expectedType)
+    cy.get('[data-test=' + expectedType + '-input-status]', timeoutProps).should('have.text', expectedStatus)
     if (expectedFilename) {
         cy.get('[data-test=' + expectedType + '-input-filename]', timeoutProps).should('have.text', expectedFilename)
     } else {
@@ -72,13 +74,16 @@ export function inputDataShouldBe(expectedType, expectedStatus, expectedFilename
         cy.get('[data-test=' + expectedType + '-input-latest-modification]', timeoutProps).should('be.empty')
     }
 }
-    export function checkFileEventDisplayed(expectedLevel, expectedMessage) {
-        const sha256 = (x) =>
-            crypto.createHash('sha256').update(x, 'utf8').digest('hex'); // UTF8 text hash
-        const timeoutProp = {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}
-        cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-level]', timeoutProp).should('have.text',expectedLevel)
-        cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-message]', timeoutProp).should('have.text',expectedMessage)
-        cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-timestamp]').should('not.be.empty')
+
+export function sha256(param) {
+    return crypto.createHash('sha256').update(param, 'utf8').digest('hex'); // UTF8 text hash
+}
+
+export function checkFileEventDisplayed(expectedLevel, expectedMessage) {
+    const timeoutProp = {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}
+    cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-level]', timeoutProp).should('have.text', expectedLevel)
+    cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-message]', timeoutProp).should('have.text', expectedMessage)
+    cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-timestamp]').should('not.be.empty')
 }
 
 

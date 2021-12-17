@@ -19,16 +19,16 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
 })
 
+function goToEvents() {
+    gc.clearAndVisit('/cse/d2cc')
+    gc.authentication()
+    cy.visit('/cse/d2cc')
+    gc.getTimestampView()
+    gc.clickOnEventsTab()
+    gc.setupDate('2021-09-01')
+    gc.setupTime('22:30')
+}
 describe('CGM input events displaying', () => {
-    function goToEvents() {
-        gc.clearAndVisit('/cse/d2cc')
-        gc.authentication()
-        cy.visit('/cse/d2cc')
-        gc.getTimestampView()
-        gc.clickOnEventsTab()
-        gc.setupDate('2021-09-01')
-        gc.setupTime('22:30')
-    }
 
     it('Triggers task creation and event display when file arrives, then update event when file updated, and deletion event when file deleted', () => {
 
