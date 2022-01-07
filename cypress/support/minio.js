@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 const gridCapaMinioPath = '/minio'
-const timeoutProps = {timeout: 5000}
+const timeoutProps = {timeout: 10000}
 const formattingLocal = 'en-US';
 
 export function deleteFileFromMinio(folderPath, file) {
