@@ -5,10 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 const gridCapaMinioPath = '/minio'
-const timeoutProps = {timeout: 5000}
+const timeoutProps = {timeout: 10000}
 const formattingLocal = 'en-US';
-
-const WAIT_FOR_BIG_DELETION = 5000
+const waitForBigDeletion = 5000
 
 export function deleteFileFromMinio(folderPath, file) {
     cy.visit(gridCapaMinioPath + folderPath)
@@ -23,14 +22,14 @@ export function deleteHourlyFilesFromMinio(folderPath, fileFormat) {
         selectFileFromMinio(fileFormat.format(hourOnTwoDigits))
     }
     deleteSelectedFromMinio()
-    cy.wait(WAIT_FOR_BIG_DELETION)
+    cy.wait(waitForBigDeletion)
 }
 
 export function deleteFolderFromMinio(folderName) {
     cy.get('button[id*="obj-actions-' + folderName + '"]', timeoutProps).click()
     cy.get('ul[aria-labelledby*="' + folderName + '"] > a[title="Delete"]', timeoutProps).click()
     cy.get('button').contains(/^Delete$/).click()
-    cy.wait(WAIT_FOR_BIG_DELETION)
+    cy.wait(waitForBigDeletion)
 }
 
 export function selectFileFromMinio(objectName) {
@@ -50,8 +49,8 @@ export function runOnMinio(user, password, lambda) {
 
 function connectToMinio(user, password) {
     cy.visit(gridCapaMinioPath + '/login')
-    cy.get('#accessKey', timeoutProps).type(user)
-    cy.get('#secretKey', timeoutProps).type(password)
+    cy.get('#accessKey', timeoutProps).type(user, { log: false })
+    cy.get('#secretKey', timeoutProps).type(password, { log: false })
     cy.get('button[type=submit]', timeoutProps).click()
     cy.wait(100)
 }

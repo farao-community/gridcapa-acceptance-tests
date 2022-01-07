@@ -12,8 +12,7 @@ import * as task from "../../../support/task";
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
 const ntc = 'NTC';
-const WAIT_FOR_UPLOAD = 120000
-
+const TASK_CREATION_TIMEOUT = 90000;
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
@@ -21,23 +20,30 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
 })
 
+function checkTaskNotCreated(date, time) {
+    task.checkTaskNotCreated(date, time, ntc)
+}
+
+function checkTaskCreated(date, time, filename, timeout = null) {
+    task.checkTaskCreated(date, time, filename, ntc, timeout)
+}
+
 describe('NTC automatic import handling', () => {
     it('Triggers multiple task creation when NTC arrives', () => {
         gc.clearAndVisit('/cse/d2cc')
         gc.authentication()
-        task.checkTaskNotCreated('2021-01-01', '00:30', ntc)
-        task.checkTaskNotCreated('2021-05-01', '01:30', ntc)
-        task.checkTaskNotCreated('2021-07-03', '16:30', ntc)
-        task.checkTaskNotCreated('2021-12-31', '23:30', ntc)
+        checkTaskNotCreated('2021-01-01', '00:30')
+        checkTaskNotCreated('2021-05-01', '01:30')
+        checkTaskNotCreated('2021-07-03', '16:30')
+        checkTaskNotCreated('2021-12-31', '23:30')
         ftp.uploadOnFtp('us-import-yearly-files/2021_test_NTC_annual.xml', 'ntc')
-        cy.wait(WAIT_FOR_UPLOAD)
         cy.visit('/cse/d2cc')
-        task.checkTaskCreated('2021-01-01', '00:30', '2021_test_NTC_annual.xml', ntc)
-        task.checkTaskCreated('2021-05-01', '01:30', '2021_test_NTC_annual.xml', ntc)
-        task.checkTaskCreated('2021-07-03', '16:30', '2021_test_NTC_annual.xml', ntc)
-        task.checkTaskCreated('2021-12-31', '23:30', '2021_test_NTC_annual.xml', ntc)
-        task.checkTaskNotCreated('2020-12-31', '23:30', ntc)
-        task.checkTaskNotCreated('2022-01-01', '01:30', ntc)
+        checkTaskCreated('2021-01-01', '00:30', '2021_test_NTC_annual.xml', TASK_CREATION_TIMEOUT)
+        checkTaskCreated('2021-05-01', '01:30', '2021_test_NTC_annual.xml')
+        checkTaskCreated('2021-07-03', '16:30', '2021_test_NTC_annual.xml')
+        checkTaskCreated('2021-12-31', '23:30', '2021_test_NTC_annual.xml')
+        checkTaskNotCreated('2020-12-31', '23:30')
+        checkTaskNotCreated('2022-01-01', '00:30')
         ftp.deleteOnFtp('ntc/2021_test_NTC_annual.xml')
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/NTC/', '2021_test_NTC_annual.xml')
