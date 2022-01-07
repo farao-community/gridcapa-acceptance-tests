@@ -37,10 +37,9 @@ export function deleteOnFtp(file) {
 }
 export function uploadOnFtpByCommand(host, user, password, file, path) {
     const command = `curl --ftp-create-dirs -T cypress/fixtures/${file} ftp://${user}:${password}@${host}/${path}/`
-    cy.log('Running: ' + command);
     cy.exec(
         command,
-        { timeout: 20000, failOnNonZeroExit: false }
+        { timeout: 20000, failOnNonZeroExit: false, log: false }
     )
 }
 
@@ -48,7 +47,7 @@ export function deleteOnFtpByCommand(host, user, password, file) {
     const command = `curl ftp://${user}:${password}@${host}/ -Q 'DELE ${file}'`
     cy.exec(
         command,
-        { timeout: 20000, failOnNonZeroExit: false }
+        { timeout: 20000, failOnNonZeroExit: false, log: false }
     )
 }
 
@@ -87,8 +86,8 @@ export function runOnFtp(user, password, lambda) {
 
 function connectToFtpBrowser(user, password) {
     cy.visit(gridCapaFilebrowserPath)
-    cy.get('input[type=text]').type(user)
-    cy.get('input[type=password]').type(password)
+    cy.get('input[type=text]').type(user, { log: false })
+    cy.get('input[type=password]').type(password, { log: false })
     cy.get('input[type=submit]').click()
     cy.wait(200)
 }

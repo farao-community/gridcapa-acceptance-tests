@@ -6,10 +6,6 @@
  */
 import crypto from "crypto";
 
-const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S = 30;
-const S_TO_MS_FACTOR = 1000;
-const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S * S_TO_MS_FACTOR;
-
 export function clearAndVisit(link) {
     cy.visit(link, {
         onBeforeLoad(win) {
@@ -43,8 +39,8 @@ export function setupTime(time) {
     cy.get('[data-test=timestamp-time-picker]').type(time)
 }
 
-export function timestampStatusShouldBe(timestampStatus) {
-    cy.get('[data-test=timestamp-status]', {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}).should('have.text', timestampStatus)
+export function timestampStatusShouldBe(timestampStatus, timeout) {
+    cy.get('[data-test=timestamp-status]', {timeout: timeout}).should('have.text', timestampStatus)
 }
 
 export function runButtonStatusShouldBeDisabled() {
@@ -59,8 +55,8 @@ export function clickRunButton() {
     cy.get('[data-test=run-button]').click();
 }
 
-export function inputDataShouldBe(expectedType, expectedStatus, expectedFilename, expectedLatestModification) {
-    const timeoutProps = {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}
+export function inputDataShouldBe({expectedType, expectedStatus, expectedFilename, expectedLatestModification, timeout}={}) {
+    const timeoutProps = {timeout: timeout}
     cy.get('[data-test=' + expectedType + '-input-type]', timeoutProps).should('have.text', expectedType)
     cy.get('[data-test=' + expectedType + '-input-status]', timeoutProps).should('have.text', expectedStatus)
     if (expectedFilename) {
@@ -79,8 +75,8 @@ export function sha256(param) {
     return crypto.createHash('sha256').update(param, 'utf8').digest('hex'); // UTF8 text hash
 }
 
-export function checkFileEventDisplayed(expectedLevel, expectedMessage) {
-    const timeoutProp = {timeout: DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS}
+export function checkFileEventDisplayed(expectedLevel, expectedMessage, timeout) {
+    const timeoutProp = {timeout: timeout}
     cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-level]', timeoutProp).should('have.text', expectedLevel)
     cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-message]', timeoutProp).should('have.text', expectedMessage)
     cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-timestamp]').should('not.be.empty')

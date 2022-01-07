@@ -12,6 +12,10 @@ const created = 'CREATED';
 const notPresent = 'NOT_PRESENT';
 const validated = 'VALIDATED';
 
+const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S = 60;
+const S_TO_MS_FACTOR = 1000;
+const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S * S_TO_MS_FACTOR;
+
 String.prototype.format = function() {
     let a = this;
     for (let k in arguments) {
@@ -20,51 +24,77 @@ String.prototype.format = function() {
     return a
 }
 
-export function checkTaskNotCreated(date, time, fileType) {
+export function checkTaskNotCreated(date, time, fileType, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     gc.getTimestampView();
     gc.setupDate(date);
     gc.setupTime(time);
-    gc.timestampStatusShouldBe(notCreated);
-    gc.inputDataShouldBe(fileType, notPresent);
+    gc.timestampStatusShouldBe(notCreated, timeout);
+    gc.inputDataShouldBe({
+        expectedType : fileType,
+        expectedStatus : notPresent,
+        timeout : timeout
+    });
 }
 
-export function checkTasksNotCreated(date, fileType) {
+export function checkTasksNotCreated(date, fileType, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     gc.getTimestampView()
     gc.setupDate(date)
     for (let hour = 0; hour < 24; hour++) {
         let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
         gc.setupTime(hourOnTwoDigits + ':30')
-        gc.timestampStatusShouldBe(notCreated)
-        gc.inputDataShouldBe(fileType, notPresent)
+        gc.timestampStatusShouldBe(notCreated, timeout)
+        gc.inputDataShouldBe({
+            expectedType : fileType,
+            expectedStatus : notPresent,
+            timeout : timeout
+        })
     }
 }
 
-export function checkTaskCreated(date, time, filename, fileType) {
+export function checkTaskCreated(date, time, filename, fileType, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     gc.getTimestampView()
     gc.setupDate(date)
     gc.setupTime(time)
-    gc.timestampStatusShouldBe(created)
-    gc.inputDataShouldBe(fileType, validated, filename, true)
+    gc.timestampStatusShouldBe(created, timeout)
+    gc.inputDataShouldBe({
+        expectedType : fileType,
+        expectedStatus : validated,
+        expectedFilename : filename,
+        expectedLatestModification : true,
+        timeout : timeout
+    })
 }
 
-export function checkTasksCreated(date, filenameFormat, fileType) {
+export function checkTasksCreated(date, filenameFormat, fileType, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     gc.getTimestampView()
     gc.setupDate(date)
     for (let hour = 0; hour < 24; hour++) {
         let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
         gc.setupTime(hourOnTwoDigits + ':30')
-        gc.timestampStatusShouldBe(created)
-        gc.inputDataShouldBe(fileType, validated, filenameFormat.format(hourOnTwoDigits), true)
+        gc.timestampStatusShouldBe(created, timeout)
+        gc.inputDataShouldBe({
+            expectedType : fileType,
+            expectedStatus : validated,
+            expectedFilename : filenameFormat.format(hourOnTwoDigits),
+            expectedLatestModification : true,
+            timeout : timeout
+        })
     }
 }
 
-export function checkTasksCreatedWhenDailyFileUploaded(date, filename, fileType) {
+export function checkTasksCreatedWhenDailyFileUploaded(date, filename, fileType, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     gc.getTimestampView()
     gc.setupDate(date)
     for (let hour = 0; hour < 24; hour++) {
         let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
         gc.setupTime(hourOnTwoDigits + ':30')
-        gc.timestampStatusShouldBe(created)
-        gc.inputDataShouldBe(fileType, validated, filename, true)
+        gc.timestampStatusShouldBe(created, timeout)
+        gc.inputDataShouldBe({
+            expectedType : fileType,
+            expectedStatus : validated,
+            expectedFilename : filename,
+            expectedLatestModification : true,
+            timeout : timeout
+        })
     }
 }

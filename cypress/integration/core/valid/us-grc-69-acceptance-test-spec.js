@@ -28,6 +28,8 @@ const minute = "30";
 const date = year + "-" + month + "-" + day
 const time = hour + ":" + minute
 
+const TIMEOUT = 30000
+
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
     // failing the test
@@ -77,30 +79,27 @@ describe('Test behaviour of run button', () => {
         cy.visit('/core/valid')
         selectTimestampViewForDate(date)
         gc.setupTime(time)
-        cy.wait(3000);
-        timestampStatusShouldBe('READY')
+        timestampStatusShouldBe('READY', TIMEOUT)
         runButtonStatusShouldBeEnabled()
     })
     it("Check status change to running after run click and goes to error at 00:30", () => {
         cy.visit('/core/valid')
         selectTimestampViewForDate(date)
         gc.setupTime(time)
-        timestampStatusShouldBe('READY')
+        timestampStatusShouldBe('READY', TIMEOUT)
         clickRunButton()
-        timestampStatusShouldBe('RUNNING')
-        cy.wait(15000) // Simulates computation time
-        timestampStatusShouldBe('ERROR')
+        timestampStatusShouldBe('RUNNING', TIMEOUT)
+        timestampStatusShouldBe('ERROR', TIMEOUT)
         runButtonStatusShouldBeEnabled()
     })
     it("Check status change to running after run click and goes to error at 15:30", () => {
         cy.visit('/core/valid')
         selectTimestampViewForDate(date)
         gc.setupTime('15:30')
-        timestampStatusShouldBe('READY')
+        timestampStatusShouldBe('READY', TIMEOUT)
         clickRunButton()
-        timestampStatusShouldBe('RUNNING')
-        cy.wait(15000) // Simulates computation time
-        timestampStatusShouldBe('SUCCESS')
+        timestampStatusShouldBe('RUNNING', TIMEOUT)
+        timestampStatusShouldBe('SUCCESS', TIMEOUT)
         runButtonStatusShouldBeEnabled()
     })
     it("Delete files from minio and SFTP", () => {

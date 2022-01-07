@@ -12,7 +12,7 @@ import * as task from "../../../support/task";
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
 const ntc = 'NTC';
-const WAIT_FOR_UPLOAD = 30000;
+const TASK_CREATION_TIMEOUT = 90000;
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
@@ -24,8 +24,8 @@ function checkTaskNotCreated(date, time) {
     task.checkTaskNotCreated(date, time, ntc)
 }
 
-function checkTaskCreated(date, time, filename) {
-    task.checkTaskCreated(date, time, filename, ntc)
+function checkTaskCreated(date, time, filename, timeout = null) {
+    task.checkTaskCreated(date, time, filename, ntc, timeout)
 }
 
 describe('NTC automatic import handling', () => {
@@ -38,8 +38,7 @@ describe('NTC automatic import handling', () => {
         checkTaskNotCreated('2021-12-31', '23:30')
         ftp.uploadOnFtp('us-import-yearly-files/2021_test_NTC_annual.xml', 'ntc')
         cy.visit('/cse/d2cc')
-        cy.wait(WAIT_FOR_UPLOAD);
-        checkTaskCreated('2021-01-01', '00:30', '2021_test_NTC_annual.xml')
+        checkTaskCreated('2021-01-01', '00:30', '2021_test_NTC_annual.xml', TASK_CREATION_TIMEOUT)
         checkTaskCreated('2021-05-01', '01:30', '2021_test_NTC_annual.xml')
         checkTaskCreated('2021-07-03', '16:30', '2021_test_NTC_annual.xml')
         checkTaskCreated('2021-12-31', '23:30', '2021_test_NTC_annual.xml')
