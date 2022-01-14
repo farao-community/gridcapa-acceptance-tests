@@ -37,14 +37,14 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 })
 
 describe('Test behaviour of run button', () => {
-    it('Check button is greyed when task is not created', () => {
+    it('Check button is disabled when task is not created', () => {
         gc.clearAndVisit('/core/valid')
         gc.authentication()
         selectTimestampViewForDate(date)
         gc.setupTime(time)
         runButtonStatusShouldBeDisabled()
     });
-    it("Check button is greyed when one file is uploaded", () => {
+    it("Check button is disabled when one file is uploaded", () => {
         ftp.runOnFtp(fbUser, fbPassword, () => {
             const cgmFullPath = 'us-0000/20210702'
             const ftpCgmDestinationPath = '/sftp/core/valid/cgms'
