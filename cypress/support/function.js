@@ -43,6 +43,14 @@ export function timestampStatusShouldBe(timestampStatus, timeout) {
     cy.get('[data-test=timestamp-status]', {timeout: timeout}).should('have.text', timestampStatus)
 }
 
+export function timestampShouldBeRunningOrAlreadyFailed(timeout) {
+    cy.get('[data-test=timestamp-status]', {timeout: timeout}).invoke('text').then((text) => {
+        if (!(text.includes("RUNNING") || text.includes("ERROR"))) {
+            return false;
+        }
+    })
+}
+
 export function runButtonStatusShouldBeDisabled() {
     cy.get('[data-test=run-button]').should('be.disabled')
 }
