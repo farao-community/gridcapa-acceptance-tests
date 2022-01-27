@@ -16,6 +16,7 @@ import {
 import * as ftp from "../../../support/ftp-browser";
 import {fbPassword, fbUser} from "../../../support/ftp-browser";
 import * as minio from "../../../support/minio";
+import {deleteFolderFromMinio} from "../../../support/minio";
 
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
@@ -140,7 +141,13 @@ describe('Test behaviour of run button', () => {
             minio.deleteFileFromMinio('/gridcapa/CORE/VALID/STUDYPOINTs/', '20210723-Points_Etude-v01.csv')
         });
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', '20210723_0030_2D5_CGM_0_9.uct')
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', '20210723_0030_2D5_CGM_0_9.xiidm')
+        });
+        minio.runOnMinio(minioUser, minioPassword, () => {
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'raoParameters.json')
+        });
+        minio.runOnMinio(minioUser, minioPassword, () => {
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'crac_2021-07-22T22:30Z.json')
         });
     })
 })
