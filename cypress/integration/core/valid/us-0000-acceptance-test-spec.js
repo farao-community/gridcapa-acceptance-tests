@@ -29,12 +29,12 @@ describe('CGM automatic import handling', () => {
             ftp.copyZipToFtp('us-0000/20210702', '/sftp/core/valid/cgms');
         });
         cy.visit('/core/valid')
-        task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0.uct', cgm)
+        task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0_CGM.uct', cgm)
         ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.deleteFileFromFtp('/sftp/core/valid/cgms/20210702');
         });
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteHourlyFilesFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210702_{0}30_2D5_UX0.uct')
+            minio.deleteHourlyFilesFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210702_{0}30_2D5_UX0_CGM.uct')
         })
     });
 })
