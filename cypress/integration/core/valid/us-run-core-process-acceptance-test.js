@@ -46,7 +46,7 @@ describe('Test behaviour of run button', () => {
     });
     it("Check button is disabled when one file is uploaded", () => {
         ftp.runOnFtp(fbUser, fbPassword, () => {
-            const cgmFullPath = 'grc-69/core/valid/20210723_0030_2D5_CGM.uct'
+            const cgmFullPath = 'grc-69-run-process/core/valid/20210723_0030_2D5_CGM.uct'
             const ftpCgmDestinationPath = '/sftp/core/valid/cgms'
             ftp.copyZipToFtp(cgmFullPath, ftpCgmDestinationPath);
         });
@@ -57,22 +57,22 @@ describe('Test behaviour of run button', () => {
     });
     it("Check button is clickable when task is ready", () => {
         ftp.runOnFtp(fbUser, fbPassword, () => {
-            const cbcoraFullPath = 'grc-69/core/valid/20210723-F301-01.xml'
+            const cbcoraFullPath = 'grc-69-run-process/core/valid/20210723-F301-01.xml'
             const ftpCbcoraDestinationPath = '/sftp/core/valid/cbcoras'
             ftp.copyZipToFtp(cbcoraFullPath, ftpCbcoraDestinationPath);
         });
         ftp.runOnFtp(fbUser, fbPassword, () => {
-            const glskFullPath = 'grc-69/core/valid/20210723-F226-v1.xml'
+            const glskFullPath = 'grc-69-run-process/core/valid/20210723-F226-v1.xml'
             const ftpGlskDestinationPath = '/sftp/core/valid/glsks'
             ftp.copyZipToFtp(glskFullPath, ftpGlskDestinationPath);
         });
         ftp.runOnFtp(fbUser, fbPassword, () => {
-            const refprogFullPath = 'grc-69/core/valid/20210723-F110.xml'
+            const refprogFullPath = 'grc-69-run-process/core/valid/20210723-F110.xml'
             const ftpRefprogDestinationPath = '/sftp/core/valid/refprogs'
             ftp.copyZipToFtp(refprogFullPath, ftpRefprogDestinationPath);
         });
         ftp.runOnFtp(fbUser, fbPassword, () => {
-            const studypointsFullPath = 'grc-69/core/valid/20210723-Points_Etude-v01.csv'
+            const studypointsFullPath = 'grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv'
             const ftpStudypointsDestinationPath = '/sftp/core/valid/studypoints'
             ftp.copyZipToFtp(studypointsFullPath, ftpStudypointsDestinationPath);
         });
@@ -94,7 +94,7 @@ describe('Test behaviour of run button', () => {
     })
     it("Check status change to running after run click and goes to error at 15:30", () => {
         ftp.runOnFtp(fbUser, fbPassword, () => {
-            const cgmFullPath = 'grc-69/core/valid/20210723_1530_2D5_CGM.uct'
+            const cgmFullPath = 'grc-69-run-process/core/valid/20210723_1530_2D5_CGM.uct'
             const ftpCgmDestinationPath = '/sftp/core/valid/cgms'
             ftp.copyZipToFtp(cgmFullPath, ftpCgmDestinationPath);
         });
