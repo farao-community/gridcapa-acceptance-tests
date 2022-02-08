@@ -11,7 +11,7 @@ import {
     runButtonStatusShouldBeEnabled,
     selectTimestampViewForDate,
     timestampStatusShouldBe,
-    clickRunButton, timestampShouldBeRunningOrAlreadyFailed,
+    clickRunButton,
 } from "../../../support/function";
 import * as ftp from "../../../support/ftp-browser";
 import {fbPassword, fbUser} from "../../../support/ftp-browser";
@@ -103,7 +103,7 @@ describe('Test behaviour of run button', () => {
         gc.setupTime('15:30')
         timestampStatusShouldBe('READY', TIMEOUT)
         clickRunButton()
-        timestampShouldBeRunningOrAlreadyFailed(TIMEOUT) // Sometimes cypress is too slow to get 'RUNNING' before 'ERROR' is shown in the HMI
+        timestampStatusShouldBe('ERROR', TIMEOUT) // Sometimes cypress is too slow to get 'RUNNING' before 'ERROR' is shown in the HMI
         runButtonStatusShouldBeEnabled()
     })
     it("Delete files from minio and SFTP", () => {
