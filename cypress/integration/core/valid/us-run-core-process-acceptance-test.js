@@ -11,7 +11,7 @@ import {
     runButtonStatusShouldBeEnabled,
     selectTimestampViewForDate,
     timestampStatusShouldBe,
-    clickRunButton, timestampShouldBeRunningOrAlreadyFailed,
+    clickRunButton,
 } from "../../../support/function";
 import * as ftp from "../../../support/ftp-browser";
 import {fbPassword, fbUser} from "../../../support/ftp-browser";
@@ -103,7 +103,7 @@ describe('Test behaviour of run button', () => {
         gc.setupTime('15:30')
         timestampStatusShouldBe('READY', TIMEOUT)
         clickRunButton()
-        timestampShouldBeRunningOrAlreadyFailed(TIMEOUT) // Sometimes cypress is too slow to get 'RUNNING' before 'ERROR' is shown in the HMI
+        timestampStatusShouldBe('ERROR', TIMEOUT) // Sometimes cypress is too slow to get 'RUNNING' before 'ERROR' is shown in the HMI
         runButtonStatusShouldBeEnabled()
     })
     it("Delete files from minio and SFTP", () => {
@@ -136,6 +136,9 @@ describe('Test behaviour of run button', () => {
         ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.deleteFileFromFtp('/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv');
         });
+        ftp.runOnFtp(fbUser, fbPassword, () => {
+            ftp.deleteFileFromFtp('/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv');
+        });
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CORE/VALID/STUDYPOINTs/', '20210723-Points_Etude-v01.csv')
         });
@@ -147,6 +150,9 @@ describe('Test behaviour of run button', () => {
         });
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'crac_2021-07-22T22:30Z.json')
+        });
+        minio.runOnMinio(minioUser, minioPassword, () => {
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/outputs/', '20210723-00-ValidationCORE-v0.csv')
         });
     })
 })
