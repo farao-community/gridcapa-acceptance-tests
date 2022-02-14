@@ -136,9 +136,6 @@ describe('Test behaviour of run button', () => {
         ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.deleteFileFromFtp('/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv');
         });
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.deleteFileFromFtp('/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv');
-        });
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CORE/VALID/STUDYPOINTs/', '20210723-Points_Etude-v01.csv')
         });
@@ -150,6 +147,9 @@ describe('Test behaviour of run button', () => {
         });
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'crac_2021-07-22T22:30Z.json')
+        });
+        ftp.runOnFtp(fbUser, fbPassword, () => {
+            ftp.deleteFileFromFtp('/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv');
         });
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CORE/VALID/outputs/', '20210723-00-ValidationCORE-v0.csv')
