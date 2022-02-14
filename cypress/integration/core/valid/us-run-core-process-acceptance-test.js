@@ -148,9 +148,8 @@ describe('Test behaviour of run button', () => {
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'crac_2021-07-22T22:30Z.json')
         });
-        cy.wait(10000) // To make sure copy of output file was done
         ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.deleteFileFromFtp('/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv');
+            ftp.deleteFileFromFtpWithTimeout('/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv', 20000);
         });
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CORE/VALID/outputs/', '20210723-00-ValidationCORE-v0.csv')

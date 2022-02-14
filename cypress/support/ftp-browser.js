@@ -78,6 +78,15 @@ export function deleteFileFromFtp(fileFullPath) {
     cy.get('.card-action').contains('Delete').click()
 }
 
+export function deleteFileFromFtpWithTimeout(fileFullPath, timeout) {
+    let fileDir = pathParser.dirname(fileFullPath)
+    let fileName = pathParser.basename(fileFullPath)
+    cy.visit(gridCapaFilebrowserPath + '/files' + fileDir)
+    cy.get('.item', {timeout: timeout}).contains(fileName).click()
+    cy.get('#delete-button').click()
+    cy.get('.card-action').contains('Delete').click()
+}
+
 export function runOnFtp(user, password, lambda) {
     connectToFtpBrowser(user, password);
     lambda();
