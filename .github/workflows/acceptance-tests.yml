@@ -1,7 +1,6 @@
 name: GridCapa acceptance tests
 
 on:
-  push:
   workflow_dispatch:
 
 jobs:
