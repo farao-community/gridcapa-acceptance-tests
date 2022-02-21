@@ -60,18 +60,15 @@ describe('Test behaviour of run button', () => {
             const cbcoraFullPath = 'grc-69-run-process/core/valid/20210723-F301-01.xml'
             const ftpCbcoraDestinationPath = '/sftp/core/valid/cbcoras'
             ftp.copyZipToFtp(cbcoraFullPath, ftpCbcoraDestinationPath);
-        });
-        ftp.runOnFtp(fbUser, fbPassword, () => {
+
             const glskFullPath = 'grc-69-run-process/core/valid/20210723-F226-v1.xml'
             const ftpGlskDestinationPath = '/sftp/core/valid/glsks'
             ftp.copyZipToFtp(glskFullPath, ftpGlskDestinationPath);
-        });
-        ftp.runOnFtp(fbUser, fbPassword, () => {
+
             const refprogFullPath = 'grc-69-run-process/core/valid/20210723-F110.xml'
             const ftpRefprogDestinationPath = '/sftp/core/valid/refprogs'
             ftp.copyZipToFtp(refprogFullPath, ftpRefprogDestinationPath);
-        });
-        ftp.runOnFtp(fbUser, fbPassword, () => {
+
             const studypointsFullPath = 'grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv'
             const ftpStudypointsDestinationPath = '/sftp/core/valid/studypoints'
             ftp.copyZipToFtp(studypointsFullPath, ftpStudypointsDestinationPath);
@@ -110,49 +107,23 @@ describe('Test behaviour of run button', () => {
         ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.deleteFileFromFtp('/sftp/core/valid/cgms/20210723_0030_2D5_CGM.uct');
             ftp.deleteFileFromFtp('/sftp/core/valid/cgms/20210723_1530_2D5_CGM.uct');
+            ftp.deleteFileFromFtp('/sftp/core/valid/cbcoras/20210723-F301-01.xml');
+            ftp.deleteFileFromFtp('/sftp/core/valid/glsks/20210723-F226-v1.xml');
+            ftp.deleteFileFromFtp('/sftp/core/valid/refprogs/20210723-F110.xml');
+            ftp.deleteFileFromFtp('/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv');
+            ftp.deleteFileFromFtp('/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv');
         });
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210723_0030_2D5_CGM.uct');
             minio.deleteFileFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210723_1530_2D5_CGM.uct');
-        });
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.deleteFileFromFtp('/sftp/core/valid/cbcoras/20210723-F301-01.xml');
-        });
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/CBCORAs/', '20210723-F301-01.xml')
-        });
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.deleteFileFromFtp('/sftp/core/valid/glsks/20210723-F226-v1.xml');
-        });
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/GLSKs/', '20210723-F226-v1.xml')
-        });
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.deleteFileFromFtp('/sftp/core/valid/refprogs/20210723-F110.xml');
-        });
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/REFPROGs/', '20210723-F110.xml')
-        });
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.deleteFileFromFtp('/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv');
-        });
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.deleteFileFromFtp('/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv');
-        });
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/STUDYPOINTs/', '20210723-Points_Etude-v01.csv')
-        });
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', '20210723_0030_2D5_CGM_0_9.xiidm')
-        });
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'raoParameters.json')
-        });
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'crac_2021-07-22T22:30Z.json')
-        });
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/outputs/', '20210723-00-ValidationCORE-v0.csv')
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/CBCORAs/', '20210723-F301-01.xml');
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/GLSKs/', '20210723-F226-v1.xml');
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/REFPROGs/', '20210723-F110.xml');
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/STUDYPOINTs/', '20210723-Points_Etude-v01.csv');
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', '20210723_0030_2D5_CGM_0_9.xiidm');
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'raoParameters.json');
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'crac_2021-07-22T22:30Z.json');
+            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/outputs/', '20210723-00-ValidationCORE-v0.csv');
         });
     })
 })
