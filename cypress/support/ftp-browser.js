@@ -56,6 +56,7 @@ export function copyZipToFtp(file, path) {
 }
 
 export function copyFileToFtp(file, path, encoding) {
+    cy.get('button').contains('My files').click()
     cy.get('button').contains('New folder').click()
     cy.get('.card-content > input[type=text]').type(path)
     cy.get('button').contains('Create').click()
