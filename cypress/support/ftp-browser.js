@@ -56,6 +56,7 @@ export function copyZipToFtp(file, path) {
 }
 
 export function copyFileToFtp(file, path, encoding) {
+    cy.get('button').contains('My files').click()
     cy.get('button').contains('New folder').click()
     cy.get('.card-content > input[type=text]').type(path)
     cy.get('button').contains('Create').click()
@@ -67,6 +68,7 @@ export function copyFileToFtp(file, path, encoding) {
     } else {
         cy.get('#upload-input').attachFile({ filePath: file, encoding: encoding })
     }
+    cy.wait(500);
 }
 
 export function deleteFileFromFtp(fileFullPath) {
@@ -76,6 +78,7 @@ export function deleteFileFromFtp(fileFullPath) {
     cy.get('.item').contains(fileName).click()
     cy.get('#delete-button').click()
     cy.get('.card-action').contains('Delete').click()
+    cy.wait(500);
 }
 
 export function runOnFtp(user, password, lambda) {
