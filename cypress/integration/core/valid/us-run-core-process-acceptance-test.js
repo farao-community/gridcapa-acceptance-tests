@@ -104,26 +104,30 @@ describe('Test behaviour of run button', () => {
         runButtonStatusShouldBeEnabled()
     })
     it("Delete files from minio and SFTP", () => {
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.deleteFileFromFtp('/sftp/core/valid/cgms/20210723_0030_2D5_CGM.uct');
-            ftp.deleteFileFromFtp('/sftp/core/valid/cgms/20210723_1530_2D5_CGM.uct');
-            ftp.deleteFileFromFtp('/sftp/core/valid/cbcoras/20210723-F301-01.xml');
-            ftp.deleteFileFromFtp('/sftp/core/valid/glsks/20210723-F226-v1.xml');
-            ftp.deleteFileFromFtp('/sftp/core/valid/refprogs/20210723-F110.xml');
-            ftp.deleteFileFromFtp('/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv');
-            ftp.deleteFileFromFtp('/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv');
-        });
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210723_0030_2D5_CGM.uct');
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210723_1530_2D5_CGM.uct');
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/CBCORAs/', '20210723-F301-01.xml');
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/GLSKs/', '20210723-F226-v1.xml');
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/REFPROGs/', '20210723-F110.xml');
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/STUDYPOINTs/', '20210723-Points_Etude-v01.csv');
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', '20210723_0030_2D5_CGM_0_9.xiidm');
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'raoParameters.json');
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/artifacts/', 'crac_2021-07-22T22:30Z.json');
-            minio.deleteFileFromMinio('/gridcapa/CORE/VALID/outputs/', '20210723-00-ValidationCORE-v0.csv');
+            minio.deleteFilesFromMinio([
+                '/gridcapa/CORE/VALID/CGMs/20210723_0030_2D5_CGM.uct',
+                '/gridcapa/CORE/VALID/CGMs/20210723_1530_2D5_CGM.uct',
+                '/gridcapa/CORE/VALID/CBCORAs/20210723-F301-01.xml',
+                '/gridcapa/CORE/VALID/GLSKs/20210723-F226-v1.xml',
+                '/gridcapa/CORE/VALID/REFPROGs/20210723-F110.xml',
+                '/gridcapa/CORE/VALID/STUDYPOINTs/20210723-Points_Etude-v01.csv',
+                '/gridcapa/CORE/VALID/artifacts/20210723_0030_2D5_CGM_0_9.xiidm',
+                '/gridcapa/CORE/VALID/artifacts/raoParameters.json',
+                '/gridcapa/CORE/VALID/artifacts/crac_2021-07-22T22:30Z.json',
+                '/gridcapa/CORE/VALID/outputs/20210723-00-ValidationCORE-v0.csv'
+            ]);
+        });
+        ftp.runOnFtp(fbUser, fbPassword, () => {
+            ftp.deleteFilesFromFtp([
+                '/sftp/core/valid/cgms/20210723_0030_2D5_CGM.uct',
+                '/sftp/core/valid/cgms/20210723_1530_2D5_CGM.uct',
+                '/sftp/core/valid/cbcoras/20210723-F301-01.xml',
+                '/sftp/core/valid/glsks/20210723-F226-v1.xml',
+                '/sftp/core/valid/refprogs/20210723-F110.xml',
+                '/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv',
+                '/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv'
+            ]);
         });
     })
 })
