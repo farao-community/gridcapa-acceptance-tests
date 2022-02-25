@@ -4,15 +4,42 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+const pathParser = require('path')
 const gridCapaMinioPath = '/minio'
 const timeoutProps = {timeout: 10000}
 const formattingLocal = 'en-US';
+const perFileDeletionWaitingDelay = 200;
 const waitForBigDeletion = 5000
 
 export function deleteFileFromMinio(folderPath, file) {
     cy.visit(gridCapaMinioPath + folderPath)
     selectFileFromMinio(file)
     deleteSelectedFromMinio()
+}
+
+export function deleteFilesFromMinio(fileList) {
+    let filesByFolder = new Map()
+    for (let file of fileList) {
+        let fileDirName = pathParser.dirname(file)
+        let fileBaseName = pathParser.basename(file)
+        if (filesByFolder.has(fileDirName)) {
+            filesByFolder.get(fileDirName).push(fileBaseName)
+        } else {
+            filesByFolder.set(fileDirName, [fileBaseName])
+        }
+    }
+    for (let [folderPath, filesInFolder] of filesByFolder) {
+        deleteFilesInFolderFromMinio(folderPath + '/', filesInFolder)
+    }
+}
+
+function deleteFilesInFolderFromMinio(folderPath, filelist) {
+    cy.visit(gridCapaMinioPath + folderPath)
+    for (let file of filelist) {
+        selectFileFromMinio(file)
+    }
+    deleteSelectedFromMinio()
+    cy.wait(filelist.length * perFileDeletionWaitingDelay)
 }
 
 export function deleteHourlyFilesFromMinio(folderPath, fileFormat) {

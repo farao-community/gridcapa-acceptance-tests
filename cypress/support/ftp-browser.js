@@ -12,6 +12,7 @@ const ftpHost = Cypress.env('GRIDCAPA_FTP_HOST')
 const ftpUser = Cypress.env('GRIDCAPA_FTP_USER')
 const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD')
 const ftpRootDirectory = 'cse/d2cc/'
+const perFileDeletionWaitingDelay = 200;
 export const fbUser = Cypress.env('GRIDCAPA_FB_USER');
 export const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
 const fbRootDirectoryForCseD2cc = '/ftp/cse/d2cc/'
@@ -24,6 +25,23 @@ export function uploadOnFtp(file, path) {
             copyZipToFtp(file, fbRootDirectoryForCseD2cc + path);
         });
     }
+    cy.wait(500);
+}
+
+export function deleteFilesFromFtp(fileList) {
+    let filesByFolder = new Map()
+    for (let file of fileList) {
+        let fileDirName = pathParser.dirname(file)
+        let fileBaseName = pathParser.basename(file)
+        if (filesByFolder.has(fileDirName)) {
+            filesByFolder.get(fileDirName).push(fileBaseName)
+        } else {
+            filesByFolder.set(fileDirName, [fileBaseName])
+        }
+    }
+    for (let [folderPath, filesInFolder] of filesByFolder) {
+        deleteFilesInFolderFromFtp(folderPath, filesInFolder)
+    }
 }
 
 export function deleteOnFtp(file) {
@@ -31,10 +49,11 @@ export function deleteOnFtp(file) {
         deleteOnFtpByCommand(ftpHost, ftpUser, ftpPassword, ftpRootDirectory + file)
     } else {
         runOnFtp(fbUser, fbPassword, () => {
-            deleteFileFromFtp(fbRootDirectoryForCseD2cc + file);
+            deleteFilesFromFtp([fbRootDirectoryForCseD2cc + file]);
         });
     }
 }
+
 export function uploadOnFtpByCommand(host, user, password, file, path) {
     const command = `curl --ftp-create-dirs -T cypress/fixtures/${file} ftp://${user}:${password}@${host}/${path}/`
     cy.exec(
@@ -71,11 +90,22 @@ export function copyFileToFtp(file, path, encoding) {
     cy.wait(500);
 }
 
-export function deleteFileFromFtp(fileFullPath) {
-    let fileDir = pathParser.dirname(fileFullPath)
-    let fileName = pathParser.basename(fileFullPath)
-    cy.visit(gridCapaFilebrowserPath + '/files' + fileDir)
-    cy.get('.item').contains(fileName).click()
+function deleteFilesInFolderFromFtp(folderPath, filelist) {
+    cy.visit(gridCapaFilebrowserPath + '/files' + folderPath)
+    for (let file of filelist) {
+        selectFileFromFtp(file)
+    }
+    deleteSelectedFromFtp()
+    cy.wait(filelist.length * perFileDeletionWaitingDelay)
+}
+
+export function selectFileFromFtp(objectName) {
+    cy.get('.item').contains(objectName).click({
+        ctrlKey: true,
+    })
+}
+
+export function deleteSelectedFromFtp() {
     cy.get('#delete-button').click()
     cy.get('.card-action').contains('Delete').click()
     cy.wait(500);
