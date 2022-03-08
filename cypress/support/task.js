@@ -98,3 +98,20 @@ export function checkTasksCreatedWhenDailyFileUploaded(date, filename, fileType,
         })
     }
 }
+
+export function checkTasksNotCreatedInBusinessDateView(date) {
+    gc.getBusinessDateView()
+    gc.setupDate(date)
+    for (let hour = 0; hour < 24; hour++) {
+        let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping: false})
+        let timestamp = date + " " + hourOnTwoDigits + ":30"
+        cy.contains('td', timestamp).siblings().contains('NOT_CREATED')
+    }
+}
+export function checkTaskStatusInBusinessDateViewShouldBe(date, time, expectedStatus) {
+    gc.getBusinessDateView()
+    gc.setupDate(date)
+    let timestamp = date + " " + time
+    cy.contains('td', timestamp).siblings().contains(expectedStatus)
+}
+

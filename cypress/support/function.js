@@ -90,4 +90,9 @@ export function checkFileEventDisplayed(expectedLevel, expectedMessage, timeout)
     cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-timestamp]').should('not.be.empty')
 }
 
+export function getBusinessDateView() {
+    cy.get('[data-test=business-view]').click()
+}
+
+
 
