@@ -128,7 +128,7 @@ describe('Test behaviour of run button', () => {
                 '/sftp/core/valid/refprogs/20210723-F110.xml',
                 '/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv',
                 '/sftp/core/valid/outputs/20210723-00-ValidationCORE-REX-v0.csv',
-                '/gridcapa/CORE/VALID/outputs/20210723-00-RemedialActions-REX-v0.csv'
+                '/sftp/core/valid/outputs/20210723-00-RemedialActions-REX-v0.csv'
             ]);
         });
     })
