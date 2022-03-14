@@ -115,7 +115,8 @@ describe('Test behaviour of run button', () => {
                 '/gridcapa/CORE/VALID/artifacts/20210723_0030_2D5_CGM_0_9.xiidm',
                 '/gridcapa/CORE/VALID/artifacts/raoParameters.json',
                 '/gridcapa/CORE/VALID/artifacts/crac_2021-07-22T22:30Z.json',
-                '/gridcapa/CORE/VALID/outputs/20210723-00-ValidationCORE-v0.csv'
+                '/gridcapa/CORE/VALID/outputs/20210723-00-ValidationCORE-REX-v0.csv',
+                '/gridcapa/CORE/VALID/outputs/20210723-00-RemedialActions-REX-v0.csv'
             ]);
         });
         ftp.runOnFtp(fbUser, fbPassword, () => {
@@ -125,8 +126,7 @@ describe('Test behaviour of run button', () => {
                 '/sftp/core/valid/cbcoras/20210723-F301-01.xml',
                 '/sftp/core/valid/glsks/20210723-F226-v1.xml',
                 '/sftp/core/valid/refprogs/20210723-F110.xml',
-                '/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv',
-                '/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv'
+                '/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv'
             ]);
         });
     })
