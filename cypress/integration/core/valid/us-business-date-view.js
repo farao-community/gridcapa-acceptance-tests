@@ -35,6 +35,7 @@ describe('Business date view ', () => {
             ftp.copyZipToFtp('grc-69-run-process/core/valid/20210723-F110.xml', '/sftp/core/valid/refprogs');
             ftp.copyZipToFtp('grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv', '/sftp/core/valid/studypoints');
         });
+        cy.wait(1000) // Small wait to make sure
         gc.clearAndVisit('/core/valid')
         checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '00:30', 'READY')
         selectTimestampViewForDate('2021-07-23')
@@ -69,7 +70,6 @@ describe('Business date view ', () => {
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFilesFromMinio([
                 '/gridcapa/CORE/VALID/CGMs/20210723_0030_2D5_CGM.uct',
-                '/gridcapa/CORE/VALID/CGMs/20210723_1530_2D5_CGM.uct',
                 '/gridcapa/CORE/VALID/CBCORAs/20210723-F301-01.xml',
                 '/gridcapa/CORE/VALID/GLSKs/20210723-F226-v1.xml',
                 '/gridcapa/CORE/VALID/REFPROGs/20210723-F110.xml',
@@ -77,18 +77,17 @@ describe('Business date view ', () => {
                 '/gridcapa/CORE/VALID/artifacts/20210723_0030_2D5_CGM_0_9.xiidm',
                 '/gridcapa/CORE/VALID/artifacts/raoParameters.json',
                 '/gridcapa/CORE/VALID/artifacts/crac_2021-07-22T22:30Z.json',
-                '/gridcapa/CORE/VALID/outputs/20210723-00-ValidationCORE-v0.csv'
+                '/gridcapa/CORE/VALID/outputs/20210723-00-ValidationCORE-REX-v0.csv'
             ]);
         });
         ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.deleteFilesFromFtp([
                 '/sftp/core/valid/cgms/20210723_0030_2D5_CGM.uct',
-                '/sftp/core/valid/cgms/20210723_1530_2D5_CGM.uct',
                 '/sftp/core/valid/cbcoras/20210723-F301-01.xml',
                 '/sftp/core/valid/glsks/20210723-F226-v1.xml',
                 '/sftp/core/valid/refprogs/20210723-F110.xml',
                 '/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv',
-                '/sftp/core/valid/outputs/20210723-00-ValidationCORE-v0.csv'
+                '/sftp/core/valid/outputs/20210723-00-ValidationCORE-REX-v0.csv'
             ]);
         });
     })
