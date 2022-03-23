@@ -105,7 +105,7 @@ export function checkTasksNotCreatedInBusinessDateView(date) {
     gc.setupDate(date)
     for (let hour = 0; hour < 24; hour++) {
         let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping: false})
-        let timestamp = date + "  " + hourOnTwoDigits + ':30'
+        let timestamp = date + '  ' + hourOnTwoDigits + ':30'
         cy.get('[data-test="' + timestamp +'-task-status"]', timeoutProps).should('have.text', 'NOT_CREATED')
     }
 }
@@ -113,7 +113,7 @@ export function checkTasksNotCreatedInBusinessDateView(date) {
 export function checkTaskStatusInBusinessDateViewShouldBe(date, time, expectedStatus) {
     gc.getBusinessDateView()
     gc.setupDate(date)
-    let timestamp = date + "  " + time
+    let timestamp = date + '  ' + time
     cy.get('[data-test="' + timestamp + '-task-status"]', timeoutProps).should('have.text', expectedStatus)
 
 }
