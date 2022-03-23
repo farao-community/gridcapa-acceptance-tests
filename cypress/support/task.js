@@ -12,6 +12,7 @@ const created = 'CREATED';
 const notPresent = 'NOT_PRESENT';
 const validated = 'VALIDATED';
 
+const timeoutProps = {timeout: 10000}
 const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S = 60;
 const S_TO_MS_FACTOR = 1000;
 const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S * S_TO_MS_FACTOR;
@@ -104,14 +105,16 @@ export function checkTasksNotCreatedInBusinessDateView(date) {
     gc.setupDate(date)
     for (let hour = 0; hour < 24; hour++) {
         let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping: false})
-        let timestamp = date + " " + hourOnTwoDigits + ":30"
-        cy.contains('td', timestamp).siblings().contains('NOT_CREATED')
+        let timestamp = date + "  " + hourOnTwoDigits + ':30'
+        cy.get('[data-test="' + timestamp +'-task-status"]', timeoutProps).should('have.text', 'NOT_CREATED')
     }
 }
+
 export function checkTaskStatusInBusinessDateViewShouldBe(date, time, expectedStatus) {
     gc.getBusinessDateView()
     gc.setupDate(date)
-    let timestamp = date + " " + time
-    cy.contains('td', timestamp).siblings().contains(expectedStatus)
+    let timestamp = date + "  " + time
+    cy.get('[data-test="' + timestamp + '-task-status"]', timeoutProps).should('have.text', expectedStatus)
+
 }
 
