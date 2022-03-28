@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * Copyright (c) 2022, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -32,9 +32,9 @@ describe('CGM input events displaying', () => {
 
     it('Triggers task creation and event display when file arrives, then update event when file updated, and deletion event when file deleted', () => {
 
-        ftp.uploadOnFtp('gcr-84-input-files-events-display/20210901_2230_test_network.uct', cgm)
-        ftp.uploadOnFtp('gcr-84-input-files-events-display/20210901_2230_test_network1.uct', cgm)
-        ftp.uploadOnFtp('gcr-84-input-files-events-display/20210901_2230_glsk.xml', glsk)
+        ftp.uploadOnFtp('CSE_D2CC', 'gcr-84-input-files-events-display/20210901_2230_test_network.uct', cgm)
+        ftp.uploadOnFtp('CSE_D2CC', 'gcr-84-input-files-events-display/20210901_2230_test_network1.uct', cgm)
+        ftp.uploadOnFtp('CSE_D2CC', 'gcr-84-input-files-events-display/20210901_2230_glsk.xml', glsk)
         // delete first cgm file
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/GLSKs/', '20210901_2230_glsk.xml')
@@ -47,9 +47,9 @@ describe('CGM input events displaying', () => {
         gc.checkFileEventDisplayed('INFO', 'The GLSK : \'20210901_2230_glsk.xml\' is deleted')
 
         // cleaning
-        ftp.deleteOnFtp('cgms/20210901_2230_test_network.uct')
-        ftp.deleteOnFtp('cgms/20210901_2230_test_network1.uct')
-        ftp.deleteOnFtp('glsks/20210901_2230_glsk.xml')
+        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210901_2230_test_network.uct')
+        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210901_2230_test_network1.uct')
+        ftp.deleteOnFtp('CSE_D2CC', 'glsks/20210901_2230_glsk.xml')
 
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210901_2230_test_network.uct')

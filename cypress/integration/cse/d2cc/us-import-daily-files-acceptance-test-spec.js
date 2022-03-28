@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * Copyright (c) 2022, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -24,10 +24,10 @@ describe('VULCANUS automatic import handling', () => {
         gc.clearAndVisit('/cse/d2cc')
         gc.authentication()
         task.checkTasksNotCreated('2021-03-01', vulcanus)
-        ftp.uploadOnFtp('us-import-daily-files/vulcanus_01032021_96.xls', 'vulcanus')
+        ftp.uploadOnFtp('CSE_D2CC', 'us-import-daily-files/vulcanus_01032021_96.xls', 'vulcanus')
         cy.visit('/cse/d2cc')
         task.checkTasksCreatedWhenDailyFileUploaded('2021-03-01', 'vulcanus_01032021_96.xls', vulcanus)
-        ftp.deleteOnFtp('vulcanus/vulcanus_01032021_96.xls')
+        ftp.deleteOnFtp('CSE_D2CC', 'vulcanus/vulcanus_01032021_96.xls')
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/VULCANUS/', 'vulcanus_01032021_96.xls')
         })
