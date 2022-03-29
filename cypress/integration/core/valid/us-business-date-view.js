@@ -14,7 +14,7 @@ import * as minio from "../../../support/minio";
 
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
-const TIMEOUT = 90000
+const TIMEOUT = 30000
 
 describe('Business date view ', () => {
 
@@ -36,16 +36,17 @@ describe('Business date view ', () => {
             ftp.copyZipToFtp('grc-69-run-process/core/valid/20210723-F110.xml', '/sftp/core/valid/refprogs');
             ftp.copyZipToFtp('grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv', '/sftp/core/valid/studypoints');
         });
+        cy.wait(3000) // wait for 3 seconds
         gc.clearAndVisit('/core/valid')
-        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '00:30', 'READY', TIMEOUT)
-        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '15:30', 'READY', TIMEOUT)
+        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '00:30', 'READY')
+        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '15:30', 'READY')
         selectTimestampViewForDate('2021-07-23')
         gc.setupTime('15:30')
         timestampStatusShouldBe('READY', TIMEOUT)
         gc.setupTime('00:30')
         timestampStatusShouldBe('READY', TIMEOUT)
         clickRunButton()
-        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '00:30', 'SUCCESS', TIMEOUT) // run is too fast you're not sure to catch the running step
+        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '00:30', 'SUCCESS') // run is too fast you're not sure to catch the running step
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio(
                 '/gridcapa/CORE/VALID/CGMs/', '20210723_1530_2D5_CGM.uct')
@@ -54,7 +55,7 @@ describe('Business date view ', () => {
             ftp.deleteFilesFromFtp(['/sftp/core/valid/cgms/20210723_1530_2D5_CGM.uct'])
         });
         gc.clearAndVisit('/core/valid')
-        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '15:30', 'CREATED', TIMEOUT)
+        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '15:30', 'CREATED')
     });
 
     it("Delete files", () => {

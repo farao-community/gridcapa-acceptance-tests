@@ -98,7 +98,7 @@ export function checkTasksCreatedWhenDailyFileUploaded(date, filename, fileType,
     }
 }
 
-export function checkTasksNotCreatedInBusinessDateView(date, timeout) {
+export function checkTasksNotCreatedInBusinessDateView(date, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     gc.getBusinessDateView()
     gc.setupDate(date)
     for (let hour = 0; hour < 24; hour++) {
@@ -108,7 +108,7 @@ export function checkTasksNotCreatedInBusinessDateView(date, timeout) {
     }
 }
 
-export function checkTaskStatusInBusinessDateViewShouldBe(date, time, expectedStatus, timeout) {
+export function checkTaskStatusInBusinessDateViewShouldBe(date, time, expectedStatus, timeout= DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     gc.getBusinessDateView()
     gc.setupDate(date)
     let timestamp = date + '  ' + time
