@@ -94,5 +94,7 @@ export function getBusinessDateView() {
     cy.get('[data-test=business-view]').click()
 }
 
-
+export function statusShouldBe(timestamp, expectedStatus, timeout) {
+    cy.get('[data-test="' + timestamp + '-task-status"]', {timeout: timeout}).should('have.text', expectedStatus)
+}
 

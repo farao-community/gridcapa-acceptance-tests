@@ -14,20 +14,20 @@ import * as minio from "../../../support/minio";
 
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
-const TIMEOUT = 30000
+const TIMEOUT = 70000
 
 describe('Business date view ', () => {
 
     it('View the status of each TS when the inputs are not available', () => {
         gc.clearAndVisit('/core/valid')
         gc.authentication()
-        task.checkTasksNotCreatedInBusinessDateView('2021-07-23')
+        task.checkTasksNotCreatedInBusinessDateView('2021-07-23', TIMEOUT)
     });
 
     it('View the status update when all the inputs of a TS are available, when a task is started in the Timestamp view and when some inputs are deleted' , () => {
         gc.clearAndVisit('/core/valid')
         gc.authentication()
-        task.checkTasksNotCreatedInBusinessDateView('2021-07-23')
+        task.checkTasksNotCreatedInBusinessDateView('2021-07-23', TIMEOUT)
         ftp.runOnFtp(fbUser, fbPassword, () => {
             ftp.copyZipToFtp('grc-69-run-process/core/valid/20210723_0030_2D5_CGM.uct', '/sftp/core/valid/cgms');
             ftp.copyZipToFtp('grc-69-run-process/core/valid/20210723_1530_2D5_CGM.uct', '/sftp/core/valid/cgms');
@@ -36,17 +36,17 @@ describe('Business date view ', () => {
             ftp.copyZipToFtp('grc-69-run-process/core/valid/20210723-F110.xml', '/sftp/core/valid/refprogs');
             ftp.copyZipToFtp('grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv', '/sftp/core/valid/studypoints');
         });
-        cy.wait(2000) // wait for 2 seconds
+        //cy.wait(2000)
         gc.clearAndVisit('/core/valid')
-        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '00:30', 'READY')
-        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '15:30', 'READY')
+        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '00:30', 'READY', TIMEOUT)
+        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '15:30', 'READY', TIMEOUT)
         selectTimestampViewForDate('2021-07-23')
         gc.setupTime('15:30')
         timestampStatusShouldBe('READY', TIMEOUT)
         gc.setupTime('00:30')
         timestampStatusShouldBe('READY', TIMEOUT)
         clickRunButton()
-        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '00:30', 'RUNNING')
+        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '00:30', 'SUCCESS', TIMEOUT) // run is too fast you're not sure to catch the running step
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio(
                 '/gridcapa/CORE/VALID/CGMs/', '20210723_1530_2D5_CGM.uct')
@@ -55,7 +55,7 @@ describe('Business date view ', () => {
             ftp.deleteFilesFromFtp(['/sftp/core/valid/cgms/20210723_1530_2D5_CGM.uct'])
         });
         gc.clearAndVisit('/core/valid')
-        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '15:30', 'CREATED')
+        checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '15:30', 'CREATED', TIMEOUT)
     });
 
     it("Delete files", () => {
