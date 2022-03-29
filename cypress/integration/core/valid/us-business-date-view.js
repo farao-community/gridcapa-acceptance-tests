@@ -14,7 +14,7 @@ import * as minio from "../../../support/minio";
 
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
-const TIMEOUT = 70000
+const TIMEOUT = 90000
 
 describe('Business date view ', () => {
 
