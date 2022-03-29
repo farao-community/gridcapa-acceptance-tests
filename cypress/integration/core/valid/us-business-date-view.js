@@ -36,7 +36,6 @@ describe('Business date view ', () => {
             ftp.copyZipToFtp('grc-69-run-process/core/valid/20210723-F110.xml', '/sftp/core/valid/refprogs');
             ftp.copyZipToFtp('grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv', '/sftp/core/valid/studypoints');
         });
-        //cy.wait(2000)
         gc.clearAndVisit('/core/valid')
         checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '00:30', 'READY', TIMEOUT)
         checkTaskStatusInBusinessDateViewShouldBe('2021-07-23', '15:30', 'READY', TIMEOUT)
