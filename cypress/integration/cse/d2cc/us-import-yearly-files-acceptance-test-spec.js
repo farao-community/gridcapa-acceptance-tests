@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * Copyright (c) 2022, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -36,7 +36,7 @@ describe('NTC automatic import handling', () => {
         checkTaskNotCreated('2021-05-01', '01:30')
         checkTaskNotCreated('2021-07-03', '16:30')
         checkTaskNotCreated('2021-12-31', '23:30')
-        ftp.uploadOnFtp('us-import-yearly-files/2021_test_NTC_annual.xml', 'ntc')
+        ftp.uploadOnFtp('CSE_D2CC', 'us-import-yearly-files/2021_test_NTC_annual.xml', 'ntc')
         cy.visit('/cse/d2cc')
         checkTaskCreated('2021-01-01', '00:30', '2021_test_NTC_annual.xml', TASK_CREATION_TIMEOUT)
         checkTaskCreated('2021-05-01', '01:30', '2021_test_NTC_annual.xml')
@@ -44,7 +44,7 @@ describe('NTC automatic import handling', () => {
         checkTaskCreated('2021-12-31', '23:30', '2021_test_NTC_annual.xml')
         checkTaskNotCreated('2020-12-31', '23:30')
         checkTaskNotCreated('2022-01-01', '00:30')
-        ftp.deleteOnFtp('ntc/2021_test_NTC_annual.xml')
+        ftp.deleteOnFtp('CSE_D2CC', 'ntc/2021_test_NTC_annual.xml')
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/NTC/', '2021_test_NTC_annual.xml')
         })

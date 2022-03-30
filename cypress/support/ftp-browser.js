@@ -11,18 +11,22 @@ const gridCapaFilebrowserPath = '/utils/filebrowser'
 const ftpHost = Cypress.env('GRIDCAPA_FTP_HOST')
 const ftpUser = Cypress.env('GRIDCAPA_FTP_USER')
 const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD')
-const ftpRootDirectory = 'cse/d2cc/'
 const perFileDeletionWaitingDelay = 200;
 export const fbUser = Cypress.env('GRIDCAPA_FB_USER');
 export const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
 const fbRootDirectoryForCseD2cc = '/ftp/cse/d2cc/'
+const ftpRootDirectoryForCseD2cc = 'cse/d2cc/'
+const fbRootDirectoryForCoreValid = '/ftp/core/valid/'
+const ftpRootDirectoryForCoreValid = 'core/valid/'
 
-export function uploadOnFtp(file, path) {
+export function uploadOnFtp(process, file, path) {
+    let fbRootDirectory = getFbRootDirectory(process);
+    let ftpRootDirectory = getFtpRootDirectory(process);
     if (ftpHost) {
         uploadOnFtpByCommand(ftpHost, ftpUser, ftpPassword, file, ftpRootDirectory + path)
     } else {
         runOnFtp(fbUser, fbPassword, () => {
-            copyZipToFtp(file, fbRootDirectoryForCseD2cc + path);
+            copyZipToFtp(file, fbRootDirectory + path);
         });
     }
     cy.wait(500);
@@ -44,12 +48,14 @@ export function deleteFilesFromFtp(fileList) {
     }
 }
 
-export function deleteOnFtp(file) {
+export function deleteOnFtp(process, file) {
+    let ftpRootDirectory = getFtpRootDirectory(process);
+    let fbRootDirectory = getFbRootDirectory(process);
     if (ftpHost) {
         deleteOnFtpByCommand(ftpHost, ftpUser, ftpPassword, ftpRootDirectory + file)
     } else {
         runOnFtp(fbUser, fbPassword, () => {
-            deleteFilesFromFtp([fbRootDirectoryForCseD2cc + file]);
+            deleteFilesFromFtp([fbRootDirectory + file]);
         });
     }
 }
@@ -128,4 +134,24 @@ function connectToFtpBrowser(user, password) {
 function disconnectFromFtpBrowser() {
     cy.get('#logout').click()
     cy.wait(200)
+}
+
+function getFbRootDirectory(process) {
+    if (process === "CORE_VALID") {
+        return fbRootDirectoryForCoreValid
+    } else if (process === "CSE_D2CC") {
+        return fbRootDirectoryForCseD2cc
+    } else {
+        return fbRootDirectoryForCseD2cc; // CSE D2cc by default
+    }
+}
+
+function getFtpRootDirectory(process) {
+    if (process === "CORE_VALID") {
+        return ftpRootDirectoryForCoreValid
+    } else if (process === "CSE_D2CC") {
+        return ftpRootDirectoryForCseD2cc
+    } else {
+        return ftpRootDirectoryForCseD2cc; // CSE D2cc by default
+    }
 }

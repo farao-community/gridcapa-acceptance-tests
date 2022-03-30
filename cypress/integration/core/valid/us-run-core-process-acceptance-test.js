@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * Copyright (c) 2022, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -7,14 +7,13 @@
 
 import * as gc from "../../../support/function";
 import {
+    clickRunButton,
     runButtonStatusShouldBeDisabled,
     runButtonStatusShouldBeEnabled,
     selectTimestampViewForDate,
-    timestampStatusShouldBe,
-    clickRunButton,
+    timestampStatusShouldBe
 } from "../../../support/function";
 import * as ftp from "../../../support/ftp-browser";
-import {fbPassword, fbUser} from "../../../support/ftp-browser";
 import * as minio from "../../../support/minio";
 
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
@@ -45,34 +44,17 @@ describe('Test behaviour of run button', () => {
         runButtonStatusShouldBeDisabled()
     });
     it("Check button is disabled when one file is uploaded", () => {
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            const cgmFullPath = 'grc-69-run-process/core/valid/20210723_0030_2D5_CGM.uct'
-            const ftpCgmDestinationPath = '/sftp/core/valid/cgms'
-            ftp.copyZipToFtp(cgmFullPath, ftpCgmDestinationPath);
-        });
+        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723_0030_2D5_CGM.uct', 'cgms')
         cy.visit('/core/valid')
         selectTimestampViewForDate(date)
         gc.setupTime(time)
         runButtonStatusShouldBeDisabled()
     });
     it("Check button is clickable when task is ready", () => {
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            const cbcoraFullPath = 'grc-69-run-process/core/valid/20210723-F301-01.xml'
-            const ftpCbcoraDestinationPath = '/sftp/core/valid/cbcoras'
-            ftp.copyZipToFtp(cbcoraFullPath, ftpCbcoraDestinationPath);
-
-            const glskFullPath = 'grc-69-run-process/core/valid/20210723-F226-v1.xml'
-            const ftpGlskDestinationPath = '/sftp/core/valid/glsks'
-            ftp.copyZipToFtp(glskFullPath, ftpGlskDestinationPath);
-
-            const refprogFullPath = 'grc-69-run-process/core/valid/20210723-F110.xml'
-            const ftpRefprogDestinationPath = '/sftp/core/valid/refprogs'
-            ftp.copyZipToFtp(refprogFullPath, ftpRefprogDestinationPath);
-
-            const studypointsFullPath = 'grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv'
-            const ftpStudypointsDestinationPath = '/sftp/core/valid/studypoints'
-            ftp.copyZipToFtp(studypointsFullPath, ftpStudypointsDestinationPath);
-        });
+        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723-F301-01.xml', 'cbcoras')
+        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723-F226-v1.xml', 'glsks')
+        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723-F110.xml', 'refprogs')
+        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv', 'studypoints')
         cy.visit('/core/valid')
         selectTimestampViewForDate(date)
         gc.setupTime(time)
@@ -90,11 +72,7 @@ describe('Test behaviour of run button', () => {
         runButtonStatusShouldBeEnabled()
     })
     it("Check status change to running after run click and goes to error at 15:30", () => {
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            const cgmFullPath = 'grc-69-run-process/core/valid/20210723_1530_2D5_CGM.uct'
-            const ftpCgmDestinationPath = '/sftp/core/valid/cgms'
-            ftp.copyZipToFtp(cgmFullPath, ftpCgmDestinationPath);
-        });
+        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723_1530_2D5_CGM.uct', 'cgms')
         cy.visit('/core/valid')
         selectTimestampViewForDate(date)
         gc.setupTime('15:30')
@@ -119,15 +97,11 @@ describe('Test behaviour of run button', () => {
                 '/gridcapa/CORE/VALID/outputs/20210723-00-RemedialActions-REX-v0.csv'
             ]);
         });
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.deleteFilesFromFtp([
-                '/sftp/core/valid/cgms/20210723_0030_2D5_CGM.uct',
-                '/sftp/core/valid/cgms/20210723_1530_2D5_CGM.uct',
-                '/sftp/core/valid/cbcoras/20210723-F301-01.xml',
-                '/sftp/core/valid/glsks/20210723-F226-v1.xml',
-                '/sftp/core/valid/refprogs/20210723-F110.xml',
-                '/sftp/core/valid/studypoints/20210723-Points_Etude-v01.csv'
-            ]);
-        });
+        ftp.deleteOnFtp('CORE_VALID', 'cgms/20210723_0030_2D5_CGM.uct')
+        ftp.deleteOnFtp('CORE_VALID', 'cgms/20210723_1530_2D5_CGM.uct')
+        ftp.deleteOnFtp('CORE_VALID', 'cbcoras/20210723-F301-01.xml')
+        ftp.deleteOnFtp('CORE_VALID', 'glsks/20210723-F226-v1.xml')
+        ftp.deleteOnFtp('CORE_VALID', 'refprogs/20210723-F110.xml')
+        ftp.deleteOnFtp('CORE_VALID', 'studypoints/20210723-Points_Etude-v01.csv')
     })
 })

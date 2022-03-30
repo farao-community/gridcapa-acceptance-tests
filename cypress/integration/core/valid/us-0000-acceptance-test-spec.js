@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * Copyright (c) 2022, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -9,8 +9,6 @@ import * as task from "../../../support/task";
 import * as ftp from "../../../support/ftp-browser.js";
 import * as minio from "../../../support/minio.js";
 
-const fbUser = Cypress.env('GRIDCAPA_FB_USER');
-const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
 const cgm = 'CGM';
@@ -25,16 +23,12 @@ describe('CGM automatic import handling', () => {
         gc.clearAndVisit('/core/valid')
         gc.authentication()
         task.checkTasksNotCreated('2021-07-02', cgm)
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.copyZipToFtp('us-0000/20210702', '/sftp/core/valid/cgms');
-        });
+        ftp.uploadOnFtp('CORE_VALID', 'us-0000/20210702.zip', 'cgms')
         cy.visit('/core/valid')
-        task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0_CGM.uct', cgm)
-        ftp.runOnFtp(fbUser, fbPassword, () => {
-            ftp.deleteFilesFromFtp(['/sftp/core/valid/cgms/20210702']);
-        });
+        task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0.uct', cgm)
+        ftp.deleteOnFtp('CORE_VALID', 'cgms/20210702.zip')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteHourlyFilesFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210702_{0}30_2D5_UX0_CGM.uct')
+            minio.deleteHourlyFilesFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210702_{0}30_2D5_UX0.uct')
         })
     });
 })
