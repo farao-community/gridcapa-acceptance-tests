@@ -21,8 +21,9 @@ const ftpRootDirectoryForCoreValid = 'core/valid/'
 
 export function uploadOnFtp(process, file, path) {
     let fbRootDirectory = getFbRootDirectory(process);
+    let ftpRootDirectory = getFtpRootDirectory(process);
     if (ftpHost) {
-        uploadOnFtpByCommand(ftpHost, ftpUser, ftpPassword, file, fbRootDirectory + path)
+        uploadOnFtpByCommand(ftpHost, ftpUser, ftpPassword, file, ftpRootDirectory + path)
     } else {
         runOnFtp(fbUser, fbPassword, () => {
             copyZipToFtp(file, fbRootDirectory + path);
