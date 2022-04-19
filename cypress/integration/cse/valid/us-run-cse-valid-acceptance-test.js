@@ -7,6 +7,7 @@
 
 import * as gc from "../../../support/function";
 import {
+    clickRunButton,
     runButtonStatusShouldBeDisabled,
     runButtonStatusShouldBeEnabled,
     selectTimestampViewForDate,
@@ -85,5 +86,15 @@ function fullIhmTestCseValid(process) {
             timestampStatusShouldBe('READY', TIMEOUT)
             runButtonStatusShouldBeEnabled()
         });
+        it("Check status change to running after run click and goes to success", () => {
+            cy.visit(urlProcess)
+            selectTimestampViewForDate(date)
+            gc.setupTime(time)
+            timestampStatusShouldBe('READY', TIMEOUT)
+            clickRunButton()
+            timestampStatusShouldBe('RUNNING', TIMEOUT)
+            timestampStatusShouldBe('SUCCESS', TIMEOUT)
+            runButtonStatusShouldBeEnabled()
+        })
     })
 }

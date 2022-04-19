@@ -1,5 +1,7 @@
 {
   "baseUrl": "http://localhost",
+  "viewportWidth": 1920,
+  "viewportHeight": 1080,
   "env": {
     "GRIDCAPA_FB_USER": "gridcapa",
     "GRIDCAPA_FB_PASSWORD": "gridcapa",
