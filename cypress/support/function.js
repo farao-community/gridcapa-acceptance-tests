@@ -65,17 +65,17 @@ export function clickRunButton() {
 
 export function inputDataShouldBe({expectedType, expectedStatus, expectedFilename, expectedLatestModification, timeout}={}) {
     const timeoutProps = {timeout: timeout}
-    cy.get('[data-test=' + expectedType + '-input-type]', timeoutProps).should('have.text', expectedType)
-    cy.get('[data-test=' + expectedType + '-input-status]', timeoutProps).should('have.text', expectedStatus)
+    cy.get('[data-test=' + expectedType + '-inputs-type]', timeoutProps).should('have.text', expectedType)
+    cy.get('[data-test=' + expectedType + '-inputs-status]', timeoutProps).should('have.text', expectedStatus)
     if (expectedFilename) {
-        cy.get('[data-test=' + expectedType + '-input-filename]', timeoutProps).should('have.text', expectedFilename)
+        cy.get('[data-test=' + expectedType + '-inputs-filename]', timeoutProps).should('have.text', expectedFilename)
     } else {
-        cy.get('[data-test=' + expectedType + '-input-filename]', timeoutProps).should('be.empty')
+        cy.get('[data-test=' + expectedType + '-inputs-filename]', timeoutProps).should('be.empty')
     }
     if (expectedLatestModification) {
         cy.get('[data-test=input-latest-modification]').should('not.be.empty')
     } else {
-        cy.get('[data-test=' + expectedType + '-input-latest-modification]', timeoutProps).should('be.empty')
+        cy.get('[data-test=' + expectedType + '-inputs-latest-modification]', timeoutProps).should('be.empty')
     }
 }
 
