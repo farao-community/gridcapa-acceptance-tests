@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NTC_reductions_document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ntc-document.xsd" DtdVersion="4" DtdRelease="0">
+	<DocumentIdentification v="20210901_2D3_NTC_reductions_CSE" />
+	<DocumentVersion v="01" />
+	<DocumentType v="A36" />
+	<ProcessType v="A15" />
+	<SenderIdentification v="XXXXXXXXXXXXXXXX" codingScheme="A01" />
+	<SenderRole v="A04" />
+	<ReceiverIdentification v="XXXXXXXXXXXXXXXX" codingScheme="A01" />
+	<ReceiverRole v="A36" />
+	<CreationDateTime v="2021-08-30T00:00:00Z" />
+	<Domain v="XXXXXXXXXXXXXXXX" codingScheme="A01" />
+	<NTCreductions>
+		<Period description="NTC 2021-08-31T22:00Z/2021-09-01T00:00Z" dtini="2021-08-31T22:00Z" dtfin="2021-09-01T00:00Z">
+			<DayOfWeek description="Everyday" daynum="0">
+				<TimeInterval tini="T22:00Z" tfin="T00:00Z">
+					<NTC v="200" country="FR" type="relative" />
+					<NTC v="300" country="CH" type="relative" />
+					<NTC v="-200" country="AT" type="relative" />
+					<NTC v="-300" country="SI" type="relative" />
+				</TimeInterval>
+			</DayOfWeek>
+		</Period>
+		<Period description="NTC 2021-09-01T00:00Z/2021-09-01T22:00Z" dtini="2021-09-01T00:00Z" dtfin="2021-09-01T22:00Z">
+			<DayOfWeek description="Everyday" daynum="0">
+				<TimeInterval tini="T00:00Z" tfin="T22:00Z">
+					<NTC v="2500" country="FR" type="absolute" />
+					<NTC v="2500" country="CH" type="absolute" />
+					<NTC v="700" country="AT" type="absolute" />
+					<NTC v="300" country="SI" type="absolute" />
+				</TimeInterval>
+			</DayOfWeek>
+		</Period>
+	</NTCreductions>
+</NTC_reductions_document>

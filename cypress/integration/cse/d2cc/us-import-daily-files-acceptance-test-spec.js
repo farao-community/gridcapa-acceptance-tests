@@ -11,7 +11,7 @@ import * as ftp from "../../../support/ftp-browser.js";
 
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
-const vulcanus = 'VULCANUS';
+const ntcred = 'NTC-RED';
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
@@ -19,17 +19,17 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
 })
 
-describe('VULCANUS automatic import handling', () => {
-    it('Triggers 24 tasks creation when VULCANUS arrives', () => {
+describe('NTCRED automatic import handling', () => {
+    it('Triggers 24 tasks creation when NTCRED arrives', () => {
         gc.clearAndVisit('/cse/d2cc')
         gc.authentication()
-        task.checkTasksNotCreated('2021-03-01', vulcanus)
-        ftp.uploadOnFtp('CSE_D2CC', 'us-import-daily-files/vulcanus_01032021_96.xls', 'vulcanus')
+        task.checkTasksNotCreated('2021-09-01', ntcred)
+        ftp.uploadOnFtp('CSE_D2CC', 'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml', 'ntcreds')
         cy.visit('/cse/d2cc')
-        task.checkTasksCreatedWhenDailyFileUploaded('2021-03-01', 'vulcanus_01032021_96.xls', vulcanus)
-        ftp.deleteOnFtp('CSE_D2CC', 'vulcanus/vulcanus_01032021_96.xls')
+        task.checkTasksCreatedWhenDailyFileUploaded('2021-09-01', '20210901_2D3_NTC_reductions_test.xml', ntcred)
+        ftp.deleteOnFtp('CSE_D2CC', 'ntcreds/20210901_2D3_NTC_reductions_test.xml')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/VULCANUS/', 'vulcanus_01032021_96.xls')
+            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/NTCREDs/', '20210901_2D3_NTC_reductions_test.xml')
         })
     });
 })
