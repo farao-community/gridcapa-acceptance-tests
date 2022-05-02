@@ -54,8 +54,8 @@ export function deleteHourlyFilesFromMinio(folderPath, fileFormat) {
 
 export function deleteFolderFromMinio(folderPath, folderName) {
     cy.visit(gridCapaMinioPath + folderPath)
-    cy.get('button[id*="obj-actions-' + folderName + '"]', timeoutProps).click()
-    cy.get('ul[aria-labelledby*="' + folderName + '"] > a[title="Delete"]', timeoutProps).click()
+    cy.get('button[id*="obj-actions-' + folderName + '/"]', timeoutProps).click()
+    cy.get('ul[aria-labelledby*="' + folderName + '/"] > a[title="Delete"]', timeoutProps).click()
     cy.get('button').contains(/^Delete$/).click()
     cy.wait(waitForBigDeletion)
 }
