@@ -19,8 +19,8 @@ const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
 const cgm = 'cgms';
 const glsk = 'glsks';
 const crac = 'cracs';
-const ntc = "ntc";
-const ntcred = "ntcreds"
+const ntc = 'ntc';
+const ntcred = 'ntcreds'
 const TIMEOUT = 60000
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
@@ -38,8 +38,8 @@ describe('Run d2cc process', () => {
         ftp.uploadOnFtp('CSE_D2CC', 'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml', ntcred)
         gc.clearAndVisit('/cse/d2cc')
         gc.authentication()
-        selectTimestampViewForDate("2021-09-01")
-        gc.setupTime("22:30")
+        selectTimestampViewForDate('2021-09-01')
+        gc.setupTime('22:30')
         timestampStatusShouldBe('READY', TIMEOUT)
         runButtonStatusShouldBeEnabled()
         clickRunButton()
@@ -48,18 +48,7 @@ describe('Run d2cc process', () => {
     })
     it("Delete files from minio and FTP", () => {
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFilesFromMinio([
-                '/gridcapa/CSE/D2CC/CGMs/20210901_2230_test_network.uct',
-                '/gridcapa/CSE/D2CC/GLSKs/20210901_2230_213_GSK_CO_CSE1.xml',
-                '/gridcapa/CSE/D2CC/CRACs/20210901_2230_213_CRAC_CO_CSE1.xml',
-                '/gridcapa/CSE/D2CC/NTC/2021_test_NTC_annual.xml',
-                '/gridcapa/CSE/D2CC/NTCREDs/20210901_2D3_NTC_reductions_test.xml',
-                '/gridcapa/CSE/D2CC/2021/09/01/22_30/ARTIFACTS/raoParameters.json',
-                '/gridcapa/CSE/D2CC/2021/09/01/22_30/ARTIFACTS/crac.json',
-                '/gridcapa/CSE/D2CC/2021/09/01/22_30/ARTIFACTS/network_pre_processed.xiidm',
-                '/gridcapa/CSE/D2CC/2021/09/01/22_30/OUTPUTS/20210901_2230_2D3_CO_CSE1.uct',
-                '/gridcapa/CSE/D2CC/2021/09/01/22_30/OUTPUTS/TTC_Calculation_20210901_2230_2D0_CO_CSE1.xml'
-            ]);
+            minio.deleteFolderFromMinio('CSE');
         });
         ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210901_2230_test_network.uct')
         ftp.deleteOnFtp('CSE_D2CC', 'glsks/20210901_2230_213_GSK_CO_CSE1.xml')
