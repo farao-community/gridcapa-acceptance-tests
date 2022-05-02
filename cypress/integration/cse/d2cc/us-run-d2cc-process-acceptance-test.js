@@ -30,7 +30,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 describe('Run d2cc process', () => {
 
-   /* it('Run a full d2cc process ', () => {
+   it('Run a full d2cc process ', () => {
         ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_test_network.uct', cgm)
         ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_213_GSK_CO_CSE1.xml', glsk)
         ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_213_CRAC_CO_CSE1.xml', crac)
@@ -45,7 +45,7 @@ describe('Run d2cc process', () => {
         clickRunButton()
         timestampStatusShouldBe('RUNNING', TIMEOUT)
         timestampStatusShouldBe('SUCCESS', TIMEOUT)
-    })*/
+    })
     it("Delete files from minio and FTP", () => {
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFolderFromMinio('/gridcapa/CSE/', 'D2CC');
