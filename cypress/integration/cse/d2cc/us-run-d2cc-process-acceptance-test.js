@@ -48,7 +48,7 @@ describe('Run d2cc process', () => {
     })
     it("Delete files from minio and FTP", () => {
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFolderFromMinio('CSE');
+            minio.deleteFolderFromMinio('/gridcapa/CSE', 'D2CC');
         });
         ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210901_2230_test_network.uct')
         ftp.deleteOnFtp('CSE_D2CC', 'glsks/20210901_2230_213_GSK_CO_CSE1.xml')
