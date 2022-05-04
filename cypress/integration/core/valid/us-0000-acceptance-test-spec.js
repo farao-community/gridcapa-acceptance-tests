@@ -28,7 +28,7 @@ describe('CGM automatic import handling', () => {
         task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0.uct', cgm)
         ftp.deleteOnFtp('CORE_VALID', 'cgms/20210702.zip')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteHourlyFilesFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210702_{0}30_2D5_UX0.uct')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CORE/', 'VALID');
+        });
     });
 })

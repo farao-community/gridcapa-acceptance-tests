@@ -52,10 +52,7 @@ describe('CGM input events displaying', () => {
         ftp.deleteOnFtp('CSE_D2CC', 'glsks/20210901_2230_glsk.xml')
 
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210901_2230_test_network.uct')
-        })
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210901_2230_test_network1.uct')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CSE/', 'D2CC');
+        });
     });
 })

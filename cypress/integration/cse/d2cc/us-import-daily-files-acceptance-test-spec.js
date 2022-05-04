@@ -29,7 +29,7 @@ describe('NTCRED automatic import handling', () => {
         task.checkTasksCreatedWhenDailyFileUploaded('2021-09-01', '20210901_2D3_NTC_reductions_test.xml', ntcred)
         ftp.deleteOnFtp('CSE_D2CC', 'ntcreds/20210901_2D3_NTC_reductions_test.xml')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/NTCREDs/', '20210901_2D3_NTC_reductions_test.xml')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CSE/', 'D2CC');
+        });
     });
 })

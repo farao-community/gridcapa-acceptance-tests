@@ -29,8 +29,8 @@ describe('CGM automatic import handling', () => {
         task.checkTaskCreated('2021-07-01', '14:30', '20210701_1430_2D4_UX0.uct', cgm)
         ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210701.zip')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210701_1430_2D4_UX0.uct')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CSE/', 'D2CC');
+        });
     });
 
     it('Triggers multiple task creation when CGM archive with multiple CGM arrives', () => {
@@ -42,8 +42,8 @@ describe('CGM automatic import handling', () => {
         task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0.uct', cgm)
         ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210702.zip')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteHourlyFilesFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210702_{0}30_2D5_UX0.uct')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CSE/', 'D2CC');
+        });
     });
 
     it('Triggers no task creation when CGM archive is empty', () => {
@@ -66,8 +66,8 @@ describe('CGM automatic import handling', () => {
         task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0.uct', cgm)
         ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210702_sub_dir.zip')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteHourlyFilesFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210702_{0}30_2D5_UX0.uct')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CSE/', 'D2CC');
+        });
     });
 
     it('Triggers a task creation when a bare CGM file arrives', () => {
@@ -79,7 +79,7 @@ describe('CGM automatic import handling', () => {
         task.checkTaskCreated('2021-07-02', '23:30', '20210702_2330_2D5_UX0.uct', cgm)
         ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210702_2330_2D5_UX0.uct')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210702_2330_2D5_UX0.uct')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CSE/', 'D2CC');
+        });
     });
 })

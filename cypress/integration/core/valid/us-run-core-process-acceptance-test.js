@@ -83,19 +83,7 @@ describe('Test behaviour of run button', () => {
     })
     it("Delete files from minio and SFTP", () => {
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFilesFromMinio([
-                '/gridcapa/CORE/VALID/CGMs/20210723_0030_2D5_CGM.uct',
-                '/gridcapa/CORE/VALID/CGMs/20210723_1530_2D5_CGM.uct',
-                '/gridcapa/CORE/VALID/CBCORAs/20210723-F301-01.xml',
-                '/gridcapa/CORE/VALID/GLSKs/20210723-F226-v1.xml',
-                '/gridcapa/CORE/VALID/REFPROGs/20210723-F110.xml',
-                '/gridcapa/CORE/VALID/STUDYPOINTs/20210723-Points_Etude-v01.csv',
-                '/gridcapa/CORE/VALID/artifacts/20210723_0030_2D5_CGM_0_9.xiidm',
-                '/gridcapa/CORE/VALID/artifacts/raoParameters.json',
-                '/gridcapa/CORE/VALID/artifacts/crac_2021-07-22T22:30Z.json',
-                '/gridcapa/CORE/VALID/outputs/20210723-00-ValidationCORE-REX-v0.csv',
-                '/gridcapa/CORE/VALID/outputs/20210723-00-RemedialActions-REX-v0.csv'
-            ]);
+            minio.deleteFolderFromMinio('/gridcapa/CORE/', 'VALID');
         });
         ftp.deleteOnFtp('CORE_VALID', 'cgms/20210723_0030_2D5_CGM.uct')
         ftp.deleteOnFtp('CORE_VALID', 'cgms/20210723_1530_2D5_CGM.uct')

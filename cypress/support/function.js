@@ -22,8 +22,16 @@ export function getTimestampView() {
     cy.get('[data-test=timestamp-view]').click()
 }
 
+export function getBusinessDateView() {
+    cy.get('[data-test=business-view]').click()
+}
+
 export function setupDate(date) {
     cy.get('[data-test=timestamp-date-picker]').type(date)
+}
+
+export function checkDateValue(date) {
+    cy.get('[data-test=timestamp-date-picker]').should('have.value', date)
 }
 
 export function clickOnEventsTab() {
@@ -37,6 +45,10 @@ export function selectTimestampViewForDate(date) {
 
 export function setupTime(time) {
     cy.get('[data-test=timestamp-time-picker]').type(time)
+}
+
+export function checkTimeValue(time) {
+    cy.get('[data-test=timestamp-time-picker]').should('have.value', time)
 }
 
 export function timestampStatusShouldBe(timestampStatus, timeout) {

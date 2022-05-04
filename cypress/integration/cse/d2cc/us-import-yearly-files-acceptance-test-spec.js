@@ -46,7 +46,7 @@ describe('NTC automatic import handling', () => {
         checkTaskNotCreated('2022-01-01', '00:30')
         ftp.deleteOnFtp('CSE_D2CC', 'ntc/2021_test_NTC_annual.xml')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/NTC/', '2021_test_NTC_annual.xml')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CSE/', 'D2CC');
+        });
     });
 })
