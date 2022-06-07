@@ -30,14 +30,14 @@ function checkTaskCreated(date, time, filename, timeout = null) {
 
 describe('NTC automatic import handling', () => {
     it('Triggers multiple task creation when NTC arrives', () => {
-        gc.clearAndVisit('/cse/d2cc')
+        gc.clearAndVisit('/cse/import/d2cc')
         gc.authentication()
         checkTaskNotCreated('2021-01-01', '00:30')
         checkTaskNotCreated('2021-05-01', '01:30')
         checkTaskNotCreated('2021-07-03', '16:30')
         checkTaskNotCreated('2021-12-31', '23:30')
         ftp.uploadOnFtp('CSE_D2CC', 'us-import-yearly-files/2021_test_NTC_annual.xml', 'ntc')
-        cy.visit('/cse/d2cc')
+        cy.visit('/cse/import/d2cc')
         checkTaskCreated('2021-01-01', '00:30', '2021_test_NTC_annual.xml', TASK_CREATION_TIMEOUT)
         checkTaskCreated('2021-05-01', '01:30', '2021_test_NTC_annual.xml')
         checkTaskCreated('2021-07-03', '16:30', '2021_test_NTC_annual.xml')
@@ -46,7 +46,7 @@ describe('NTC automatic import handling', () => {
         checkTaskNotCreated('2022-01-01', '00:30')
         ftp.deleteOnFtp('CSE_D2CC', 'ntc/2021_test_NTC_annual.xml')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/NTC/', '2021_test_NTC_annual.xml')
+            minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/NTC/', '2021_test_NTC_annual.xml')
         })
     });
 })
