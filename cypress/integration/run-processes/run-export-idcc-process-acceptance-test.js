@@ -35,10 +35,7 @@ describe('Check CSE IDCC export corner runs correctly', () => {
         gc.authentication()
         selectTimestampViewForDate('2022-01-28')
         gc.setupTime('16:30')
-        timestampStatusShouldBe('READY', TIMEOUT_UPLOAD)
-        runButtonStatusShouldBeEnabled()
-        clickRunButton()
-        // Automatic run on file arrival -- NOT FOR NOW
+        // Automatic run on file arrival
         timestampStatusShouldBe('RUNNING', TIMEOUT)
         timestampStatusShouldBe('SUCCESS', TIMEOUT)
 
