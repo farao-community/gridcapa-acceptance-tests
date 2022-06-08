@@ -29,9 +29,9 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
 })
 
-describe('Run d2cc process', () => {
+describe('Check CSE D2CC import corner runs correctly', () => {
 
-    it('Run a full d2cc process ', () => {
+    it('Check CSE D2CC import corner runs correctly', () => {
         ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_test_network.uct', cgm)
         ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_213_GSK_CO_CSE1.xml', glsk)
         ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_213_CRAC_CO_CSE1.xml', crac)
