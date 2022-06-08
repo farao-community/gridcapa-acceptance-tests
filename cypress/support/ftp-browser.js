@@ -14,19 +14,21 @@ const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD')
 const perFileDeletionWaitingDelay = 200;
 export const fbUser = Cypress.env('GRIDCAPA_FB_USER');
 export const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
-const fbRootDirectoryForCseD2cc = '/ftp/cse/d2cc/'
-const ftpRootDirectoryForCseD2cc = 'cse/d2cc/'
+const fbRootDirectoryForCseD2cc = '/ftp/cse/import/d2cc/'
+const ftpRootDirectoryForCseD2cc = 'cse/import/d2cc/'
 const fbRootDirectoryForCoreValid = '/ftp/core/valid/'
 const ftpRootDirectoryForCoreValid = 'core/valid/'
+const fbRootDirectoryForCseExportIdcc = '/ftp/cse/export/idcc/'
+const ftpRootDirectoryForCseExportIdcc = 'cse/export/idcc/'
+const fbRootDirectoryForCseExportD2cc = '/ftp/cse/export/d2cc/'
+const ftpRootDirectoryForCseExportD2cc = 'cse/export/d2cc/'
 
 export function uploadOnFtp(process, file, path) {
-    let fbRootDirectory = getFbRootDirectory(process);
-    let ftpRootDirectory = getFtpRootDirectory(process);
     if (ftpHost) {
-        uploadOnFtpByCommand(ftpHost, ftpUser, ftpPassword, file, ftpRootDirectory + path)
+        uploadOnFtpByCommand(ftpHost, ftpUser, ftpPassword, file, getFtpRootDirectory(process) + path)
     } else {
         runOnFtp(fbUser, fbPassword, () => {
-            copyZipToFtp(file, fbRootDirectory + path);
+            copyZipToFtp(file, getFbRootDirectory(process) + path);
         });
     }
     cy.wait(500);
@@ -141,6 +143,10 @@ function getFbRootDirectory(process) {
         return fbRootDirectoryForCoreValid
     } else if (process === "CSE_D2CC") {
         return fbRootDirectoryForCseD2cc
+    } else if (process === "CSE_EXPORT_D2CC") {
+        return fbRootDirectoryForCseExportD2cc
+    } else if (process === "CSE_EXPORT_IDCC") {
+        return fbRootDirectoryForCseExportIdcc
     } else {
         return fbRootDirectoryForCseD2cc; // CSE D2cc by default
     }
@@ -151,6 +157,10 @@ function getFtpRootDirectory(process) {
         return ftpRootDirectoryForCoreValid
     } else if (process === "CSE_D2CC") {
         return ftpRootDirectoryForCseD2cc
+    } else if (process === "CSE_EXPORT_D2CC") {
+        return ftpRootDirectoryForCseExportD2cc
+    } else if (process === "CSE_EXPORT_IDCC") {
+        return ftpRootDirectoryForCseExportIdcc
     } else {
         return ftpRootDirectoryForCseD2cc; // CSE D2cc by default
     }

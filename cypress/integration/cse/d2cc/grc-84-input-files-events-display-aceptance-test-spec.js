@@ -20,9 +20,9 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 })
 
 function goToEvents() {
-    gc.clearAndVisit('/cse/d2cc')
+    gc.clearAndVisit('/cse/import/d2cc')
     gc.authentication()
-    cy.visit('/cse/d2cc')
+    cy.visit('/cse/import/d2cc')
     gc.getTimestampView()
     gc.clickOnEventsTab()
     gc.setupDate('2021-09-01')
@@ -37,7 +37,7 @@ describe('CGM input events displaying', () => {
         ftp.uploadOnFtp('CSE_D2CC', 'gcr-84-input-files-events-display/20210901_2230_glsk.xml', glsk)
         // delete first cgm file
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/GLSKs/', '20210901_2230_glsk.xml')
+            minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/GLSKs/', '20210901_2230_glsk.xml')
         })
 
         goToEvents();
@@ -52,10 +52,10 @@ describe('CGM input events displaying', () => {
         ftp.deleteOnFtp('CSE_D2CC', 'glsks/20210901_2230_glsk.xml')
 
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210901_2230_test_network.uct')
+            minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/CGMs/', '20210901_2230_test_network.uct')
         })
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/D2CC/CGMs/', '20210901_2230_test_network1.uct')
+            minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/CGMs/', '20210901_2230_test_network1.uct')
         })
     });
 })
