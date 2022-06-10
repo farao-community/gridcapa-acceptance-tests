@@ -5,6 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import crypto from "crypto";
+const gridcapaUser = Cypress.env('GRIDCAPA_USER');
+const gridcapaPassword = Cypress.env('GRIDCAPA_PASSWORD');
 
 export function clearAndVisit(link) {
     cy.visit(link, {
@@ -16,6 +18,11 @@ export function clearAndVisit(link) {
 
 export function authentication() {
     cy.get('button').click()
+    if (gridcapaUser) {
+        cy.get('#username').type(gridcapaUser)
+        cy.get('#password').type(gridcapaPassword)
+        cy.get('#kc-login').click()
+    }
 }
 
 export function getTimestampView() {
