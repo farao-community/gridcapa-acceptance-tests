@@ -21,7 +21,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 })
 
 function checkTaskNotCreated(date, time) {
-    task.checkTaskNotCreated(date, time, ntc)
+    task.checkFileNotCreated(date, time, ntc)
 }
 
 function checkTaskCreated(date, time, filename, timeout = null) {

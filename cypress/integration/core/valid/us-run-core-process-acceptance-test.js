@@ -51,10 +51,20 @@ describe('Test behaviour of run button', () => {
         runButtonStatusShouldBeDisabled()
     });
     it("Check button is clickable when task is ready", () => {
-        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723-F301-01.xml', 'cbcoras')
-        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723-F226-v1.xml', 'glsks')
-        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723-F110.xml', 'refprogs')
-        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv', 'studypoints')
+        ftp.uploadFilesOnFtp(
+            'CORE_VALID',
+            [
+                'grc-69-run-process/core/valid/20210723-F301-01.xml',
+                'grc-69-run-process/core/valid/20210723-F226-v1.xml',
+                'grc-69-run-process/core/valid/20210723-F110.xml',
+                'grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv'
+            ],
+            [
+                'cbcoras',
+                'glsks',
+                'refprogs',
+                'studypoints'
+            ])
         cy.visit('/core/valid')
         selectTimestampViewForDate(date)
         gc.setupTime(time)
@@ -85,11 +95,6 @@ describe('Test behaviour of run button', () => {
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFolderFromMinio('/gridcapa/CORE/', 'VALID');
         });
-        ftp.deleteOnFtp('CORE_VALID', 'cgms/20210723_0030_2D5_CGM.uct')
-        ftp.deleteOnFtp('CORE_VALID', 'cgms/20210723_1530_2D5_CGM.uct')
-        ftp.deleteOnFtp('CORE_VALID', 'cbcoras/20210723-F301-01.xml')
-        ftp.deleteOnFtp('CORE_VALID', 'glsks/20210723-F226-v1.xml')
-        ftp.deleteOnFtp('CORE_VALID', 'refprogs/20210723-F110.xml')
-        ftp.deleteOnFtp('CORE_VALID', 'studypoints/20210723-Points_Etude-v01.csv')
+        ftp.deleteFolderOnFtp( '/core/', 'valid');
     })
 })

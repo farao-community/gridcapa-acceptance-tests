@@ -13,6 +13,7 @@ import {
     selectTimestampViewForDate,
     timestampStatusShouldBe
 } from "../../support/function";
+import * as task from "../../support/task";
 
 const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
 const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
@@ -32,13 +33,21 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 describe('Check CSE D2CC import corner runs correctly', () => {
 
     it('Check CSE D2CC import corner runs correctly', () => {
-        ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_test_network.uct', cgm)
-        ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_213_GSK_CO_CSE1.xml', glsk)
-        ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_213_CRAC_CO_CSE1.xml', crac)
-        ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/2021_test_NTC_annual.xml', ntc)
-        ftp.uploadOnFtp('CSE_D2CC', 'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml', ntcred)
         gc.clearAndVisit('/cse/import/d2cc')
         gc.authentication()
+        task.checkTaskNotCreated('2021-09-01', '22:30')
+
+        ftp.uploadFilesOnFtp('CSE_D2CC',
+            [
+                'grc-inputs-files-d2cc-process/20210901_2230_test_network.uct',
+                'grc-inputs-files-d2cc-process/20210901_2230_213_GSK_CO_CSE1.xml',
+                'grc-inputs-files-d2cc-process/20210901_2230_213_CRAC_CO_CSE1.xml',
+                'grc-inputs-files-d2cc-process/2021_test_NTC_annual.xml',
+                'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml'
+                ],
+            [cgm, glsk, crac, ntc, ntcred])
+
+        cy.visit('/cse/import/d2cc')
         selectTimestampViewForDate('2021-09-01')
         gc.setupTime('22:30')
         timestampStatusShouldBe('READY', TIMEOUT_UPLOAD)
@@ -50,10 +59,6 @@ describe('Check CSE D2CC import corner runs correctly', () => {
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFolderFromMinio('/gridcapa/CSE/IMPORT/', 'D2CC');
         });
-        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210901_2230_test_network.uct')
-        ftp.deleteOnFtp('CSE_D2CC', 'glsks/20210901_2230_213_GSK_CO_CSE1.xml')
-        ftp.deleteOnFtp('CSE_D2CC', 'cracs/20210901_2230_213_CRAC_CO_CSE1.xm')
-        ftp.deleteOnFtp('CSE_D2CC', 'ntc/2021_test_NTC_annual.xml')
-        ftp.deleteOnFtp('CSE_D2CC', 'ntcreds/20210901_2D3_NTC_reductions_test.xml')
+        ftp.deleteFolderOnFtp( '/cse/import/', 'd2cc');
     })
 })

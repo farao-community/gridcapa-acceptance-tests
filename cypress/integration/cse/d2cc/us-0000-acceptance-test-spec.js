@@ -23,7 +23,7 @@ describe('CGM automatic import handling', () => {
     it('Triggers one task creation when CGM archive with one CGM arrives', () => {
         gc.clearAndVisit('/cse/import/d2cc')
         gc.authentication()
-        task.checkTaskNotCreated('2021-07-01', '14:30', cgm)
+        task.checkFileNotCreated('2021-07-01', '14:30', cgm)
         ftp.uploadOnFtp('CSE_D2CC', 'us-0000/20210701.zip', 'cgms')
         cy.visit('/cse/import/d2cc')
         task.checkTaskCreated('2021-07-01', '14:30', '20210701_1430_2D4_UX0.uct', cgm)
@@ -36,44 +36,44 @@ describe('CGM automatic import handling', () => {
     it('Triggers multiple task creation when CGM archive with multiple CGM arrives', () => {
         gc.clearAndVisit('/cse/import/d2cc')
         gc.authentication()
-        task.checkTasksNotCreated('2021-07-02', cgm)
+        task.checkTasksNotCreatedInBDView('2021-07-02')
         ftp.uploadOnFtp('CSE_D2CC', 'us-0000/20210702.zip', 'cgms')
         cy.visit('/cse/import/d2cc')
-        task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0.uct', cgm)
+        task.checkTasksCreatedInBDView('2021-07-02')
         ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210702.zip')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteHourlyFilesFromMinio('/gridcapa/CSE/IMPORT/D2CC/CGMs/', '20210702_{0}30_2D5_UX0.uct')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CSE/IMPORT/D2CC/', 'CGMs');
+        });
     });
 
     it('Triggers no task creation when CGM archive is empty', () => {
         gc.clearAndVisit('/cse/import/d2cc')
         gc.authentication()
-        task.checkTaskNotCreated('2021-07-03', '00:30', cgm)
+        task.checkFileNotCreated('2021-07-03', '00:30', cgm)
         ftp.uploadOnFtp('CSE_D2CC', 'us-0000/20210703.zip', 'cgms')
         cy.visit('/cse/import/d2cc')
-        cy.wait(10000) // To make sure nothing is created even after a couple of seconds
-        task.checkTaskNotCreated('2021-07-03', '00:30', cgm)
+        cy.wait(5000) // To make sure nothing is created even after a couple of seconds
+        task.checkFileNotCreated('2021-07-03', '00:30', cgm)
         ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210703.zip')
     });
 
     it('Triggers multiple task creation when CGM archive with multiple CGM and subdirectories arrives', () => {
         gc.clearAndVisit('/cse/import/d2cc')
         gc.authentication()
-        task.checkTasksNotCreated('2021-07-02', cgm)
+        task.checkTasksNotCreatedInBDView('2021-07-02')
         ftp.uploadOnFtp('CSE_D2CC', 'us-0000/20210702_sub_dir.zip', 'cgms')
         cy.visit('/cse/import/d2cc')
-        task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0.uct', cgm)
+        task.checkTasksCreatedInBDView('2021-07-02')
         ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210702_sub_dir.zip')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteHourlyFilesFromMinio('/gridcapa/CSE/IMPORT/D2CC/CGMs/', '20210702_{0}30_2D5_UX0.uct')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CSE/IMPORT/D2CC/', 'CGMs');
+        });
     });
 
     it('Triggers a task creation when a bare CGM file arrives', () => {
         gc.clearAndVisit('/cse/import/d2cc')
         gc.authentication()
-        task.checkTaskNotCreated('2021-07-02', '23:30', cgm)
+        task.checkFileNotCreated('2021-07-02', '23:30', cgm)
         ftp.uploadOnFtp('CSE_D2CC', 'us-0000/20210702_2330_2D5_UX0.uct', 'cgms')
         cy.visit('/cse/import/d2cc')
         task.checkTaskCreated('2021-07-02', '23:30', '20210702_2330_2D5_UX0.uct', cgm)

@@ -24,7 +24,14 @@ String.prototype.format = function() {
     return a
 }
 
-export function checkTaskNotCreated(date, time, fileType, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+export function checkTaskNotCreated(date, time, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    gc.getTimestampView();
+    gc.setupDate(date);
+    gc.setupTime(time);
+    gc.timestampStatusShouldBe(notCreated, timeout);
+}
+
+export function checkFileNotCreated(date, time, fileType, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     gc.getTimestampView();
     gc.setupDate(date);
     gc.setupTime(time);
@@ -48,6 +55,24 @@ export function checkTasksNotCreated(date, fileType, timeout = DEFAULT_FTP_UPLOA
             expectedStatus : notPresent,
             timeout : timeout
         })
+    }
+}
+
+export function checkTasksCreatedInBDView(date, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    gc.getBusinessDateView()
+    gc.setupDate(date)
+    for (let hour = 0; hour < 24; hour++) {
+        let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
+        gc.statusShouldBe(date + ' ' + hourOnTwoDigits + ':30', created, timeout)
+    }
+}
+
+export function checkTasksNotCreatedInBDView(date, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    gc.getBusinessDateView()
+    gc.setupDate(date)
+    for (let hour = 0; hour < 24; hour++) {
+        let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
+        gc.statusShouldBe(date + ' ' + hourOnTwoDigits + ':30', notCreated, timeout)
     }
 }
 

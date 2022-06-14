@@ -22,13 +22,16 @@ describe('CGM automatic import handling', () => {
     it('Triggers multiple task creation when CGM archive with multiple CGM and no zip extension arrives', () => {
         gc.clearAndVisit('/core/valid')
         gc.authentication()
-        task.checkTasksNotCreated('2021-07-02', cgm)
+        task.checkTasksNotCreatedInBDView('2021-07-02')
         ftp.uploadOnFtp('CORE_VALID', 'us-0000/20210702.zip', 'cgms')
         cy.visit('/core/valid')
+        // Check arrival in TS view
         task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0.uct', cgm)
-        ftp.deleteOnFtp('CORE_VALID', 'cgms/20210702.zip')
+        // Check arrival in BD view
+        task.checkTasksCreatedInBDView('2021-07-02')
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteHourlyFilesFromMinio('/gridcapa/CORE/VALID/CGMs/', '20210702_{0}30_2D5_UX0.uct')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CORE/', 'VALID');
+        });
+        ftp.deleteFolderOnFtp( '/core/', 'valid');
     });
 })

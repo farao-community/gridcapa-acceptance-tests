@@ -29,6 +29,10 @@ export function getTimestampView() {
     cy.get('[data-test=timestamp-view]').click()
 }
 
+export function getBusinessDateView() {
+    cy.get('[data-test=business-view]').click()
+}
+
 export function setupDate(date) {
     cy.get('[data-test=timestamp-date-picker]').type(date)
 }
@@ -56,6 +60,10 @@ export function timestampShouldBeRunningOrAlreadyFailed(timeout) {
             return false;
         }
     })
+}
+
+export function statusShouldBe(timestamp, expectedStatus, timeout) {
+    cy.get('[data-test="' + timestamp + '-task-status"]', {timeout: timeout}).should('have.text', expectedStatus)
 }
 
 export function runButtonStatusShouldBeDisabled() {

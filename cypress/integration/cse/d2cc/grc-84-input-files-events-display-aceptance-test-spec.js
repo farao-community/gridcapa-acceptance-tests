@@ -22,19 +22,20 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 function goToEvents() {
     gc.clearAndVisit('/cse/import/d2cc')
     gc.authentication()
-    cy.visit('/cse/import/d2cc')
     gc.getTimestampView()
     gc.clickOnEventsTab()
     gc.setupDate('2021-09-01')
     gc.setupTime('22:30')
 }
+
 describe('CGM input events displaying', () => {
 
     it('Triggers task creation and event display when file arrives, then update event when file updated, and deletion event when file deleted', () => {
 
-        ftp.uploadOnFtp('CSE_D2CC', 'gcr-84-input-files-events-display/20210901_2230_test_network.uct', cgm)
-        ftp.uploadOnFtp('CSE_D2CC', 'gcr-84-input-files-events-display/20210901_2230_test_network1.uct', cgm)
-        ftp.uploadOnFtp('CSE_D2CC', 'gcr-84-input-files-events-display/20210901_2230_glsk.xml', glsk)
+        ftp.uploadFilesOnFtp('CSE_D2CC', [
+            'gcr-84-input-files-events-display/20210901_2230_test_network.uct',
+            'gcr-84-input-files-events-display/20210901_2230_test_network1.uct',
+            'gcr-84-input-files-events-display/20210901_2230_glsk.xml'], [cgm, cgm, glsk]);
         // delete first cgm file
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/GLSKs/', '20210901_2230_glsk.xml')
@@ -47,15 +48,9 @@ describe('CGM input events displaying', () => {
         gc.checkFileEventDisplayed('INFO', 'The GLSK : \'20210901_2230_glsk.xml\' is deleted')
 
         // cleaning
-        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210901_2230_test_network.uct')
-        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210901_2230_test_network1.uct')
-        ftp.deleteOnFtp('CSE_D2CC', 'glsks/20210901_2230_glsk.xml')
-
         minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/CGMs/', '20210901_2230_test_network.uct')
-        })
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/CGMs/', '20210901_2230_test_network1.uct')
-        })
+            minio.deleteFolderFromMinio('/gridcapa/CSE/IMPORT/', 'D2CC');
+        });
+        ftp.deleteFolderOnFtp( '/cse/import/', 'd2cc');
     });
 })
