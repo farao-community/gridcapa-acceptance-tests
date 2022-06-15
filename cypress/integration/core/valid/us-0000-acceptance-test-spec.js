@@ -24,11 +24,13 @@ describe('CGM automatic import handling', () => {
         gc.authentication()
         task.checkTasksNotCreatedInBDView('2021-07-02')
         ftp.uploadOnFtp('CORE_VALID', 'us-0000/20210702.zip', 'cgms')
+
         cy.visit('/core/valid')
         // Check arrival in TS view
         task.checkTasksCreated('2021-07-02', '20210702_{0}30_2D5_UX0.uct', cgm)
         // Check arrival in BD view
         task.checkTasksCreatedInBDView('2021-07-02')
+
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFolderFromMinio('/gridcapa/CORE/', 'VALID');
         });

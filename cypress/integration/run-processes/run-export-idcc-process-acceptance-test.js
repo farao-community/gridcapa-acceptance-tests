@@ -33,7 +33,7 @@ describe('Check CSE IDCC export corner runs correctly', () => {
         gc.clearAndVisit('/cse/export/idcc')
         gc.authentication()
         task.checkTaskNotCreated('2022-01-28', '16:30')
-        ftp.uploadOnFtp(
+        ftp.uploadFilesOnFtp(
             'CSE_EXPORT_IDCC',
             ['run-export/20220128_1630_155_Initial_CSE1_Transit.uct', 'run-export/20220128_1630_145_CRAC_CO_CSE1_Transit.xml'],
             [cgm, crac]

@@ -58,7 +58,7 @@ export function deleteFolderFromMinio(folderPath, folderName) {
 }
 
 export function selectFileFromMinio(objectName) {
-    cy.get('.fesl-item-name > a').contains(objectName).click()
+    cy.get('.fesl-item-name > a', timeoutProps).contains(objectName).click()
 }
 
 export function deleteSelectedFromMinio() {
@@ -73,15 +73,17 @@ export function runOnMinio(user, password, lambda) {
 }
 
 function connectToMinio(user, password) {
+    cy.intercept('/minio/webrpc').as('minioLogin')
     cy.visit(gridCapaMinioPath + '/login')
     cy.get('#accessKey', timeoutProps).type(user, { log: false })
     cy.get('#secretKey', timeoutProps).type(password, { log: false })
     cy.get('button[type=submit]', timeoutProps).click()
+    cy.wait('@minioLogin') // It waits for login to be fulfilled before going next step
 }
 
 function disconnectFromMinio() {
-    cy.get('#top-right-menu', timeoutProps).click()
-    cy.get('#logout', timeoutProps).click()
+    cy.get('#top-right-menu', timeoutProps).click({ force: true })
+    cy.get('#logout', timeoutProps).click({ force: true })
 }
 
 String.prototype.format = function() {

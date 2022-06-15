@@ -36,6 +36,10 @@ describe('CGM input events displaying', () => {
             'gcr-84-input-files-events-display/20210901_2230_test_network.uct',
             'gcr-84-input-files-events-display/20210901_2230_test_network1.uct',
             'gcr-84-input-files-events-display/20210901_2230_glsk.xml'], [cgm, cgm, glsk]);
+
+        // wait for upload
+        cy.wait(2000)
+
         // delete first cgm file
         minio.runOnMinio(minioUser, minioPassword, () => {
             minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/GLSKs/', '20210901_2230_glsk.xml')
