@@ -5,8 +5,23 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import crypto from "crypto";
-const gridcapaUser = Cypress.env('GRIDCAPA_USER');
-const gridcapaPassword = Cypress.env('GRIDCAPA_PASSWORD');
+
+const GRIDCAPA_USER = Cypress.env('GRIDCAPA_USER');
+const GRIDCAPA_PASSWORD = Cypress.env('GRIDCAPA_PASSWORD');
+const FORMATTING_LOCAL = 'en-US';
+const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S = 60;
+const S_TO_MS_FACTOR = 1000;
+const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S * S_TO_MS_FACTOR;
+
+// Tasks and files status to be tested
+export const NOT_CREATED = 'NOT_CREATED';
+export const CREATED = 'CREATED';
+export const NOT_PRESENT = 'NOT_PRESENT';
+export const VALIDATED = 'VALIDATED';
+export const READY = 'READY';
+export const RUNNING = 'RUNNING';
+export const SUCCESS = 'SUCCESS';
+export const ERROR = 'ERROR';
 
 export function clearAndVisit(link) {
     cy.visit(link, {
@@ -16,11 +31,11 @@ export function clearAndVisit(link) {
     })
 }
 
-export function authentication() {
+export function authenticate() {
     cy.get('button').click()
-    if (gridcapaUser) {
-        cy.get('#username').type(gridcapaUser)
-        cy.get('#password').type(gridcapaPassword)
+    if (GRIDCAPA_USER) {
+        cy.get('#username').type(GRIDCAPA_USER, { log: false })
+        cy.get('#password').type(GRIDCAPA_PASSWORD, { log: false })
         cy.get('#kc-login').click()
     }
 }
@@ -33,52 +48,39 @@ export function getBusinessDateView() {
     cy.get('[data-test=business-view]').click()
 }
 
-export function setupDate(date) {
+export function setDate(date) {
     cy.get('[data-test=timestamp-date-picker]').type(date)
 }
 
-export function clickOnEventsTab() {
-    cy.get('[data-test=events]').click()
-}
-
-export function selectTimestampViewForDate(date) {
-    getTimestampView()
-    setupDate(date)
-}
-
-export function setupTime(time) {
+export function setTime(time) {
     cy.get('[data-test=timestamp-time-picker]').type(time)
 }
 
-export function timestampStatusShouldBe(timestampStatus, timeout) {
-    cy.get('[data-test=timestamp-status]', {timeout: timeout}).should('have.text', timestampStatus)
+export function getEvents() {
+    cy.get('[data-test=events]').click()
 }
 
-export function timestampShouldBeRunningOrAlreadyFailed(timeout) {
-    cy.get('[data-test=timestamp-status]', {timeout: timeout}).invoke('text').then((text) => {
-        if (!(text.includes("RUNNING") || text.includes("ERROR"))) {
-            return false;
-        }
-    })
-}
-
-export function statusShouldBe(timestamp, expectedStatus, timeout) {
-    cy.get('[data-test="' + timestamp + '-task-status"]', {timeout: timeout}).should('have.text', expectedStatus)
-}
-
-export function runButtonStatusShouldBeDisabled() {
-    cy.get('[data-test=run-button]').should('be.disabled')
-}
-
-export function runButtonStatusShouldBeEnabled() {
-    cy.get('[data-test=run-button]').should('not.be.disabled')
-}
-
-export function clickRunButton() {
+export function runComputation() {
     cy.get('[data-test=run-button]').click();
 }
 
-export function inputDataShouldBe({expectedType, expectedStatus, expectedFilename, expectedLatestModification, timeout}={}) {
+export function statusInTimestampViewShouldBe(timestampStatus, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    cy.get('[data-test=timestamp-status]', {timeout: timeout}).should('have.text', timestampStatus)
+}
+
+export function statusInBDViewShouldBe(timestamp, expectedStatus, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    cy.get('[data-test="' + timestamp + '-task-status"]', {timeout: timeout}).should('have.text', expectedStatus)
+}
+
+export function runButtonShouldBeDisabled() {
+    cy.get('[data-test=run-button]').should('be.disabled')
+}
+
+export function runButtonShouldBeEnabled() {
+    cy.get('[data-test=run-button]').should('not.be.disabled')
+}
+
+function inputDataShouldBe({expectedType, expectedStatus, expectedFilename, expectedLatestModification, timeout}={}) {
     const timeoutProps = {timeout: timeout}
     cy.get('[data-test=' + expectedType + '-input-type]', timeoutProps).should('have.text', expectedType)
     cy.get('[data-test=' + expectedType + '-input-status]', timeoutProps).should('have.text', expectedStatus)
@@ -94,15 +96,48 @@ export function inputDataShouldBe({expectedType, expectedStatus, expectedFilenam
     }
 }
 
-export function sha256(param) {
-    return crypto.createHash('sha256').update(param, 'utf8').digest('hex'); // UTF8 text hash
-}
-
-export function checkFileEventDisplayed(expectedLevel, expectedMessage, timeout) {
+export function eventShouldBe(expectedLevel, expectedMessage, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     const timeoutProp = {timeout: timeout}
     cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-level]', timeoutProp).should('have.text', expectedLevel)
     cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-message]', timeoutProp).should('have.text', expectedMessage)
     cy.get('[data-test=' + sha256(expectedMessage) + '-process-event-timestamp]').should('not.be.empty')
+}
+
+export function fileShouldBeUploaded(filename, fileType, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    inputDataShouldBe({
+        expectedType : fileType,
+        expectedStatus : VALIDATED,
+        expectedFilename : filename,
+        expectedLatestModification : true,
+        timeout : timeout
+    })
+}
+
+export function businessDateFilesShouldBeUploaded(filenameFormat, fileType, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    for (let hour = 0; hour < 24; hour++) {
+        let hourOnTwoDigits = hour.toLocaleString(FORMATTING_LOCAL, {minimumIntegerDigits: 2, useGrouping:false})
+        setTime(hourOnTwoDigits + ':30')
+        fileShouldBeUploaded(filenameFormat.format(hourOnTwoDigits), fileType, timeout)
+    }
+}
+
+export function businessDateTasksStatusShouldBe(date, status, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    for (let hour = 0; hour < 24; hour++) {
+        let hourOnTwoDigits = hour.toLocaleString(FORMATTING_LOCAL, {minimumIntegerDigits: 2, useGrouping:false})
+        statusInBDViewShouldBe(date + ' ' + hourOnTwoDigits + ':30', status, timeout)
+    }
+}
+
+function sha256(param) {
+    return crypto.createHash('sha256').update(param, 'utf8').digest('hex'); // UTF8 text hash
+}
+
+String.prototype.format = function() {
+    let a = this;
+    for (let k in arguments) {
+        a = a.replace("{" + k + "}", arguments[k])
+    }
+    return a
 }
 
 

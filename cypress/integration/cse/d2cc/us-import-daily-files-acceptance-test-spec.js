@@ -6,12 +6,10 @@
  */
 import * as gc from "../../../support/function";
 import * as minio from "../../../support/minio";
-import * as task from "../../../support/task";
 import * as ftp from "../../../support/ftp-browser.js";
 
-const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
-const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
-const ntcred = 'NTC-RED';
+const URL = '/cse/import/d2cc'
+const DATE = '2021-09-01'
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
@@ -20,16 +18,24 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 })
 
 describe('NTCRED automatic import handling', () => {
+
     it('Triggers 24 tasks creation when NTCRED arrives', () => {
-        gc.clearAndVisit('/cse/import/d2cc')
-        gc.authentication()
-        task.checkTasksNotCreatedInBDView('2021-09-01')
-        ftp.uploadOnFtp('CSE_D2CC', 'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml', 'ntcreds')
-        cy.visit('/cse/import/d2cc')
-        task.checkTasksCreatedInBDView('2021-09-01')
-        ftp.deleteOnFtp('CSE_D2CC', 'ntcreds/20210901_2D3_NTC_reductions_test.xml')
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/NTCREDs/', '20210901_2D3_NTC_reductions_test.xml')
+        gc.clearAndVisit(URL)
+        gc.authenticate()
+        gc.getBusinessDateView()
+        gc.setDate(DATE)
+        gc.businessDateTasksStatusShouldBe(DATE, gc.NOT_CREATED)
+
+        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml', ftp.NTC_RED)
+
+        cy.visit(URL)
+        gc.getBusinessDateView()
+        gc.setDate(DATE)
+        gc.businessDateTasksStatusShouldBe(DATE, gc.CREATED)
+
+        minio.runOnMinio(() => {
+            minio.deleteProcessFolder(minio.CSE_IMPORT_D2CC);
         })
+        ftp.deleteProcessFolder(ftp.CSE_IMPORT_D2CC)
     });
 })

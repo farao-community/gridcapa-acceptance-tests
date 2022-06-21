@@ -5,13 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import * as gc from "../../../support/function";
-import * as task from "../../../support/task";
 import * as ftp from "../../../support/ftp-browser.js";
 import * as minio from "../../../support/minio.js";
 
-const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
-const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
-const cgm = 'CGM';
+const URL = '/cse/import/d2cc'
+const CGM = 'CGM'
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
@@ -19,67 +17,109 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
 })
 
+function cleanData() {
+    minio.runOnMinio(() => {
+        minio.deleteProcessFolder(minio.CSE_IMPORT_D2CC);
+    })
+    ftp.deleteProcessFolder(ftp.CSE_IMPORT_D2CC)
+}
+
 describe('CGM automatic import handling', () => {
+
     it('Triggers one task creation when CGM archive with one CGM arrives', () => {
-        gc.clearAndVisit('/cse/import/d2cc')
-        gc.authentication()
-        task.checkFileNotCreated('2021-07-01', '14:30', cgm)
-        ftp.uploadOnFtp('CSE_D2CC', 'us-0000/20210701.zip', 'cgms')
-        cy.visit('/cse/import/d2cc')
-        task.checkTaskCreated('2021-07-01', '14:30', '20210701_1430_2D4_UX0.uct', cgm)
-        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210701.zip')
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/CGMs/', '20210701_1430_2D4_UX0.uct')
-        })
+        gc.clearAndVisit(URL)
+        gc.authenticate()
+
+        gc.getTimestampView()
+        gc.setDate('2021-07-01')
+        gc.setTime('14:30')
+        gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
+
+        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210701.zip', ftp.CGM)
+
+        cy.visit(URL)
+        gc.getTimestampView()
+        gc.setDate('2021-07-01')
+        gc.setTime('14:30')
+        gc.fileShouldBeUploaded('20210701_1430_2D4_UX0.uct', CGM)
+
+        cleanData()
     });
 
     it('Triggers multiple task creation when CGM archive with multiple CGM arrives', () => {
-        gc.clearAndVisit('/cse/import/d2cc')
-        gc.authentication()
-        task.checkTasksNotCreatedInBDView('2021-07-02')
-        ftp.uploadOnFtp('CSE_D2CC', 'us-0000/20210702.zip', 'cgms')
-        cy.visit('/cse/import/d2cc')
-        task.checkTasksCreatedInBDView('2021-07-02')
-        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210702.zip')
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFolderFromMinio('/gridcapa/CSE/IMPORT/D2CC/', 'CGMs');
-        });
+        gc.clearAndVisit(URL)
+        gc.authenticate()
+
+        gc.getBusinessDateView()
+        gc.setDate('2021-07-02')
+        gc.businessDateTasksStatusShouldBe('2021-07-02', gc.NOT_CREATED)
+
+        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210702.zip', ftp.CGM)
+
+        cy.visit(URL)
+        gc.getBusinessDateView()
+        gc.setDate('2021-07-02')
+        gc.businessDateTasksStatusShouldBe('2021-07-02', gc.CREATED)
+
+        cleanData()
     });
 
     it('Triggers no task creation when CGM archive is empty', () => {
-        gc.clearAndVisit('/cse/import/d2cc')
-        gc.authentication()
-        task.checkFileNotCreated('2021-07-03', '00:30', cgm)
-        ftp.uploadOnFtp('CSE_D2CC', 'us-0000/20210703.zip', 'cgms')
-        cy.visit('/cse/import/d2cc')
-        cy.wait(5000) // To make sure nothing is created even after a couple of seconds
-        task.checkFileNotCreated('2021-07-03', '00:30', cgm)
-        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210703.zip')
+        gc.clearAndVisit(URL)
+        gc.authenticate()
+
+        gc.getTimestampView()
+        gc.setDate('2021-07-03')
+        gc.setTime('00:30')
+        gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
+
+        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210703.zip', ftp.CGM)
+        cy.wait(5000) // To make sure nothing is created even after a couple of seconds - 5s
+
+        cy.visit(URL)
+        gc.getTimestampView()
+        gc.setDate('2021-07-03')
+        gc.setTime('00:30')
+        gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
+
+        ftp.deleteProcessFolder(ftp.CSE_IMPORT_D2CC)
     });
 
     it('Triggers multiple task creation when CGM archive with multiple CGM and subdirectories arrives', () => {
-        gc.clearAndVisit('/cse/import/d2cc')
-        gc.authentication()
-        task.checkTasksNotCreatedInBDView('2021-07-02')
-        ftp.uploadOnFtp('CSE_D2CC', 'us-0000/20210702_sub_dir.zip', 'cgms')
-        cy.visit('/cse/import/d2cc')
-        task.checkTasksCreatedInBDView('2021-07-02')
-        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210702_sub_dir.zip')
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFolderFromMinio('/gridcapa/CSE/IMPORT/D2CC/', 'CGMs');
-        });
+        gc.clearAndVisit(URL)
+        gc.authenticate()
+
+        gc.getBusinessDateView()
+        gc.setDate('2021-07-02')
+        gc.businessDateTasksStatusShouldBe('2021-07-02', gc.NOT_CREATED)
+
+        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210702_sub_dir.zip', ftp.CGM)
+
+        cy.visit(URL)
+        gc.getBusinessDateView()
+        gc.setDate('2021-07-02')
+        gc.businessDateTasksStatusShouldBe('2021-07-02', gc.CREATED)
+
+        cleanData()
     });
 
     it('Triggers a task creation when a bare CGM file arrives', () => {
-        gc.clearAndVisit('/cse/import/d2cc')
-        gc.authentication()
-        task.checkFileNotCreated('2021-07-02', '23:30', cgm)
-        ftp.uploadOnFtp('CSE_D2CC', 'us-0000/20210702_2330_2D5_UX0.uct', 'cgms')
-        cy.visit('/cse/import/d2cc')
-        task.checkTaskCreated('2021-07-02', '23:30', '20210702_2330_2D5_UX0.uct', cgm)
-        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210702_2330_2D5_UX0.uct')
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFileFromMinio('/gridcapa/CSE/IMPORT/D2CC/CGMs/', '20210702_2330_2D5_UX0.uct')
-        })
+        gc.clearAndVisit(URL)
+        gc.authenticate()
+
+        gc.getTimestampView()
+        gc.setDate('2021-07-02')
+        gc.setTime('23:30')
+        gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
+
+        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210702_2330_2D5_UX0.uct', ftp.CGM)
+
+        cy.visit(URL)
+        gc.getTimestampView()
+        gc.setDate('2021-07-02')
+        gc.setTime('23:30')
+        gc.fileShouldBeUploaded('20210702_2330_2D5_UX0.uct', CGM)
+
+        cleanData()
     });
 })

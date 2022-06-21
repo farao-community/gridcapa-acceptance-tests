@@ -6,28 +6,14 @@
  */
 
 import * as gc from "../../../support/function";
-import {
-    clickRunButton,
-    runButtonStatusShouldBeDisabled,
-    runButtonStatusShouldBeEnabled,
-    selectTimestampViewForDate,
-    timestampStatusShouldBe
-} from "../../../support/function";
 import * as ftp from "../../../support/ftp-browser";
 import * as minio from "../../../support/minio";
 
-const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
-const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
-
-const year = "2021";
-const month = "07";
-const day = "23";
-const hour = "00";
-const minute = "30";
-const date = year + "-" + month + "-" + day
-const time = hour + ":" + minute
-
-const TIMEOUT = 30000
+const URL = '/core/valid'
+const DATE = '2021-07-23'
+const TIME_NIGHT = '00:30'
+const TIME_DAY = '15:30'
+const TIMEOUT = 30000 // 30s
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
@@ -36,65 +22,75 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 })
 
 describe('Test behaviour of run button', () => {
+
     it('Check button is disabled when task is not created', () => {
-        gc.clearAndVisit('/core/valid')
-        gc.authentication()
-        selectTimestampViewForDate(date)
-        gc.setupTime(time)
-        runButtonStatusShouldBeDisabled()
+        gc.clearAndVisit(URL)
+        gc.authenticate()
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME_NIGHT)
+        gc.runButtonShouldBeDisabled()
     });
+
     it("Check button is disabled when one file is uploaded", () => {
-        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723_0030_2D5_CGM.uct', 'cgms')
-        cy.visit('/core/valid')
-        selectTimestampViewForDate(date)
-        gc.setupTime(time)
-        runButtonStatusShouldBeDisabled()
+        ftp.uploadFile(ftp.CORE_VALID, 'grc-69-run-process/core/valid/20210723_0030_2D5_CGM.uct', ftp.CGM)
+
+        cy.visit(URL)
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME_NIGHT)
+        gc.runButtonShouldBeDisabled()
     });
+
     it("Check button is clickable when task is ready", () => {
-        ftp.uploadFilesOnFtp(
-            'CORE_VALID',
+        ftp.uploadFiles(
+            ftp.CORE_VALID,
             [
                 'grc-69-run-process/core/valid/20210723-F301-01.xml',
                 'grc-69-run-process/core/valid/20210723-F226-v1.xml',
                 'grc-69-run-process/core/valid/20210723-F110.xml',
                 'grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv'
             ],
-            [
-                'cbcoras',
-                'glsks',
-                'refprogs',
-                'studypoints'
-            ])
-        cy.visit('/core/valid')
-        selectTimestampViewForDate(date)
-        gc.setupTime(time)
-        timestampStatusShouldBe('READY', TIMEOUT)
-        runButtonStatusShouldBeEnabled()
+            [ftp.CBCORA, ftp.GLSK, ftp.REFPROG, ftp.STUDYPOINT]
+        )
+
+        cy.visit(URL)
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME_NIGHT)
+        gc.statusInTimestampViewShouldBe(gc.READY, TIMEOUT)
+        gc.runButtonShouldBeEnabled()
     })
+
     it("Check status change to running after run click and goes to success at 00:30", () => {
-        cy.visit('/core/valid')
-        selectTimestampViewForDate(date)
-        gc.setupTime(time)
-        timestampStatusShouldBe('READY', TIMEOUT)
-        clickRunButton()
-        timestampStatusShouldBe('RUNNING', TIMEOUT)
-        timestampStatusShouldBe('SUCCESS', TIMEOUT)
-        runButtonStatusShouldBeEnabled()
+        cy.visit(URL)
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME_NIGHT)
+        gc.statusInTimestampViewShouldBe(gc.READY, TIMEOUT)
+        gc.runComputation()
+        gc.statusInTimestampViewShouldBe(gc.RUNNING, TIMEOUT)
+        gc.statusInTimestampViewShouldBe(gc.SUCCESS, TIMEOUT)
+        gc.runButtonShouldBeEnabled()
     })
+
     it("Check status change to running after run click and goes to error at 15:30", () => {
-        ftp.uploadOnFtp('CORE_VALID', 'grc-69-run-process/core/valid/20210723_1530_2D5_CGM.uct', 'cgms')
-        cy.visit('/core/valid')
-        selectTimestampViewForDate(date)
-        gc.setupTime('15:30')
-        timestampStatusShouldBe('READY', TIMEOUT)
-        clickRunButton()
-        timestampStatusShouldBe('ERROR', TIMEOUT) // Sometimes cypress is too slow to get 'RUNNING' before 'ERROR' is shown in the HMI
-        runButtonStatusShouldBeEnabled()
+        ftp.uploadFile(ftp.CORE_VALID, 'grc-69-run-process/core/valid/20210723_1530_2D5_CGM.uct', ftp.CGM)
+
+        cy.visit(URL)
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME_DAY)
+        gc.statusInTimestampViewShouldBe(gc.READY, TIMEOUT)
+        gc.runComputation()
+        gc.statusInTimestampViewShouldBe(gc.ERROR, TIMEOUT) // Sometimes cypress is too slow to get 'RUNNING' before 'ERROR' is shown in the HMI
+        gc.runButtonShouldBeEnabled()
     })
+
     it("Delete files from minio and SFTP", () => {
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFolderFromMinio('/gridcapa/CORE/', 'VALID');
+        minio.runOnMinio(() => {
+            minio.deleteProcessFolder(minio.CORE_VALID);
         });
-        ftp.deleteFolderOnFtp( '/core/', 'valid');
+        ftp.deleteProcessFolder(ftp.CORE_VALID);
     })
 })

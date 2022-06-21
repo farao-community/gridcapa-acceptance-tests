@@ -7,23 +7,13 @@
 import * as gc from "../../support/function";
 import * as minio from "../../support/minio";
 import * as ftp from "../../support/ftp-browser.js";
-import {
-    clickRunButton,
-    runButtonStatusShouldBeEnabled,
-    selectTimestampViewForDate,
-    timestampStatusShouldBe
-} from "../../support/function";
-import * as task from "../../support/task";
 
-const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
-const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
-const cgm = 'cgms';
-const glsk = 'glsks';
-const crac = 'cracs';
-const ntc = 'ntc';
-const ntcred = 'ntcreds'
+const URL = '/cse/import/d2cc'
+const DATE = '2021-09-01'
+const TIME = '22:30'
 const TIMEOUT_UPLOAD = 120000
 const TIMEOUT = 60000
+
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
     // failing the test
@@ -33,11 +23,16 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 describe('Check CSE D2CC import corner runs correctly', () => {
 
     it('Check CSE D2CC import corner runs correctly', () => {
-        gc.clearAndVisit('/cse/import/d2cc')
-        gc.authentication()
-        task.checkTaskNotCreated('2021-09-01', '22:30')
+        gc.clearAndVisit(URL)
+        gc.authenticate()
 
-        ftp.uploadFilesOnFtp('CSE_D2CC',
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME)
+        gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
+
+        ftp.uploadFiles(
+            ftp.CSE_IMPORT_D2CC,
             [
                 'grc-inputs-files-d2cc-process/20210901_2230_test_network.uct',
                 'grc-inputs-files-d2cc-process/20210901_2230_213_GSK_CO_CSE1.xml',
@@ -45,20 +40,22 @@ describe('Check CSE D2CC import corner runs correctly', () => {
                 'grc-inputs-files-d2cc-process/2021_test_NTC_annual.xml',
                 'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml'
                 ],
-            [cgm, glsk, crac, ntc, ntcred])
+            [ftp.CGM, ftp.GLSK, ftp.CRAC, ftp.NTC, ftp.NTC_RED]
+        )
 
-        cy.visit('/cse/import/d2cc')
-        selectTimestampViewForDate('2021-09-01')
-        gc.setupTime('22:30')
-        timestampStatusShouldBe('READY', TIMEOUT_UPLOAD)
-        runButtonStatusShouldBeEnabled()
-        clickRunButton()
-        timestampStatusShouldBe('RUNNING', TIMEOUT)
-        timestampStatusShouldBe('SUCCESS', TIMEOUT)
+        cy.visit(URL)
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME)
+        gc.statusInTimestampViewShouldBe(gc.READY, TIMEOUT_UPLOAD)
+        gc.runButtonShouldBeEnabled()
+        gc.runComputation()
+        gc.statusInTimestampViewShouldBe(gc.RUNNING, TIMEOUT)
+        gc.statusInTimestampViewShouldBe(gc.SUCCESS, TIMEOUT)
 
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFolderFromMinio('/gridcapa/CSE/IMPORT/', 'D2CC');
+        minio.runOnMinio(() => {
+            minio.deleteProcessFolder(minio.CSE_IMPORT_D2CC);
         });
-        ftp.deleteFolderOnFtp( '/cse/import/', 'd2cc');
+        ftp.deleteProcessFolder(ftp.CSE_IMPORT_D2CC)
     })
 })

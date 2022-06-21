@@ -6,176 +6,111 @@
  */
 import 'cypress-file-upload'
 
-const pathParser = require('path')
-const gridCapaFilebrowserPath = '/utils/filebrowser'
-const ftpHost = Cypress.env('GRIDCAPA_FTP_HOST')
-const ftpUser = Cypress.env('GRIDCAPA_FTP_USER')
-const ftpPassword = Cypress.env('GRIDCAPA_FTP_PASSWORD')
-export const fbUser = Cypress.env('GRIDCAPA_FB_USER');
-export const fbPassword = Cypress.env('GRIDCAPA_FB_PASSWORD')
-const fbRootDirectoryForCseD2cc = '/ftp/cse/import/d2cc/'
-const ftpRootDirectoryForCseD2cc = 'cse/import/d2cc/'
-const fbRootDirectoryForCoreValid = '/ftp/core/valid/'
-const ftpRootDirectoryForCoreValid = 'core/valid/'
-const fbRootDirectoryForCseExportIdcc = '/ftp/cse/export/idcc/'
-const ftpRootDirectoryForCseExportIdcc = 'cse/export/idcc/'
-const fbRootDirectoryForCseExportD2cc = '/ftp/cse/export/d2cc/'
-const ftpRootDirectoryForCseExportD2cc = 'cse/export/d2cc/'
+const FTP_HOST = Cypress.env('GRIDCAPA_FTP_HOST')
+const FTP_USER = Cypress.env('GRIDCAPA_FTP_USER')
+const FTP_PASSWORD = Cypress.env('GRIDCAPA_FTP_PASSWORD')
+const FB_USER = Cypress.env('GRIDCAPA_FB_USER');
+const FB_PASSWORD = Cypress.env('GRIDCAPA_FB_PASSWORD')
+const FB_URL = '/utils/filebrowser'
+const FB_FILES_URL = '/utils/filebrowser/files/ftp/'
 
-export function uploadOnFtp(process, file, path) {
-    uploadFilesOnFtp(process, [file], [path])
+// Process types to upload files on FTP
+export const CSE_IMPORT_D2CC = 'cse/import/d2cc'
+export const CSE_IMPORT_IDCC = 'cse/import/idcc'
+export const CSE_EXPORT_D2CC = 'cse/export/d2cc'
+export const CSE_EXPORT_IDCC = 'cse/export/idcc'
+export const CORE_VALID = 'core/valid'
+
+// File types to upload files on FTP
+export const CGM = 'cgms'
+export const CRAC = 'cracs'
+export const GLSK = 'glsks'
+export const NTC_RED = 'ntcreds'
+export const NTC = 'ntc'
+export const CBCORA = 'cbcoras'
+export const REFPROG = 'refprogs'
+export const STUDYPOINT = 'studypoints'
+
+export function uploadFile(process, file, fileType) {
+    uploadFiles(process, [file], [fileType])
 }
 
-export function uploadFilesOnFtp(process, fileList, pathList) {
-    if (ftpHost) {
+export function uploadFiles(process, fileList, fileTypeList) {
+    if (FTP_HOST) {
         for (let i = 0; i < fileList.length; i++) {
-            uploadOnFtpByCommand(ftpHost, ftpUser, ftpPassword, fileList[i], getFtpRootDirectory(process) + pathList[i])
+            uploadFileOnFtp(FTP_HOST, FTP_USER, FTP_PASSWORD, fileList[i], process + '/' + fileTypeList[i])
         }
     } else {
-        runOnFtpBrowser(fbUser, fbPassword, () => {
+        runOnFb(FB_USER, FB_PASSWORD, () => {
             for (let i = 0; i < fileList.length; i++) {
-                copyZipToFtp(fileList[i], getFbRootDirectory(process) + pathList[i]);
+                uploadFileOnFb(fileList[i], process + '/' + fileTypeList[i]);
             }
         });
     }
 }
 
-export function deleteFilesFromFtp(fileList) {
-    let filesByFolder = new Map()
-    for (let file of fileList) {
-        let fileDirName = pathParser.dirname(file)
-        let fileBaseName = pathParser.basename(file)
-        if (filesByFolder.has(fileDirName)) {
-            filesByFolder.get(fileDirName).push(fileBaseName)
-        } else {
-            filesByFolder.set(fileDirName, [fileBaseName])
-        }
-    }
-    for (let [folderPath, filesInFolder] of filesByFolder) {
-        deleteFilesInFolderFromFtp(folderPath, filesInFolder)
-    }
-}
-
-export function deleteOnFtp(process, file) {
-    let ftpRootDirectory = getFtpRootDirectory(process);
-    let fbRootDirectory = getFbRootDirectory(process);
-    if (ftpHost) {
-        deleteOnFtpByCommand(ftpHost, ftpUser, ftpPassword, ftpRootDirectory + file)
-    } else {
-        runOnFtpBrowser(fbUser, fbPassword, () => {
-            deleteFilesFromFtp([fbRootDirectory + file]);
-        });
-    }
-}
-
-export function deleteFolderOnFtp(folderPath, folder) {
-    let ftpRootDirectory = folderPath;
-    let fbRootDirectory = '/ftp' + folderPath;
-    if (ftpHost) {
-        deleteOnFtpByCommand(ftpHost, ftpUser, ftpPassword, ftpRootDirectory + folder)
-    } else {
-        runOnFtpBrowser(fbUser, fbPassword, () => {
-            deleteFilesInFolderFromFtp(fbRootDirectory, [folder]);
-        });
-    }
-}
-
-export function uploadOnFtpByCommand(host, user, password, file, path) {
+function uploadFileOnFtp(host, user, password, file, path) {
     const command = `curl --ftp-create-dirs -T cypress/fixtures/${file} ftp://${user}:${password}@${host}/${path}/`
-    cy.exec(
-        command,
-        { timeout: 20000, failOnNonZeroExit: false, log: false }
-    )
+    cy.exec(command, { timeout: 20000, failOnNonZeroExit: false, log: false })
 }
 
-export function deleteOnFtpByCommand(host, user, password, file) {
-    const command = `curl ftp://${user}:${password}@${host}/ -Q 'DELE ${file}'`
-    cy.exec(
-        command,
-        { timeout: 20000, failOnNonZeroExit: false, log: false }
-    )
-}
-
-export function copyZipToFtp(file, path) {
-    copyFileToFtp(file, path, 'base64')
-}
-
-export function copyFileToFtp(file, path, encoding) {
+function uploadFileOnFb(file, path) {
     cy.get('button').contains('My files').click()
     cy.get('button').contains('New folder').click()
-    cy.get('.card-content > input[type=text]').type(path)
+    cy.get('.card-content > input[type=text]').type('/ftp/' + path)
     cy.get('button').contains('Create').click()
-    cy.visit(gridCapaFilebrowserPath + '/files' + path)
+    cy.visit(FB_FILES_URL + path)
 
     cy.get('#upload-button').click()
-    if (encoding === undefined) {
-        cy.get('#upload-input').attachFile(file)
+    cy.get('#upload-input').attachFile({ filePath: file, encoding: 'base64' })
+}
+
+export function deleteProcessFolder(process) {
+    if (FTP_HOST) {
+        deleteOnFtp(FTP_HOST, FTP_USER, FTP_PASSWORD, process)
     } else {
-        cy.get('#upload-input').attachFile({ filePath: file, encoding: encoding })
+        const elementPath = process.substring(0, process.lastIndexOf('/'))
+        const element = process.substring(process.lastIndexOf('/') + 1)
+        runOnFb(FB_USER, FB_PASSWORD, () => {
+            deleteOnFb(elementPath, element);
+        });
     }
 }
 
-function deleteFilesInFolderFromFtp(folderPath, fileList) {
-    cy.visit(gridCapaFilebrowserPath + '/files' + folderPath)
-    for (let file of fileList) {
-        selectFileFromFtp(file)
-    }
-    deleteSelectedFromFtp()
+function deleteOnFtp(host, user, password, file) {
+    const command = `curl ftp://${user}:${password}@${host}/ -Q 'DELE ${file}'`
+    cy.exec(command, { timeout: 20000, failOnNonZeroExit: false, log: false })
 }
 
-export function selectFileFromFtp(objectName) {
-    cy.get('.item').contains(objectName).click({
-        ctrlKey: true,
-    })
+function deleteOnFb(elementPath, element) {
+    cy.visit(FB_FILES_URL + elementPath)
+    selectFileOnFb(element)
+    deleteSelectedOnFb()
 }
 
-export function deleteSelectedFromFtp() {
+function selectFileOnFb(objectName) {
+    cy.get('.item').contains(objectName).click({ ctrlKey: true })
+}
+
+function deleteSelectedOnFb() {
     cy.get('#delete-button').click()
     cy.get('.card-action').contains('Delete').click()
 }
 
-export function runOnFtpBrowser(user, password, lambda) {
-    connectToFtpBrowser(user, password);
+function runOnFb(user, password, lambda) {
+    connectToFb(user, password);
     lambda();
-    disconnectFromFtpBrowser();
+    disconnectFromFb();
 }
 
-function connectToFtpBrowser(user, password) {
-    cy.visit(gridCapaFilebrowserPath)
+function connectToFb(user, password) {
+    cy.visit(FB_URL)
     cy.get('input[type=text]').type(user, { log: false })
     cy.get('input[type=password]').type(password, { log: false })
     cy.get('input[type=submit]').click()
     cy.wait(100)
 }
 
-function disconnectFromFtpBrowser() {
+function disconnectFromFb() {
     cy.get('#logout').click()
-}
-
-function getFbRootDirectory(process) {
-    if (process === "CORE_VALID") {
-        return fbRootDirectoryForCoreValid
-    } else if (process === "CSE_D2CC") {
-        return fbRootDirectoryForCseD2cc
-    } else if (process === "CSE_EXPORT_D2CC") {
-        return fbRootDirectoryForCseExportD2cc
-    } else if (process === "CSE_EXPORT_IDCC") {
-        return fbRootDirectoryForCseExportIdcc
-    } else {
-        return fbRootDirectoryForCseD2cc; // CSE D2cc by default
-    }
-}
-
-function getFtpRootDirectory(process) {
-    if (process === "CORE_VALID") {
-        return ftpRootDirectoryForCoreValid
-    } else if (process === "CSE_D2CC") {
-        return ftpRootDirectoryForCseD2cc
-    } else if (process === "CSE_EXPORT_D2CC") {
-        return ftpRootDirectoryForCseExportD2cc
-    } else if (process === "CSE_EXPORT_IDCC") {
-        return ftpRootDirectoryForCseExportIdcc
-    } else {
-        return ftpRootDirectoryForCseD2cc; // CSE D2cc by default
-    }
 }

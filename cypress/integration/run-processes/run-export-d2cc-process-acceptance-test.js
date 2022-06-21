@@ -7,18 +7,10 @@
 import * as gc from "../../support/function";
 import * as minio from "../../support/minio";
 import * as ftp from "../../support/ftp-browser.js";
-import {
-    clickRunButton,
-    runButtonStatusShouldBeEnabled,
-    selectTimestampViewForDate,
-    timestampStatusShouldBe
-} from "../../support/function";
-import * as task from "../../support/task";
 
-const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
-const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
-const cgm = 'cgms';
-const crac = 'cracs';
+const URL = '/cse/export/d2cc'
+const DATE = '2022-01-28'
+const TIME = '16:30'
 const TIMEOUT = 60000;
 
 Cypress.on('uncaught:exception', (err, runnable) => {
@@ -30,25 +22,30 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 describe('Check CSE D2CC export corner runs correctly', () => {
 
     it('Check CSE D2CC export corner runs correctly', () => {
-        gc.clearAndVisit('/cse/export/d2cc')
-        gc.authentication()
-        task.checkTaskNotCreated('2022-01-28', '16:30')
-        ftp.uploadFilesOnFtp('CSE_EXPORT_D2CC', 
-            ['run-export/20220128_1630_155_Initial_CSE1_Transit.uct',
-                'run-export/20220128_1630_145_CRAC_CO_CSE1_Transit.xml'], 
-            [cgm, crac])
+        gc.clearAndVisit(URL)
+        gc.authenticate()
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME)
+        gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
 
-        cy.visit('/cse/export/d2cc')
-        selectTimestampViewForDate('2022-01-28')
-        gc.setupTime('16:30')
+        ftp.uploadFiles(
+            ftp.CSE_EXPORT_D2CC,
+            ['run-export/20220128_1630_155_Initial_CSE1_Transit.uct', 'run-export/20220128_1630_145_CRAC_CO_CSE1_Transit.xml'],
+            [ftp.CGM, ftp.CRAC]
+        )
 
+        cy.visit(URL)
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME)
         // Automatic run on file arrival
-        timestampStatusShouldBe('RUNNING', TIMEOUT)
-        timestampStatusShouldBe('SUCCESS', TIMEOUT)
+        gc.statusInTimestampViewShouldBe(gc.RUNNING, TIMEOUT)
+        gc.statusInTimestampViewShouldBe(gc.SUCCESS, TIMEOUT)
 
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFolderFromMinio('/gridcapa/CSE/EXPORT/', 'D2CC');
+        minio.runOnMinio(() => {
+            minio.deleteProcessFolder(minio.CSE_EXPORT_D2CC);
         });
-        ftp.deleteFolderOnFtp( '/cse/export/', 'd2cc');
+        ftp.deleteProcessFolder(ftp.CSE_EXPORT_D2CC)
     })
 })
