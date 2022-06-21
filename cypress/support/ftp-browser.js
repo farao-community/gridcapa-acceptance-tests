@@ -32,18 +32,22 @@ export const REFPROG = 'refprogs'
 export const STUDYPOINT = 'studypoints'
 
 export function uploadFile(process, file, fileType) {
-    uploadFiles(process, [file], [fileType])
+    uploadFiles(process, { [fileType]: [file] })
 }
 
-export function uploadFiles(process, fileList, fileTypeList) {
+export function uploadFiles(process, fileMap) {
     if (FTP_HOST) {
-        for (let i = 0; i < fileList.length; i++) {
-            uploadFileOnFtp(FTP_HOST, FTP_USER, FTP_PASSWORD, fileList[i], process + '/' + fileTypeList[i])
+        for (let [fileType, fileList] of Object.entries(fileMap)) {
+            for (let file of fileList) {
+                uploadFileOnFtp(FTP_HOST, FTP_USER, FTP_PASSWORD, file, process + '/' + fileType)
+            }
         }
     } else {
         runOnFb(FB_USER, FB_PASSWORD, () => {
-            for (let i = 0; i < fileList.length; i++) {
-                uploadFileOnFb(fileList[i], process + '/' + fileTypeList[i]);
+            for (let [fileType, fileList] of Object.entries(fileMap)) {
+                for (let file of fileList) {
+                    uploadFileOnFb(file, process + '/' + fileType);
+                }
             }
         });
     }

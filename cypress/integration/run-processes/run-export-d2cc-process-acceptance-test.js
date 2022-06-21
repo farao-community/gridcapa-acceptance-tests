@@ -31,8 +31,10 @@ describe('Check CSE D2CC export corner runs correctly', () => {
 
         ftp.uploadFiles(
             ftp.CSE_EXPORT_D2CC,
-            ['run-export/20220128_1630_155_Initial_CSE1_Transit_CSE.uct', 'run-export/20220128_1630_145_CRAC_CO_CSE1_Transit_CSE.xml'],
-            [ftp.CGM, ftp.CRAC]
+            {
+                [ftp.CGM]: ['run-export/20220128_1630_155_Initial_CSE1_Transit_CSE.uct'],
+                [ftp.CRAC]: ['run-export/20220128_1630_145_CRAC_CO_CSE1_Transit_CSE.xml']
+            }
         )
 
         cy.visit(URL)

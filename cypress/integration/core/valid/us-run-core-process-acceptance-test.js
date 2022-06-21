@@ -45,13 +45,12 @@ describe('Test behaviour of run button', () => {
     it("Check button is clickable when task is ready", () => {
         ftp.uploadFiles(
             ftp.CORE_VALID,
-            [
-                'grc-69-run-process/core/valid/20210723-F301-01.xml',
-                'grc-69-run-process/core/valid/20210723-F226-v1.xml',
-                'grc-69-run-process/core/valid/20210723-F110.xml',
-                'grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv'
-            ],
-            [ftp.CBCORA, ftp.GLSK, ftp.REFPROG, ftp.STUDYPOINT]
+            {
+                [ftp.CBCORA]: ['grc-69-run-process/core/valid/20210723-F301-01.xml'],
+                [ftp.GLSK]: ['grc-69-run-process/core/valid/20210723-F226-v1.xml'],
+                [ftp.REFPROG]: ['grc-69-run-process/core/valid/20210723-F110.xml'],
+                [ftp.STUDYPOINT]: ['grc-69-run-process/core/valid/20210723-Points_Etude-v01.csv']
+            }
         )
 
         cy.visit(URL)

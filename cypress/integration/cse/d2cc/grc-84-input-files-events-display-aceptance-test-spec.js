@@ -28,12 +28,10 @@ describe('CGM input events displaying', () => {
     it('Triggers task creation and event display when file arrives, then update event when file updated, and deletion event when file deleted', () => {
         ftp.uploadFiles(
             ftp.CSE_IMPORT_D2CC,
-            [
-                'gcr-84-input-files-events-display/20210901_2230_test_network.uct',
-                'gcr-84-input-files-events-display/20210901_2230_test_network1.uct',
-                'gcr-84-input-files-events-display/20210901_2230_glsk.xml'
-            ],
-            [ftp.CGM, ftp.CGM, ftp.GLSK]
+            {
+                [ftp.CGM]: ['gcr-84-input-files-events-display/20210901_2230_test_network.uct', 'gcr-84-input-files-events-display/20210901_2230_test_network1.uct'],
+                [ftp.GLSK]: ['gcr-84-input-files-events-display/20210901_2230_glsk.xml']
+            }
         )
 
         // wait for upload

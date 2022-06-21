@@ -33,14 +33,13 @@ describe('Check CSE D2CC import corner runs correctly', () => {
 
         ftp.uploadFiles(
             ftp.CSE_IMPORT_D2CC,
-            [
-                'grc-inputs-files-d2cc-process/20210901_2230_test_network.uct',
-                'grc-inputs-files-d2cc-process/20210901_2230_213_GSK_CO_CSE1.xml',
-                'grc-inputs-files-d2cc-process/20210901_2230_213_CRAC_CO_CSE1.xml',
-                'grc-inputs-files-d2cc-process/2021_test_NTC_annual.xml',
-                'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml'
-                ],
-            [ftp.CGM, ftp.GLSK, ftp.CRAC, ftp.NTC, ftp.NTC_RED]
+            {
+                [ftp.CGM]: ['grc-inputs-files-d2cc-process/20210901_2230_test_network.uct'],
+                [ftp.GLSK]: ['grc-inputs-files-d2cc-process/20210901_2230_213_GSK_CO_CSE1.xml'],
+                [ftp.CRAC]: ['grc-inputs-files-d2cc-process/20210901_2230_213_CRAC_CO_CSE1.xml'],
+                [ftp.NTC]: ['grc-inputs-files-d2cc-process/2021_test_NTC_annual.xml'],
+                [ftp.NTC_RED]: ['us-import-daily-files/20210901_2D3_NTC_reductions_test.xml']
+            }
         )
 
         cy.visit(URL)
