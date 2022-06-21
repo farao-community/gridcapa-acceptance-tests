@@ -16,7 +16,6 @@ const DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_S * S_TO_
 // Tasks and files status to be tested
 export const NOT_CREATED = 'NOT_CREATED';
 export const CREATED = 'CREATED';
-export const NOT_PRESENT = 'NOT_PRESENT';
 export const VALIDATED = 'VALIDATED';
 export const READY = 'READY';
 export const RUNNING = 'RUNNING';

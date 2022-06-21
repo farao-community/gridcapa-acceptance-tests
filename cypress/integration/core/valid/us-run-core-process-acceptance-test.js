@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import * as gc from "../../../support/function";
+import * as gc from "../../../support/gridcapa-util";
 import * as ftp from "../../../support/ftp-browser";
 import * as minio from "../../../support/minio";
 

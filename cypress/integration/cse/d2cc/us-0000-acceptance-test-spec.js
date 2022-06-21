@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import * as gc from "../../../support/function";
+import * as gc from "../../../support/gridcapa-util";
 import * as ftp from "../../../support/ftp-browser.js";
 import * as minio from "../../../support/minio.js";
 
@@ -74,7 +74,7 @@ describe('CGM automatic import handling', () => {
         gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
 
         ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210703.zip', ftp.CGM)
-        cy.wait(5000) // To make sure nothing is created even after a couple of seconds - 5s
+        cy.wait(2000) // To make sure nothing is created even after a couple of seconds - 5s
 
         cy.visit(URL)
         gc.getTimestampView()
