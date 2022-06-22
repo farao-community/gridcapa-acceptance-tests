@@ -4,25 +4,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import * as gc from "../../support/function";
+import * as gc from "../../support/gridcapa-util";
 import * as minio from "../../support/minio";
 import * as ftp from "../../support/ftp-browser.js";
-import {
-    clickRunButton,
-    runButtonStatusShouldBeEnabled,
-    selectTimestampViewForDate,
-    timestampStatusShouldBe
-} from "../../support/function";
 
-const minioUser = Cypress.env('GRIDCAPA_MINIO_USER');
-const minioPassword = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
-const cgm = 'cgms';
-const glsk = 'glsks';
-const crac = 'cracs';
-const ntc = 'ntc';
-const ntcred = 'ntcreds'
+const URL = '/cse/import/d2cc'
+const DATE = '2021-09-01'
+const TIME = '22:30'
 const TIMEOUT_UPLOAD = 120000
 const TIMEOUT = 60000
+
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
     // failing the test
@@ -32,28 +23,38 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 describe('Check CSE D2CC import corner runs correctly', () => {
 
     it('Check CSE D2CC import corner runs correctly', () => {
-        ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_test_network.uct', cgm)
-        ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_213_GSK_CO_CSE1.xml', glsk)
-        ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/20210901_2230_213_CRAC_CO_CSE1.xml', crac)
-        ftp.uploadOnFtp('CSE_D2CC', 'grc-inputs-files-d2cc-process/2021_test_NTC_annual.xml', ntc)
-        ftp.uploadOnFtp('CSE_D2CC', 'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml', ntcred)
-        gc.clearAndVisit('/cse/import/d2cc')
-        gc.authentication()
-        selectTimestampViewForDate('2021-09-01')
-        gc.setupTime('22:30')
-        timestampStatusShouldBe('READY', TIMEOUT_UPLOAD)
-        runButtonStatusShouldBeEnabled()
-        clickRunButton()
-        timestampStatusShouldBe('RUNNING', TIMEOUT)
-        timestampStatusShouldBe('SUCCESS', TIMEOUT)
+        gc.clearAndVisit(URL)
+        gc.authenticate()
 
-        minio.runOnMinio(minioUser, minioPassword, () => {
-            minio.deleteFolderFromMinio('/gridcapa/CSE/IMPORT/', 'D2CC');
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME)
+        gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
+
+        ftp.uploadFiles(
+            ftp.CSE_IMPORT_D2CC,
+            {
+                [ftp.CGM]: ['grc-inputs-files-d2cc-process/20210901_2230_test_network.uct'],
+                [ftp.GLSK]: ['grc-inputs-files-d2cc-process/20210901_2230_213_GSK_CO_CSE1.xml'],
+                [ftp.CRAC]: ['grc-inputs-files-d2cc-process/20210901_2230_213_CRAC_CO_CSE1.xml'],
+                [ftp.NTC]: ['grc-inputs-files-d2cc-process/2021_test_NTC_annual.xml'],
+                [ftp.NTC_RED]: ['us-import-daily-files/20210901_2D3_NTC_reductions_test.xml']
+            }
+        )
+
+        cy.visit(URL)
+        gc.getTimestampView()
+        gc.setDate(DATE)
+        gc.setTime(TIME)
+        gc.statusInTimestampViewShouldBe(gc.READY, TIMEOUT_UPLOAD)
+        gc.runButtonShouldBeEnabled()
+        gc.runComputation()
+        gc.statusInTimestampViewShouldBe(gc.RUNNING, TIMEOUT)
+        gc.statusInTimestampViewShouldBe(gc.SUCCESS, TIMEOUT)
+
+        minio.runOnMinio(() => {
+            minio.deleteProcessFolder(minio.CSE_IMPORT_D2CC);
         });
-        ftp.deleteOnFtp('CSE_D2CC', 'cgms/20210901_2230_test_network.uct')
-        ftp.deleteOnFtp('CSE_D2CC', 'glsks/20210901_2230_213_GSK_CO_CSE1.xml')
-        ftp.deleteOnFtp('CSE_D2CC', 'cracs/20210901_2230_213_CRAC_CO_CSE1.xm')
-        ftp.deleteOnFtp('CSE_D2CC', 'ntc/2021_test_NTC_annual.xml')
-        ftp.deleteOnFtp('CSE_D2CC', 'ntcreds/20210901_2D3_NTC_reductions_test.xml')
+        ftp.deleteProcessFolder(ftp.CSE_IMPORT_D2CC)
     })
 })

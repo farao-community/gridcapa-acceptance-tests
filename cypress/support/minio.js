@@ -4,94 +4,61 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-const pathParser = require('path')
-const gridCapaMinioPath = '/minio'
-const timeoutProps = {timeout: 10000}
-const formattingLocal = 'en-US';
-const perFileDeletionWaitingDelay = 200;
-const waitForBigDeletion = 5000
+const MINIO_USER = Cypress.env('GRIDCAPA_MINIO_USER');
+const MINIO_PASSWORD = Cypress.env('GRIDCAPA_MINIO_PASSWORD')
+const MINIO_URL = '/minio'
+const TIMEOUT_PROPS = {timeout: 10000}
+
+export const CSE_IMPORT_D2CC = ['/gridcapa/CSE/IMPORT/', 'D2CC']
+export const CSE_IMPORT_IDCC = ['/gridcapa/CSE/IMPORT/', 'IDCC']
+export const CSE_EXPORT_D2CC = ['/gridcapa/CSE/EXPORT/', 'D2CC']
+export const CSE_EXPORT_IDCC = ['/gridcapa/CSE/EXPORT/', 'IDCC']
+export const CORE_VALID = ['/gridcapa/CORE/', 'VALID']
 
 export function deleteFileFromMinio(folderPath, file) {
-    cy.visit(gridCapaMinioPath + folderPath)
+    cy.visit(MINIO_URL + folderPath)
     selectFileFromMinio(file)
     deleteSelectedFromMinio()
 }
 
-export function deleteFilesFromMinio(fileList) {
-    let filesByFolder = new Map()
-    for (let file of fileList) {
-        let fileDirName = pathParser.dirname(file)
-        let fileBaseName = pathParser.basename(file)
-        if (filesByFolder.has(fileDirName)) {
-            filesByFolder.get(fileDirName).push(fileBaseName)
-        } else {
-            filesByFolder.set(fileDirName, [fileBaseName])
-        }
-    }
-    for (let [folderPath, filesInFolder] of filesByFolder) {
-        deleteFilesInFolderFromMinio(folderPath + '/', filesInFolder)
-    }
-}
-
-function deleteFilesInFolderFromMinio(folderPath, filelist) {
-    cy.visit(gridCapaMinioPath + folderPath)
-    for (let file of filelist) {
-        selectFileFromMinio(file)
-    }
-    deleteSelectedFromMinio()
-    cy.wait(filelist.length * perFileDeletionWaitingDelay)
-}
-
-export function deleteHourlyFilesFromMinio(folderPath, fileFormat) {
-    cy.visit(gridCapaMinioPath + folderPath)
-    for (let hour = 0; hour < 24; hour++) {
-        let hourOnTwoDigits = hour.toLocaleString(formattingLocal, {minimumIntegerDigits: 2, useGrouping:false})
-        selectFileFromMinio(fileFormat.format(hourOnTwoDigits))
-    }
-    deleteSelectedFromMinio()
-    cy.wait(waitForBigDeletion)
+// Process must be part of the elements defined at the top of the file
+export function deleteProcessFolder(process) {
+    deleteFolderFromMinio(process[0], process[1])
 }
 
 export function deleteFolderFromMinio(folderPath, folderName) {
-    cy.visit(gridCapaMinioPath + folderPath)
-    cy.get('button[id*="obj-actions-' + folderName + '/"]', timeoutProps).click()
-    cy.get('ul[aria-labelledby*="' + folderName + '/"] > a[title="Delete"]', timeoutProps).click()
-    cy.get('button').contains(/^Delete$/).click()
-    cy.wait(waitForBigDeletion)
+    cy.visit(MINIO_URL + folderPath)
+    cy.get('button[id*="obj-actions-' + folderName + '/"]', TIMEOUT_PROPS).click()
+    cy.get('ul[aria-labelledby*="' + folderName + '/"] > a[title="Delete"]', TIMEOUT_PROPS).click()
+    cy.get('button', TIMEOUT_PROPS).contains(/^Delete$/).click()
 }
 
 export function selectFileFromMinio(objectName) {
-    cy.get('.fesl-item-name > a').contains(objectName).click()
+    cy.get('.fesl-item-name > a', TIMEOUT_PROPS).contains(objectName).click()
 }
 
 export function deleteSelectedFromMinio() {
-    cy.get('#delete-checked').click()
-    cy.get('button').contains(/^Delete$/).click()
+    cy.get('#delete-checked', TIMEOUT_PROPS).click()
+    cy.get('button', TIMEOUT_PROPS).contains(/^Delete$/).click()
 }
 
-export function runOnMinio(user, password, lambda) {
-    connectToMinio(user, password);
+export function runOnMinio(lambda) {
+    connectToMinio();
     lambda();
     disconnectFromMinio();
 }
 
-function connectToMinio(user, password) {
-    cy.visit(gridCapaMinioPath + '/login')
-    cy.get('#accessKey', timeoutProps).type(user, { log: false })
-    cy.get('#secretKey', timeoutProps).type(password, { log: false })
-    cy.get('button[type=submit]', timeoutProps).click()
-    cy.wait(100)
+function connectToMinio() {
+    cy.intercept(MINIO_URL + '/webrpc').as('minioLogin')
+    cy.visit(MINIO_URL + '/login')
+    cy.get('#accessKey', TIMEOUT_PROPS).type(MINIO_USER, { log: false })
+    cy.get('#secretKey', TIMEOUT_PROPS).type(MINIO_PASSWORD, { log: false })
+    cy.get('button[type=submit]', TIMEOUT_PROPS).click()
+    cy.wait('@minioLogin') // It waits for login to be fulfilled before going next step
 }
 
 function disconnectFromMinio() {
-    cy.get('#top-right-menu', timeoutProps).click()
-    cy.get('#logout', timeoutProps).click()
-    cy.wait(100)
-}
-
-String.prototype.format = function() {
-    let args = arguments;
-    return this.replace(/\{(\d+)\}/g, function(a, num){
-        return args[num] || a
-    })
+    // Force because sometimes modal for deletion remains a bit and hides logout buttons
+    cy.get('#top-right-menu', TIMEOUT_PROPS).click({ force: true })
+    cy.get('#logout', TIMEOUT_PROPS).click({ force: true })
 }
