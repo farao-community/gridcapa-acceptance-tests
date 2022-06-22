@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Targets_document DtdVersion="4" DtdRelease="0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../targets-document_v2.xsd">
-    <DocumentIdentification v="Targets_2022_v0"/>
+    <DocumentIdentification v="Targets_2021_v0"/>
     <DocumentVersion v="1"/>
     <DocumentType v="Z02"/>
     <ProcessType v="Z02"/>
     <SenderIdentification v="SWISSGRID" codingScheme="A01"/>
     <SenderRole v="A04"/>
-    <CreationDateTime v="2022-12-09T16:25:00Z"/>
+    <CreationDateTime v="2021-01-09T16:25:00Z"/>
     <Target_data>
         <SpecialLines>
             <Line code="ml_0001" name="Mendrisio-Cagno" modelized="true" fixed_flow="true" n_from="CH" n_to="IT" c_ntc="CH">
-                <Period tini="2021-01-01T00:00Z" tfin="2021-12-31T00:00Z" description="winter">
+                <Period tini="2021-01-01T00:00Z" tfin="2022-01-01T00:00Z" description="year">
                     <Outages>
                         <Outage node_from="SMANNO3" node_to="SMENDR3" order="1" name="150kV Manno-Mendrisio" modelized="true">
                             <DayOfWeek daynum="8" description="everyday">
