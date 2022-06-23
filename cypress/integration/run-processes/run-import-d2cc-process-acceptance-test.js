@@ -38,7 +38,7 @@ describe('Check CSE D2CC import corner runs correctly', () => {
                 [ftp.GLSK]: ['grc-inputs-files-d2cc-process/20210901_2230_213_GSK_CO_CSE1.xml'],
                 [ftp.CRAC]: ['grc-inputs-files-d2cc-process/20210901_2230_213_CRAC_CO_CSE1.xml'],
                 [ftp.NTC]: ['grc-inputs-files-d2cc-process/2021_test_NTC_annual.xml'],
-                [ftp.TARGET_CH]: ['grc-inputs-files-d2cc-process/2021_target_ch_annual.xml'],
+                [ftp.TARGET_CH]: ['grc-inputs-files-d2cc-process/20210101_target_ch_annual.xml'],
                 [ftp.NTC_RED]: ['us-import-daily-files/20210901_2D3_NTC_reductions_test.xml']
             }
         )
