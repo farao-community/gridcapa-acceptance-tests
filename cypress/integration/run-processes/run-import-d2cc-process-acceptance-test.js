@@ -11,7 +11,7 @@ import * as ftp from "../../support/ftp-browser.js";
 const URL = '/cse/import/d2cc'
 const DATE = '2021-09-01'
 const TIME = '22:30'
-const TIMEOUT_UPLOAD = 120000
+const TIMEOUT_UPLOAD = 180000
 const TIMEOUT = 60000
 
 Cypress.on('uncaught:exception', (err, runnable) => {
