@@ -29,12 +29,26 @@ export function getTimestampView() {
     cy.get('[data-test=timestamp-view]').click()
 }
 
+export function getGlobalView() {
+    cy.get('[data-test=global-view]').click()
+}
+
 export function setupDate(date) {
     cy.get('[data-test=timestamp-date-picker]').type(date)
 }
 
+export function setupDateRange(dateMin, dateMax) {
+    cy.get('[data-test=timestamp-date-min-picker]').type(dateMin)
+    cy.get('[data-test=timestamp-date-max-picker]').type(dateMax)
+}
+
 export function clickOnEventsTab() {
     cy.get('[data-test=events]').click()
+}
+
+export function selectGlobalviewForRange(dateMin, dateMax) {
+    getGlobalView()
+    setupDateRange(dateMin, dateMax)
 }
 
 export function selectTimestampViewForDate(date) {
@@ -48,6 +62,10 @@ export function setupTime(time) {
 
 export function timestampStatusShouldBe(timestampStatus, timeout) {
     cy.get('[data-test=timestamp-status]', {timeout: timeout}).should('have.text', timestampStatus)
+}
+
+export function timestampStatusForTimestampShouldBe(timestampStatus, timeout, timestamp) {
+    cy.get('[data-test=timestamp-status-'+ timestamp +']', {timeout: timeout}).should('have.text', timestampStatus)
 }
 
 export function timestampShouldBeRunningOrAlreadyFailed(timeout) {
