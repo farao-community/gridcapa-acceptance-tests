@@ -63,6 +63,14 @@ export function runComputation() {
     cy.get('[data-test=run-button]').click();
 }
 
+export function dateShouldBe(date) {
+    cy.get('[data-test=timestamp-date-picker]').should('have.value', date)
+}
+
+export function timeShouldBe(time) {
+    cy.get('[data-test=timestamp-time-picker]').should('have.value', time)
+}
+
 export function statusInTimestampViewShouldBe(timestampStatus, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     cy.get('[data-test=timestamp-status]', {timeout: timeout}).should('have.text', timestampStatus)
 }
