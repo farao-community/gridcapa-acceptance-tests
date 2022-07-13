@@ -75,7 +75,7 @@ export function statusInBDViewShouldBe(timestamp, expectedStatus, timeout = DEFA
     cy.get('[data-test="' + timestamp + '-task-status"]', {timeout: timeout}).should('have.text', expectedStatus)
 }
 
-export function timestampStatusForTimestampShouldBe(timestampStatus, timeout, timestamp) {
+export function statusForTimestampShouldBe(timestampStatus, timeout, timestamp) {
     cy.get('[data-test="timestamp-status-'+ timestamp +'"]', {timeout: timeout}).should('have.text', timestampStatus)
 }
 

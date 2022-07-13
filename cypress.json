@@ -5,7 +5,5 @@
     "GRIDCAPA_FB_PASSWORD": "gridcapa",
     "GRIDCAPA_MINIO_USER": "gridcapa",
     "GRIDCAPA_MINIO_PASSWORD": "gridcapa"
-  },
-  "viewportWidth": 1920,
-  "viewportHeight": 1080
+  }
 }

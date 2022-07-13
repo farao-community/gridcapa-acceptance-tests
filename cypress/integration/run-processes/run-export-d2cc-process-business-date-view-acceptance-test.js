@@ -32,7 +32,7 @@ describe('Check CSE D2CC export corner runs correctly', () => {
         gc.getBusinessDateView()
         gc.setDate(DATE)
         gc.paginationClickNextButton();
-        gc.timestampStatusForTimestampShouldBe(gc.NOT_CREATED, TIMEOUT, Date.parse(DATE + 'T' + TIME))
+        gc.statusForTimestampShouldBe(gc.NOT_CREATED, TIMEOUT, Date.parse(DATE + 'T' + TIME))
                ftp.uploadFiles(
                     ftp.CSE_EXPORT_D2CC,
                     {
@@ -46,9 +46,8 @@ describe('Check CSE D2CC export corner runs correctly', () => {
         gc.setDate(DATE)
         gc.paginationClickNextButton();
         // Automatic run on file arrival
-        //gc.runComputationForTimestamp(Date.parse(DATE + 'T' + TIME))
-        gc.timestampStatusForTimestampShouldBe(gc.RUNNING, TIMEOUT_UPLOAD * 2, Date.parse(DATE + 'T' + TIME))
-        gc.timestampStatusForTimestampShouldBe(gc.SUCCESS, TIMEOUT_UPLOAD, Date.parse(DATE + 'T' + TIME))
+        gc.statusForTimestampShouldBe(gc.RUNNING, TIMEOUT_UPLOAD * 2, Date.parse(DATE + 'T' + TIME))
+        gc.statusForTimestampShouldBe(gc.SUCCESS, TIMEOUT_UPLOAD, Date.parse(DATE + 'T' + TIME))
         minio.runOnMinio(() => {
             minio.deleteProcessFolder(minio.CSE_EXPORT_D2CC);
         });
