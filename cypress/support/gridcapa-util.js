@@ -63,6 +63,10 @@ export function runComputation() {
     cy.get('[data-test=run-button]').click();
 }
 
+export function runComputationForTimestamp(timestamp) {
+    cy.get('[data-test=run-button-'+ timestamp +']').click();
+}
+
 export function statusInTimestampViewShouldBe(timestampStatus, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     cy.get('[data-test=timestamp-status]', {timeout: timeout}).should('have.text', timestampStatus)
 }
@@ -71,12 +75,28 @@ export function statusInBDViewShouldBe(timestamp, expectedStatus, timeout = DEFA
     cy.get('[data-test="' + timestamp + '-task-status"]', {timeout: timeout}).should('have.text', expectedStatus)
 }
 
+export function statusForTimestampShouldBe(timestampStatus, timeout, timestamp) {
+    cy.get('[data-test="timestamp-status-'+ timestamp +'"]', {timeout: timeout}).should('have.text', timestampStatus)
+}
+
+export function paginationClickNextButton(){
+    cy.get('[aria-label="Next page"]').click();
+}
+
 export function runButtonShouldBeDisabled() {
     cy.get('[data-test=run-button]').should('be.disabled')
 }
 
 export function runButtonShouldBeEnabled() {
     cy.get('[data-test=run-button]').should('not.be.disabled')
+}
+
+export function runButtonForBusinessViewShouldBeDisabled(timestamp) {
+    cy.get('[data-test=run-button-'+ timestamp +']').should('be.disabled')
+}
+
+export function runButtonForBusinessViewShouldBeEnabled(timestamp) {
+    cy.get('[data-test=run-button-'+ timestamp +']').should('not.be.disabled')
 }
 
 function inputDataShouldBe({expectedType, expectedStatus, expectedFilename, expectedLatestModification, timeout}={}) {
