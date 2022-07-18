@@ -6,6 +6,8 @@
  */
 import crypto from "crypto";
 
+require('cy-verify-downloads').addCustomCommand();
+
 const GRIDCAPA_USER = Cypress.env('GRIDCAPA_USER');
 const GRIDCAPA_PASSWORD = Cypress.env('GRIDCAPA_PASSWORD');
 const FORMATTING_LOCAL = 'en-US';
@@ -77,6 +79,30 @@ export function statusInBDViewShouldBe(timestamp, expectedStatus, timeout = DEFA
 
 export function statusForTimestampShouldBe(timestampStatus, timeout, timestamp) {
     cy.get('[data-test="timestamp-status-'+ timestamp +'"]', {timeout: timeout}).should('have.text', timestampStatus)
+}
+
+export function openFilesModalAndCheckStatusForImport(timestamp){
+    cy.get('[data-test="timestamp-files-'+ timestamp +'"]').click()
+    cy.get('[data-test="CGM-input-status"]').should('have.text', "VALIDATED")
+    cy.get('[data-test="CRAC-input-status"]').should('have.text', "VALIDATED")
+    cy.get('[data-test="GLSK-input-status"]').should('have.text', "VALIDATED")
+    cy.get('[data-test="NTC-input-status"]').should('have.text', "VALIDATED")
+    cy.get('[data-test="TARGET-CH-input-status"]').should('have.text', "VALIDATED")
+    cy.get('[data-test="NTC-RED-input-status"]').should('have.text', "VALIDATED")
+}
+
+export function downloadAndCheckCGMFile(timestamp) {
+
+    const date = new Date(timestamp);
+    const stringDate = date.getFullYear() +
+     '' + (date.getMonth() + 1).toLocaleString("en-US", {minimumIntegerDigits: 2}) +
+     '' + date.getDate().toLocaleString("en-US", {minimumIntegerDigits: 2}) +
+     "_" + date.getHours() + date.getMinutes();
+
+    cy.get('[data-test="download-CGM-' + timestamp +'"]').click()
+
+    cy.verifyDownload(stringDate + '_test_network.uct');
+
 }
 
 export function paginationClickNextButton(){
