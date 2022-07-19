@@ -61,6 +61,7 @@ function uploadFileOnFtp(host, user, password, file, path) {
 
 function uploadFileOnFb(file, path) {
     cy.get('button').contains('My files').click()
+    cy.wait(500)
     cy.get('button').contains('New folder').click()
     cy.get('.card-content > input[type=text]').type('/ftp/' + path)
     cy.get('button').contains('Create').click()
