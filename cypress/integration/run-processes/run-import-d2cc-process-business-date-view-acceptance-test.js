@@ -22,16 +22,16 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 });
 
 
-describe('Check CSE D2CC export corner runs correctly', () => {
+describe('Check CSE D2CC import corner runs correctly', () => {
 
-    it('Check CSE D2CC export corner runs correctly', () => {
+    it('Check CSE D2CC import corner runs correctly', () => {
 
         gc.clearAndVisit(URL)
         gc.authenticate()
         gc.getBusinessDateView()
         gc.setDate(DATE)
         gc.paginationClickNextButton();
-        //gc.statusForTimestampShouldBe(gc.NOT_CREATED, TIMEOUT, Date.parse(DATE + 'T' + TIME))
+        gc.statusForTimestampShouldBe(gc.NOT_CREATED, TIMEOUT, Date.parse(DATE + 'T' + TIME))
         ftp.uploadFiles(
             ftp.CSE_IMPORT_D2CC,
             {
@@ -48,7 +48,6 @@ describe('Check CSE D2CC export corner runs correctly', () => {
         gc.getBusinessDateView()
         gc.setDate(DATE)
         gc.paginationClickNextButton();
-        // Automatic run on file arrival
         gc.statusForTimestampShouldBe(gc.READY, TIMEOUT, Date.parse(DATE + 'T' + TIME))
         gc.runComputationForTimestamp(Date.parse(DATE + 'T' + TIME))
         gc.statusForTimestampShouldBe(gc.RUNNING, TIMEOUT, Date.parse(DATE + 'T' + TIME))
