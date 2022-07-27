@@ -47,6 +47,8 @@ describe('Check CSE D2CC export corner runs correctly', () => {
         // Automatic run on file arrival
         gc.statusForTimestampShouldBe(gc.RUNNING, TIMEOUT, Date.parse(DATE + 'T' + TIME))
         gc.statusForTimestampShouldBe(gc.SUCCESS, TIMEOUT, Date.parse(DATE + 'T' + TIME))
+        gc.openFilesModalAndCheckStatusForImport(Date.parse(DATE + 'T' + TIME))
+        gc.downloadAndCheckCGMFile(Date.parse(DATE + 'T' + TIME))
         minio.runOnMinio(() => {
             minio.deleteProcessFolder(minio.CSE_EXPORT_D2CC);
         });

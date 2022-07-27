@@ -85,10 +85,6 @@ export function openFilesModalAndCheckStatusForImport(timestamp){
     cy.get('[data-test="timestamp-files-'+ timestamp +'"]').click()
     cy.get('[data-test="CGM-input-status"]').should('have.text', "VALIDATED")
     cy.get('[data-test="CRAC-input-status"]').should('have.text', "VALIDATED")
-    cy.get('[data-test="GLSK-input-status"]').should('have.text', "VALIDATED")
-    cy.get('[data-test="NTC-input-status"]').should('have.text', "VALIDATED")
-    cy.get('[data-test="TARGET-CH-input-status"]').should('have.text', "VALIDATED")
-    cy.get('[data-test="NTC-RED-input-status"]').should('have.text', "VALIDATED")
 }
 
 export function downloadAndCheckCGMFile(timestamp) {
@@ -101,7 +97,7 @@ export function downloadAndCheckCGMFile(timestamp) {
 
     cy.get('[data-test="download-CGM-' + timestamp +'"]').click()
 
-    cy.verifyDownload(stringDate + '_test_network.uct');
+    cy.verifyDownload(stringDate + '_155_Initial_CSE1_Transit_CSE.uct');
 
 }
 
