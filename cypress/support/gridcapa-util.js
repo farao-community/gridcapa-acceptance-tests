@@ -113,11 +113,11 @@ export function runButtonShouldBeEnabled() {
     cy.get('[data-test=run-button]').should('not.be.disabled')
 }
 
-export function runButtonForBusinessViewShouldBeDisabled(timestamp) {
+export function runButtonForTimestampShouldBeDisabled(timestamp) {
     cy.get('[data-test=run-button-'+ timestamp +']').should('be.disabled')
 }
 
-export function runButtonForBusinessViewShouldBeEnabled(timestamp) {
+export function runButtonForTimestampEnabled(timestamp) {
     cy.get('[data-test=run-button-'+ timestamp +']').should('not.be.disabled')
 }
 
@@ -164,10 +164,16 @@ export function businessDateFilesShouldBeUploaded(filenameFormat, fileType, time
 
 export function businessDateTasksStatusShouldBe(date, status, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     for (let hour = 0; hour < 24; hour++) {
+        if (hour == 12) { //By default there is a pagination 12 by 12
+            paginationClickNextButton()
+        }
         let hourOnTwoDigits = hour.toLocaleString(FORMATTING_LOCAL, {minimumIntegerDigits: 2, useGrouping:false})
-        statusInBDViewShouldBe(date + ' ' + hourOnTwoDigits + ':30', status, timeout)
+        date + 'T' + hourOnTwoDigits + ':30'
+        statusForTimestampShouldBe(status, timeout, Date.parse(date + 'T' + hourOnTwoDigits + ':30'))
     }
 }
+
+
 
 function sha256(param) {
     return crypto.createHash('sha256').update(param, 'utf8').digest('hex'); // UTF8 text hash

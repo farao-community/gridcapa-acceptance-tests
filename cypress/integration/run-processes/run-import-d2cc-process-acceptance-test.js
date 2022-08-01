@@ -48,7 +48,7 @@ describe('Check CSE D2CC import corner runs correctly', () => {
         gc.setDate(DATE)
         gc.setTime(TIME)
         gc.statusInTimestampViewShouldBe(gc.READY, TIMEOUT_UPLOAD)
-        gc.runButtonForBusinessViewShouldBeEnabled(Date.parse(DATE + 'T' + TIME))
+        gc.runButtonForTimestampEnabled(Date.parse(DATE + 'T' + TIME))
         gc.runComputationForTimestamp(Date.parse(DATE + 'T' + TIME))
         gc.statusInTimestampViewShouldBe(gc.RUNNING, TIMEOUT)
         gc.statusInTimestampViewShouldBe(gc.SUCCESS, TIMEOUT)
