@@ -15,7 +15,6 @@ const URL = '/cse/export/d2cc'
 const DATE = '2022-01-28'
 const TIME = '16:30'
 const TIMEOUT = 60000;
-const TIMEOUT_UPLOAD = 300000;
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
     // failing the test
@@ -46,8 +45,10 @@ describe('Check CSE D2CC export corner runs correctly', () => {
         gc.setDate(DATE)
         gc.paginationClickNextButton();
         // Automatic run on file arrival
-        gc.statusForTimestampShouldBe(gc.RUNNING, TIMEOUT_UPLOAD * 2, Date.parse(DATE + 'T' + TIME))
-        gc.statusForTimestampShouldBe(gc.SUCCESS, TIMEOUT_UPLOAD, Date.parse(DATE + 'T' + TIME))
+        gc.statusForTimestampShouldBe(gc.RUNNING, TIMEOUT, Date.parse(DATE + 'T' + TIME))
+        gc.statusForTimestampShouldBe(gc.SUCCESS, TIMEOUT, Date.parse(DATE + 'T' + TIME))
+        gc.openFilesModalAndCheckStatusForImport(Date.parse(DATE + 'T' + TIME))
+        gc.downloadAndCheckCGMFile(Date.parse(DATE + 'T' + TIME))
         minio.runOnMinio(() => {
             minio.deleteProcessFolder(minio.CSE_EXPORT_D2CC);
         });
