@@ -19,6 +19,8 @@ export const CREATED = 'CREATED';
 export const VALIDATED = 'VALIDATED';
 export const READY = 'READY';
 export const RUNNING = 'RUNNING';
+export const STOPPING = 'STOPPING';
+export const INTERRUPTED = 'INTERRUPTED';
 export const SUCCESS = 'SUCCESS';
 export const ERROR = 'ERROR';
 
@@ -63,6 +65,11 @@ export function runComputation() {
     cy.get('[data-test=run-button]').click();
 }
 
+export function interruptComputation() {
+    cy.get('[data-test=stop-button]').click();
+    cy.get('[data-test=yes-button]').click();
+}
+
 export function dateShouldBe(date) {
     cy.get('[data-test=timestamp-date-picker]').should('have.value', date)
 }
@@ -105,6 +112,14 @@ export function runButtonForBusinessViewShouldBeDisabled(timestamp) {
 
 export function runButtonForBusinessViewShouldBeEnabled(timestamp) {
     cy.get('[data-test=run-button-'+ timestamp +']').should('not.be.disabled')
+}
+
+export function stopButtonShouldBeEnabled() {
+    cy.get('[data-test=stop-button]').should('not.be.disabled')
+}
+
+export function stopButtonShouldBeDisabled() {
+    cy.get('[data-test=stop-button]').should('be.disabled')
 }
 
 function inputDataShouldBe({expectedType, expectedStatus, expectedFilename, expectedLatestModification, timeout}={}) {
