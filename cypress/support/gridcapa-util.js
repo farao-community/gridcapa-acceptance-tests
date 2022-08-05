@@ -6,6 +6,8 @@
  */
 import crypto from "crypto";
 
+require('cy-verify-downloads').addCustomCommand();
+
 const GRIDCAPA_USER = Cypress.env('GRIDCAPA_USER');
 const GRIDCAPA_PASSWORD = Cypress.env('GRIDCAPA_PASSWORD');
 const FORMATTING_LOCAL = 'en-US';
@@ -63,6 +65,10 @@ export function runComputation() {
     cy.get('[data-test=run-button]').click();
 }
 
+export function runComputationForTimestamp(timestamp) {
+    cy.get('[data-test=run-button-'+ timestamp +']').click();
+}
+
 export function statusInTimestampViewShouldBe(timestampStatus, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     cy.get('[data-test=timestamp-status]', {timeout: timeout}).should('have.text', timestampStatus)
 }
@@ -71,12 +77,48 @@ export function statusInBDViewShouldBe(timestamp, expectedStatus, timeout = DEFA
     cy.get('[data-test="' + timestamp + '-task-status"]', {timeout: timeout}).should('have.text', expectedStatus)
 }
 
+export function statusForTimestampShouldBe(timestampStatus, timeout, timestamp) {
+    cy.get('[data-test="timestamp-status-'+ timestamp +'"]', {timeout: timeout}).should('have.text', timestampStatus)
+}
+
+export function openFilesModalAndCheckStatusForImport(timestamp){
+    cy.get('[data-test="timestamp-files-'+ timestamp +'"]').click()
+    cy.get('[data-test="CGM-input-status"]').should('have.text', "VALIDATED")
+    cy.get('[data-test="CRAC-input-status"]').should('have.text', "VALIDATED")
+}
+
+export function downloadAndCheckCGMFile(timestamp) {
+
+    const date = new Date(timestamp);
+    const stringDate = date.getFullYear() +
+     '' + (date.getMonth() + 1).toLocaleString("en-US", {minimumIntegerDigits: 2}) +
+     '' + date.getDate().toLocaleString("en-US", {minimumIntegerDigits: 2}) +
+     "_" + date.getHours() + date.getMinutes();
+
+    cy.get('[data-test="download-CGM-' + timestamp +'"]').click()
+
+    cy.verifyDownload(stringDate + '_155_Initial_CSE1_Transit_CSE.uct');
+
+}
+
+export function paginationClickNextButton(){
+    cy.get('[aria-label="Next page"]').click();
+}
+
 export function runButtonShouldBeDisabled() {
     cy.get('[data-test=run-button]').should('be.disabled')
 }
 
 export function runButtonShouldBeEnabled() {
     cy.get('[data-test=run-button]').should('not.be.disabled')
+}
+
+export function runButtonForTimestampShouldBeDisabled(timestamp) {
+    cy.get('[data-test=run-button-'+ timestamp +']').should('be.disabled')
+}
+
+export function runButtonForTimestampEnabled(timestamp) {
+    cy.get('[data-test=run-button-'+ timestamp +']').should('not.be.disabled')
 }
 
 function inputDataShouldBe({expectedType, expectedStatus, expectedFilename, expectedLatestModification, timeout}={}) {
@@ -122,10 +164,16 @@ export function businessDateFilesShouldBeUploaded(filenameFormat, fileType, time
 
 export function businessDateTasksStatusShouldBe(date, status, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     for (let hour = 0; hour < 24; hour++) {
+        if (hour == 12) { //By default there is a pagination 12 by 12
+            paginationClickNextButton()
+        }
         let hourOnTwoDigits = hour.toLocaleString(FORMATTING_LOCAL, {minimumIntegerDigits: 2, useGrouping:false})
-        statusInBDViewShouldBe(date + ' ' + hourOnTwoDigits + ':30', status, timeout)
+        date + 'T' + hourOnTwoDigits + ':30'
+        statusForTimestampShouldBe(status, timeout, Date.parse(date + 'T' + hourOnTwoDigits + ':30'))
     }
 }
+
+
 
 function sha256(param) {
     return crypto.createHash('sha256').update(param, 'utf8').digest('hex'); // UTF8 text hash
@@ -138,5 +186,3 @@ String.prototype.format = function() {
     }
     return a
 }
-
-
