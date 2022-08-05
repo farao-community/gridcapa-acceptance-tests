@@ -29,20 +29,20 @@ describe('Test behaviour of run button', () => {
         gc.getTimestampView()
         gc.setDate(DATE)
         gc.setTime(TIME_NIGHT)
-        gc.runButtonShouldBeDisabled()
+        gc.runButtonForTimestampShouldBeDisabled(Date.parse(DATE + 'T' + TIME_NIGHT))
     });
 
-    it("Check button is disabled when one file is uploaded", () => {
+   it("Check button is disabled when one file is uploaded", () => {
         ftp.uploadFile(ftp.CORE_VALID, 'grc-69-run-process/core/valid/20210723_0030_2D5_CGM.uct', ftp.CGM)
 
         cy.visit(URL)
         gc.getTimestampView()
         gc.setDate(DATE)
         gc.setTime(TIME_NIGHT)
-        gc.runButtonShouldBeDisabled()
+        gc.runButtonForTimestampShouldBeDisabled(Date.parse(DATE + 'T' + TIME_NIGHT))
     });
 
-    it("Check button is clickable when task is ready", () => {
+     it("Check button is clickable when task is ready", () => {
         ftp.uploadFiles(
             ftp.CORE_VALID,
             {
@@ -58,7 +58,7 @@ describe('Test behaviour of run button', () => {
         gc.setDate(DATE)
         gc.setTime(TIME_NIGHT)
         gc.statusInTimestampViewShouldBe(gc.READY, TIMEOUT)
-        gc.runButtonShouldBeEnabled()
+        gc.runButtonForTimestampEnabled(Date.parse(DATE + 'T' + TIME_NIGHT))
     })
 
     it("Check status change to running after run click and goes to success at 00:30", () => {
@@ -67,10 +67,10 @@ describe('Test behaviour of run button', () => {
         gc.setDate(DATE)
         gc.setTime(TIME_NIGHT)
         gc.statusInTimestampViewShouldBe(gc.READY, TIMEOUT)
-        gc.runComputation()
+        gc.runComputationForTimestamp(Date.parse(DATE + 'T' + TIME_NIGHT))
         gc.statusInTimestampViewShouldBe(gc.RUNNING, TIMEOUT)
         gc.statusInTimestampViewShouldBe(gc.SUCCESS, TIMEOUT)
-        gc.runButtonShouldBeEnabled()
+        gc.runButtonForTimestampEnabled(Date.parse(DATE + 'T' + TIME_NIGHT))
     })
 
     it("Check status change to running after run click and goes to error at 15:30", () => {
@@ -81,9 +81,9 @@ describe('Test behaviour of run button', () => {
         gc.setDate(DATE)
         gc.setTime(TIME_DAY)
         gc.statusInTimestampViewShouldBe(gc.READY, TIMEOUT)
-        gc.runComputation()
+        gc.runComputationForTimestamp(Date.parse(DATE + 'T' + TIME_DAY))
         gc.statusInTimestampViewShouldBe(gc.ERROR, TIMEOUT) // Sometimes cypress is too slow to get 'RUNNING' before 'ERROR' is shown in the HMI
-        gc.runButtonShouldBeEnabled()
+        gc.runButtonForTimestampEnabled(Date.parse(DATE + 'T' + TIME_DAY))
     })
 
     it("Delete files from minio and SFTP", () => {
