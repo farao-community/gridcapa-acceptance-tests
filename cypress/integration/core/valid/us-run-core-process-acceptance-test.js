@@ -27,23 +27,25 @@ describe('Test behaviour of run button', () => {
         gc.clearAndVisit(URL)
         gc.authenticate()
         gc.getTimestampView()
+        cy.wait(500) // Otherwise there is a risk run button has not been initialized correctly yet
         gc.setDate(DATE)
         gc.setTime(TIME_NIGHT)
         gc.runButtonForTimestampShouldBeDisabled(Date.parse(DATE + 'T' + TIME_NIGHT))
     });
 
-   it("Check button is disabled when one file is uploaded", () => {
-        ftp.uploadFile(ftp.CORE_VALID, 'grc-69-run-process/core/valid/20210723_0030_2D5_CGM.uct', ftp.CGM)
+    it("Check button is disabled when one file is uploaded", () => {
+        ftp.uploadFileByFileTypeOnFb(ftp.CORE_VALID, 'grc-69-run-process/core/valid/20210723_0030_2D5_CGM.uct', ftp.CGM)
 
         cy.visit(URL)
         gc.getTimestampView()
+        cy.wait(500) // Otherwise there is a risk run button has not been initialized correctly yet
         gc.setDate(DATE)
         gc.setTime(TIME_NIGHT)
         gc.runButtonForTimestampShouldBeDisabled(Date.parse(DATE + 'T' + TIME_NIGHT))
     });
 
-     it("Check button is clickable when task is ready", () => {
-        ftp.uploadFiles(
+    it("Check button is clickable when task is ready", () => {
+        ftp.uploadFilesOnFb(
             ftp.CORE_VALID,
             {
                 [ftp.CBCORA]: ['grc-69-run-process/core/valid/20210723-F301-01.xml'],
@@ -74,7 +76,7 @@ describe('Test behaviour of run button', () => {
     })
 
     it("Check status change to running after run click and goes to error at 15:30", () => {
-        ftp.uploadFile(ftp.CORE_VALID, 'grc-69-run-process/core/valid/20210723_1530_2D5_CGM.uct', ftp.CGM)
+        ftp.uploadFileByFileTypeOnFb(ftp.CORE_VALID, 'grc-69-run-process/core/valid/20210723_1530_2D5_CGM.uct', ftp.CGM)
 
         cy.visit(URL)
         gc.getTimestampView()
@@ -90,6 +92,6 @@ describe('Test behaviour of run button', () => {
         minio.runOnMinio(() => {
             minio.deleteProcessFolder(minio.CORE_VALID);
         });
-        ftp.deleteProcessFolder(ftp.CORE_VALID);
+        ftp.deleteProcessFolderOnFb(ftp.CORE_VALID);
     })
 })

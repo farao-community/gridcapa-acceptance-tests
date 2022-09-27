@@ -10,6 +10,7 @@ import * as minio from "../../../support/minio.js";
 
 const URL = '/cse/import/d2cc'
 const CGM = 'CGM'
+const HOURS = [0, 3, 7, 10, 13, 16, 19, 22]
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
@@ -35,7 +36,7 @@ describe('CGM automatic import handling', () => {
         gc.setTime('14:30')
         gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
 
-        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210701.zip', ftp.CGM)
+        ftp.uploadFileByFileType(ftp.CSE_IMPORT_D2CC, 'us-0000/20210701.zip', ftp.CGM)
 
         cy.visit(URL)
         gc.getTimestampView()
@@ -52,14 +53,14 @@ describe('CGM automatic import handling', () => {
 
         gc.getBusinessDateView()
         gc.setDate('2021-07-02')
-        gc.businessDateTasksStatusShouldBe('2021-07-02', gc.NOT_CREATED)
+        gc.businessDateWithHoursTasksStatusShouldBe('2021-07-02', HOURS, gc.NOT_CREATED)
 
-        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210702.zip', ftp.CGM)
+        ftp.uploadFileByFileType(ftp.CSE_IMPORT_D2CC, 'us-0000/20210702.zip', ftp.CGM)
 
         cy.visit(URL)
         gc.getBusinessDateView()
         gc.setDate('2021-07-02')
-        gc.businessDateTasksStatusShouldBe('2021-07-02', gc.CREATED)
+        gc.businessDateWithHoursTasksStatusShouldBe('2021-07-02', HOURS, gc.CREATED)
 
         cleanData()
     });
@@ -73,7 +74,7 @@ describe('CGM automatic import handling', () => {
         gc.setTime('00:30')
         gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
 
-        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210703.zip', ftp.CGM)
+        ftp.uploadFileByFileType(ftp.CSE_IMPORT_D2CC, 'us-0000/20210703.zip', ftp.CGM)
         cy.wait(2000) // To make sure nothing is created even after a couple of seconds - 5s
 
         cy.visit(URL)
@@ -91,14 +92,14 @@ describe('CGM automatic import handling', () => {
 
         gc.getBusinessDateView()
         gc.setDate('2021-07-02')
-        gc.businessDateTasksStatusShouldBe('2021-07-02', gc.NOT_CREATED)
+        gc.businessDateWithHoursTasksStatusShouldBe('2021-07-02', HOURS, gc.NOT_CREATED)
 
-        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210702_sub_dir.zip', ftp.CGM)
+        ftp.uploadFileByFileType(ftp.CSE_IMPORT_D2CC, 'us-0000/20210702_sub_dir.zip', ftp.CGM)
 
         cy.visit(URL)
         gc.getBusinessDateView()
         gc.setDate('2021-07-02')
-        gc.businessDateTasksStatusShouldBe('2021-07-02', gc.CREATED)
+        gc.businessDateWithHoursTasksStatusShouldBe('2021-07-02', HOURS, gc.CREATED)
 
         cleanData()
     });
@@ -112,7 +113,7 @@ describe('CGM automatic import handling', () => {
         gc.setTime('23:30')
         gc.statusInTimestampViewShouldBe(gc.NOT_CREATED)
 
-        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-0000/20210702_2330_2D5_UX0.uct', ftp.CGM)
+        ftp.uploadFileByFileType(ftp.CSE_IMPORT_D2CC, 'us-0000/20210702_2330_2D5_UX0.uct', ftp.CGM)
 
         cy.visit(URL)
         gc.getTimestampView()
