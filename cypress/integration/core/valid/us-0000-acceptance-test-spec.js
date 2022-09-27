@@ -26,7 +26,7 @@ describe('CGM automatic import handling', () => {
         gc.setDate(DATE)
         gc.businessDateTasksStatusShouldBe(DATE, gc.NOT_CREATED)
 
-        ftp.uploadFile(ftp.CORE_VALID, 'us-0000/20210702.zip', ftp.CGM)
+        ftp.uploadFileByFileTypeOnFb(ftp.CORE_VALID, 'us-0000/20210702.zip', ftp.CGM)
 
         cy.visit(URL)
         // Check arrival in TS view
@@ -41,6 +41,6 @@ describe('CGM automatic import handling', () => {
         minio.runOnMinio(() => {
             minio.deleteProcessFolder(minio.CORE_VALID);
         });
-        ftp.deleteProcessFolder(ftp.CORE_VALID);
+        ftp.deleteProcessFolderOnFb(ftp.CORE_VALID);
     });
 })

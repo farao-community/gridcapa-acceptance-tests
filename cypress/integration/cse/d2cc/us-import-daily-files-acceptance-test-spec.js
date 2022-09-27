@@ -10,6 +10,7 @@ import * as ftp from "../../../support/ftp-browser.js";
 
 const URL = '/cse/import/d2cc'
 const DATE = '2021-09-01'
+const HOURS = [0, 3, 7, 10, 13, 16, 19, 22]
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
@@ -24,14 +25,14 @@ describe('NTCRED automatic import handling', () => {
         gc.authenticate()
         gc.getBusinessDateView()
         gc.setDate(DATE)
-        gc.businessDateTasksStatusShouldBe(DATE, gc.NOT_CREATED)
+        gc.businessDateWithHoursTasksStatusShouldBe(DATE, HOURS, gc.NOT_CREATED)
 
-        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml', ftp.NTC_RED)
+        ftp.uploadFileByFileType(ftp.CSE_IMPORT_D2CC, 'us-import-daily-files/20210901_2D3_NTC_reductions_test.xml', ftp.NTC_RED)
 
         cy.visit(URL)
         gc.getBusinessDateView()
         gc.setDate(DATE)
-        gc.businessDateTasksStatusShouldBe(DATE, gc.CREATED)
+        gc.businessDateWithHoursTasksStatusShouldBe(DATE, HOURS, gc.CREATED)
 
         minio.runOnMinio(() => {
             minio.deleteProcessFolder(minio.CSE_IMPORT_D2CC);
