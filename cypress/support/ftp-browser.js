@@ -32,31 +32,47 @@ export const CBCORA = 'cbcoras'
 export const REFPROG = 'refprogs'
 export const STUDYPOINT = 'studypoints'
 
-export function uploadFile(process, file, fileType) {
+export function uploadFileByFileType(process, file, fileType) {
     uploadFiles(process, { [fileType]: [file] })
+}
+
+export function uploadFileByFileTypeOnFtp(process, file, fileType) {
+    uploadFilesOnFtp(process, { [fileType]: [file] })
+}
+
+export function uploadFileByFileTypeOnFb(process, file, fileType) {
+    uploadFilesOnFb(process, { [fileType]: [file] })
 }
 
 export function uploadFiles(process, fileMap) {
     if (FTP_HOST) {
-        for (let [fileType, fileList] of Object.entries(fileMap)) {
-            for (let file of fileList) {
-                uploadFileOnFtp(FTP_HOST, FTP_USER, FTP_PASSWORD, file, process + '/' + fileType)
-            }
-        }
+        uploadFilesOnFtp(process, fileMap)
     } else {
-        runOnFb(FB_USER, FB_PASSWORD, () => {
-            for (let [fileType, fileList] of Object.entries(fileMap)) {
-                for (let file of fileList) {
-                    uploadFileOnFb(file, process + '/' + fileType);
-                }
-            }
-        });
+        uploadFilesOnFb(process, fileMap)
+    }
+}
+
+export function uploadFilesOnFtp(process, fileMap) {
+    for (let [fileType, fileList] of Object.entries(fileMap)) {
+        for (let file of fileList) {
+            uploadFileOnFtp(FTP_HOST, FTP_USER, FTP_PASSWORD, file, process + '/' + fileType)
+        }
     }
 }
 
 function uploadFileOnFtp(host, user, password, file, path) {
     const command = `curl --ftp-create-dirs -T cypress/fixtures/${file} ftp://${user}:${password}@${host}/${path}/`
     cy.exec(command, { timeout: 20000, failOnNonZeroExit: false, log: false })
+}
+
+export function uploadFilesOnFb(process, fileMap) {
+    runOnFb(FB_USER, FB_PASSWORD, () => {
+        for (let [fileType, fileList] of Object.entries(fileMap)) {
+            for (let file of fileList) {
+                uploadFileOnFb(file, process + '/' + fileType);
+            }
+        }
+    });
 }
 
 function uploadFileOnFb(file, path) {
@@ -73,19 +89,27 @@ function uploadFileOnFb(file, path) {
 
 export function deleteProcessFolder(process) {
     if (FTP_HOST) {
-        deleteOnFtp(FTP_HOST, FTP_USER, FTP_PASSWORD, process)
+        deleteProcessFolderOnFtp(process)
     } else {
-        const elementPath = process.substring(0, process.lastIndexOf('/'))
-        const element = process.substring(process.lastIndexOf('/') + 1)
-        runOnFb(FB_USER, FB_PASSWORD, () => {
-            deleteOnFb(elementPath, element);
-        });
+        deleteProcessFolderOnFb(process)
     }
+}
+
+export function deleteProcessFolderOnFtp(process) {
+    deleteOnFtp(FTP_HOST, FTP_USER, FTP_PASSWORD, process)
 }
 
 function deleteOnFtp(host, user, password, file) {
     const command = `curl ftp://${user}:${password}@${host}/ -Q 'DELE ${file}'`
     cy.exec(command, { timeout: 20000, failOnNonZeroExit: false, log: false })
+}
+
+export function deleteProcessFolderOnFb(process) {
+    const elementPath = process.substring(0, process.lastIndexOf('/'))
+    const element = process.substring(process.lastIndexOf('/') + 1)
+    runOnFb(FB_USER, FB_PASSWORD, () => {
+        deleteOnFb(elementPath, element);
+    });
 }
 
 function deleteOnFb(elementPath, element) {
