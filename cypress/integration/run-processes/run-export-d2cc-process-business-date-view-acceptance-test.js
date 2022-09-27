@@ -32,13 +32,13 @@ describe('Check CSE D2CC export corner runs correctly', () => {
         gc.setDate(DATE)
         gc.paginationClickNextButton();
         gc.statusForTimestampShouldBe(gc.NOT_CREATED, TIMEOUT, Date.parse(DATE + 'T' + TIME))
-               ftp.uploadFiles(
-                    ftp.CSE_EXPORT_D2CC,
-                    {
-                        [ftp.CGM]: ['run-export/20220128_1630_155_Initial_CSE1_Transit_CSE.uct'],
-                        [ftp.CRAC]: ['run-export/20220128_1630_145_CRAC_CO_CSE1_Transit_CSE.xml']
-                    }
-                )
+        ftp.uploadFiles(
+            ftp.CSE_EXPORT_D2CC,
+            {
+                [ftp.CGM]: ['run-export/20220128_1630_155_Initial_CSE1_Transit_CSE.uct'],
+                [ftp.CRAC]: ['run-export/20220128_1630_145_CRAC_CO_CSE1_Transit_CSE.xml']
+            }
+        )
 
         cy.visit(URL)
         gc.getBusinessDateView()

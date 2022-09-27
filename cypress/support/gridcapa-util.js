@@ -21,6 +21,8 @@ export const CREATED = 'CREATED';
 export const VALIDATED = 'VALIDATED';
 export const READY = 'READY';
 export const RUNNING = 'RUNNING';
+export const STOPPING = 'STOPPING';
+export const INTERRUPTED = 'INTERRUPTED';
 export const SUCCESS = 'SUCCESS';
 export const ERROR = 'ERROR';
 
@@ -61,8 +63,17 @@ export function getEvents() {
     cy.get('[data-test=events]').click()
 }
 
-export function runComputation() {
-    cy.get('[data-test=run-button]').click();
+export function interruptComputation() {
+    cy.get('[data-test=stop-button]').click();
+    cy.get('[data-test=yes-button]').click();
+}
+
+export function dateShouldBe(date) {
+    cy.get('[data-test=timestamp-date-picker]').should('have.value', date)
+}
+
+export function timeShouldBe(time) {
+    cy.get('[data-test=timestamp-time-picker]').should('have.value', time)
 }
 
 export function runComputationForTimestamp(timestamp) {
@@ -71,10 +82,6 @@ export function runComputationForTimestamp(timestamp) {
 
 export function statusInTimestampViewShouldBe(timestampStatus, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     cy.get('[data-test=timestamp-status]', {timeout: timeout}).should('have.text', timestampStatus)
-}
-
-export function statusInBDViewShouldBe(timestamp, expectedStatus, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
-    cy.get('[data-test="' + timestamp + '-task-status"]', {timeout: timeout}).should('have.text', expectedStatus)
 }
 
 export function statusForTimestampShouldBe(timestampStatus, timeout, timestamp) {
@@ -105,20 +112,20 @@ export function paginationClickNextButton(){
     cy.get('[aria-label="Next page"]').click();
 }
 
-export function runButtonShouldBeDisabled() {
-    cy.get('[data-test=run-button]').should('be.disabled')
+export function runButtonForTimestampShouldBeDisabled(timestamp, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    cy.get('[data-test=run-button-'+ timestamp +']', {timeout: timeout}).should('be.disabled')
 }
 
-export function runButtonShouldBeEnabled() {
-    cy.get('[data-test=run-button]').should('not.be.disabled')
+export function runButtonForTimestampEnabled(timestamp, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    cy.get('[data-test=run-button-'+ timestamp +']', {timeout: timeout}).should('not.be.disabled')
 }
 
-export function runButtonForTimestampShouldBeDisabled(timestamp) {
-    cy.get('[data-test=run-button-'+ timestamp +']').should('be.disabled')
+export function stopButtonShouldBeEnabled() {
+    cy.get('[data-test=stop-button]').should('not.be.disabled')
 }
 
-export function runButtonForTimestampEnabled(timestamp) {
-    cy.get('[data-test=run-button-'+ timestamp +']').should('not.be.disabled')
+export function stopButtonShouldBeDisabled() {
+    cy.get('[data-test=stop-button]').should('be.disabled')
 }
 
 function inputDataShouldBe({expectedType, expectedStatus, expectedFilename, expectedLatestModification, timeout}={}) {
@@ -164,11 +171,17 @@ export function businessDateFilesShouldBeUploaded(filenameFormat, fileType, time
 
 export function businessDateTasksStatusShouldBe(date, status, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
     for (let hour = 0; hour < 24; hour++) {
-        if (hour == 12) { //By default there is a pagination 12 by 12
+        if (hour === 12) { //By default there is a pagination 12 by 12
             paginationClickNextButton()
         }
         let hourOnTwoDigits = hour.toLocaleString(FORMATTING_LOCAL, {minimumIntegerDigits: 2, useGrouping:false})
-        date + 'T' + hourOnTwoDigits + ':30'
+        statusForTimestampShouldBe(status, timeout, Date.parse(date + 'T' + hourOnTwoDigits + ':30'))
+    }
+}
+
+export function businessDateWithHoursTasksStatusShouldBe(date, hours, status, timeout = DEFAULT_FTP_UPLOAD_TIMEOUT_IN_MS) {
+    for (const hour of hours) {
+        let hourOnTwoDigits = Number(hour).toLocaleString(FORMATTING_LOCAL, {minimumIntegerDigits: 2, useGrouping:false})
         statusForTimestampShouldBe(status, timeout, Date.parse(date + 'T' + hourOnTwoDigits + ':30'))
     }
 }

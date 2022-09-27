@@ -42,7 +42,7 @@ describe('NTC automatic import handling', () => {
         checkTaskNotCreated('2021-07-03', '16:30')
         checkTaskNotCreated('2021-12-31', '23:30')
 
-        ftp.uploadFile(ftp.CSE_IMPORT_D2CC, 'us-import-yearly-files/2021_test_NTC_annual.xml', ftp.NTC)
+        ftp.uploadFileByFileType(ftp.CSE_IMPORT_D2CC, 'us-import-yearly-files/2021_test_NTC_annual.xml', ftp.NTC)
 
         cy.visit(URL)
         gc.getTimestampView()
