@@ -88,24 +88,13 @@ export function statusForTimestampShouldBe(timestampStatus, timeout, timestamp) 
     cy.get('[data-test="timestamp-status-'+ timestamp +'"]', {timeout: timeout}).should('have.text', timestampStatus)
 }
 
-export function openFilesModalAndCheckStatusForImport(timestamp){
+export function openFilesModal(timestamp) {
     cy.get('[data-test="timestamp-files-'+ timestamp +'"]').click()
-    cy.get('[data-test="CGM-input-status"]').should('have.text', "VALIDATED")
-    cy.get('[data-test="CRAC-input-status"]').should('have.text', "VALIDATED")
 }
 
-export function downloadAndCheckCGMFile(timestamp) {
-
-    const date = new Date(timestamp);
-    const stringDate = date.getFullYear() +
-     '' + (date.getMonth() + 1).toLocaleString("en-US", {minimumIntegerDigits: 2}) +
-     '' + date.getDate().toLocaleString("en-US", {minimumIntegerDigits: 2}) +
-     "_" + date.getHours() + date.getMinutes();
-
-    cy.get('[data-test="download-CGM-' + timestamp +'"]').click()
-
-    cy.verifyDownload(stringDate + '_155_Initial_CSE1_Transit_CSE.uct');
-
+export function downloadAndCheckFile(timestamp, fileType, fileName) {
+    cy.get('[data-test="download-' + fileType + '-' + timestamp +'"]').click()
+    cy.verifyDownload(fileName);
 }
 
 export function paginationClickNextButton(){
