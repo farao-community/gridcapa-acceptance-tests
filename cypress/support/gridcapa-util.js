@@ -186,8 +186,6 @@ export function businessDateWithHoursTasksStatusShouldBe(date, hours, status, ti
     }
 }
 
-
-
 function sha256(param) {
     return crypto.createHash('sha256').update(param, 'utf8').digest('hex'); // UTF8 text hash
 }
