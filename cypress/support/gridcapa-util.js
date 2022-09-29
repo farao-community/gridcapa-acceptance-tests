@@ -6,6 +6,8 @@
  */
 import crypto from "crypto";
 
+require('cy-verify-downloads').addCustomCommand();
+
 const GRIDCAPA_USER = Cypress.env('GRIDCAPA_USER');
 const GRIDCAPA_PASSWORD = Cypress.env('GRIDCAPA_PASSWORD');
 const FORMATTING_LOCAL = 'en-US';
@@ -61,10 +63,6 @@ export function getEvents() {
     cy.get('[data-test=events]').click()
 }
 
-export function runComputation() {
-    cy.get('[data-test=run-button]').click();
-}
-
 export function interruptComputation() {
     cy.get('[data-test=stop-button]').click();
     cy.get('[data-test=yes-button]').click();
@@ -88,6 +86,15 @@ export function statusInTimestampViewShouldBe(timestampStatus, timeout = DEFAULT
 
 export function statusForTimestampShouldBe(timestampStatus, timeout, timestamp) {
     cy.get('[data-test="timestamp-status-'+ timestamp +'"]', {timeout: timeout}).should('have.text', timestampStatus)
+}
+
+export function openFilesModal(timestamp) {
+    cy.get('[data-test="timestamp-files-'+ timestamp +'"]').click()
+}
+
+export function downloadAndCheckFile(timestamp, fileType, fileName) {
+    cy.get('[data-test="download-' + fileType + '-' + timestamp +'"]').click()
+    cy.verifyDownload(fileName);
 }
 
 export function paginationClickNextButton(){
